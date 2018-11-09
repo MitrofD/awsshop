@@ -1,0 +1,43 @@
+{
+  "extends": [
+    "airbnb-base/legacy",
+    "plugin:flowtype/recommended"
+  ],
+  "globals": {
+    "Config": true,
+    "Enums": true,
+    "GSession": true,
+    "isDevMode": true,
+    "Mailer": true,
+    "MongoStore": true,
+    "Middleware": true,
+    "RedisStore": true,
+    "RootPath": true,
+    "Port": true,
+    "Server": true,
+    "Tools": true,
+    "Translations": true
+  },
+  "plugins": [
+    "import",
+    "flowtype",
+    "flowtype-errors"
+  ],
+  "env": {
+    "node": true,
+    "es6": true,
+  },
+  "rules": {
+    "comma-dangle": ["error", "always-multiline"],
+    "max-len": [2, 200],
+    "no-continue": 0,
+    "no-undef": 0,
+    "no-underscore-dangle": 0,
+    "flowtype-errors/show-errors": 2,
+    "flowtype-errors/show-warnings": 1,
+    "no-unused-vars": 1,
+    "no-eval": 0,
+    "radix": 0,
+    "spaced-comment": 1
+  }
+}

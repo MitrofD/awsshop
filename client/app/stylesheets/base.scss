@@ -1,0 +1,473 @@
+html,
+body,
+.cntnt {
+  height: 100%;
+}
+
+input {outline: none;}
+input:-webkit-autofill {
+  -webkit-box-shadow: inset 0 0 0 50px #fff !important;
+  -webkit-text-fill-color: $input-color !important;
+  color: $input-color !important;
+}
+
+body {
+  background-color: $var-background-color;
+  background-image: url("#{$var-images-path}/background.png");
+  background-repeat: repeat;
+  color: $var-color;
+  font-family: 'Open Sans Regular';
+}
+
+a.active {
+  color: $primary;
+}
+
+.admn-only {
+  display: none;
+}
+
+.admn .admn-only {
+  display: block;
+}
+
+.Badge {
+  letter-spacing: normal;
+}
+
+.btn {
+  @extend .text-truncate;
+  font-family: 'Futura PT Heavy';
+  text-transform: uppercase;
+
+  &.btn-cancel {
+    color: $input-color;
+    border-color: $input-border-color;
+    border-width: $input-border-width;
+  }
+
+  &.btn-plugin {
+    @extend .btn-danger;
+  }
+}
+
+.cntnt.init-md {
+  .container {
+    height: 100%;
+
+    .innr {
+      height: 100%;
+    }
+  }
+}
+
+.chckkbx {
+  color: $primary;
+  cursor: pointer;
+  font-size: 17px;
+
+  .Checkbox {
+    margin-right: 13px;
+  }
+}
+
+header {
+  position: fixed;
+  width: 100%;
+  z-index: 1;
+}
+
+main {
+  padding-bottom: 50px;
+  padding-top: 100px;
+
+  .innr {
+    box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.05);
+    border-radius: $border-radius;
+    background-color: $white;
+  }
+}
+
+.dropdown-wrapper .FixedOverlay {
+  background-color: transparent;
+}
+
+.dropdown-menu {
+  font-family: 'Open Sans Regular';
+}
+
+.form-control {
+  font-size: 17px;
+
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+.form-group {
+  padding-bottom: $var-form-group-padding-bottom;
+  position: relative;
+
+  .invalid-feedback,
+  .valid-feedback {
+    @extend .text-truncate;
+    position: absolute;
+    font-size: 13px;
+    letter-spacing: $var-letter-spacing / 2;
+  }
+}
+
+.lnk {
+  color: $secondary;
+  display: block;
+  text-align: center;
+  width: 100%;
+  text-decoration: none;
+
+  &.bld {
+    font-family: 'Futura PT Heavy';
+    text-transform: uppercase;
+  }
+}
+
+.navbar {
+  text-transform: uppercase;
+  font-family: 'Futura PT Demi';
+  box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.15);
+
+  .Badge {
+    margin-left: 8px;
+  }
+
+  .navbar-logo {
+    font-family: 'Futura PT Medium';
+    font-size: 23px;
+    letter-spacing: 1.0075px;
+    margin-right: 75px;
+
+    .img {
+      display: inline-block;
+      height: 35px;
+      width: 25px;
+      background-image: url("#{$var-images-path}/logo.png");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      vertical-align: bottom;
+      margin-right: 13px;
+    }
+  }
+
+  .nav-profile-item {
+    .nav-link {
+      font-family: 'Open Sans Regular';
+      text-transform: capitalize;
+      letter-spacing: $var-letter-spacing;
+    }
+  }
+
+  .nav-link {
+    color: $gray-600;
+    height: 100%;
+    letter-spacing: $var-letter-spacing;
+    font-size: 16px;
+    margin-right: 30px;
+
+    .icn {
+      top: 2px;
+    }
+
+    &.active {
+      box-shadow: 0px -3px 0px 0px $primary inset;
+    }
+
+    &.brdrd {
+      margin-right: 0;
+      padding-left: 20px;
+      padding-right: 20px;
+      border-left: 2px solid $var-background-color;
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    padding-top: 0.9rem;
+    padding-bottom: 0.9rem;
+  }
+}
+
+.ntfctns {
+  .ItemsStack {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: $var-notifications-padding;
+    z-index: 999;
+    max-width: 350px;
+
+    @include media-breakpoint-down(xs) {
+      max-width: none;
+      min-width: 100%;
+      padding: $spacer;
+      top: auto;
+      bottom: 0;
+    }
+
+    .item {
+      box-shadow: 5px 9px 24px 0px rgba(241, 56, 64, 0.4);
+    }
+  }
+}
+
+.qstn {
+  position: relative;
+  text-align: center;
+
+  span {
+    color: $secondary;
+    padding: 0 15px;
+    position: inherit;
+    z-index: 1;
+  }
+
+  &::after {
+    background-color: $input-border-color;
+    content: '';
+    height: $input-border-width;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+  }
+}
+
+.td-actns {
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-transform: lowercase;
+
+    &:focus {
+      outline: 0;
+    }
+  }
+
+  .rmv {
+    color: $danger;
+  }
+}
+
+.tbl-hd {
+  margin-bottom: 0;
+}
+
+.Toast {
+  font-family: 'Open Sans SemiBold';
+}
+
+.ttl {
+  color: $dark;
+  font-family: 'Futura PT Heavy';
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1.0050px;
+}
+
+.frm-cntnr {
+  margin: 0 auto;
+  height: 100%;
+  width: 580px;
+  position: relative;
+
+  a {
+    color: $primary;
+  }
+
+  .actn {
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .btns {
+    margin-top: $var-form-group-padding-bottom;
+  }
+
+  .btn,
+  .lnk {
+    font-size: 16px;
+  }
+
+  .frm {
+    @include transform(translateY(-50%));
+    position: absolute;
+    top: 50%;
+    width: 100%;
+
+    .innr {
+      background-color: #fff;
+      padding: 38px 48px;
+      border-radius: $border-radius;
+      box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.05);
+    }
+
+    @include media-breakpoint-down(xs) {
+      @include transform(none);
+      top: 0;
+
+      .innr {
+        padding: 28px;
+      }
+    }
+  }
+
+  .ttl {
+    font-family: 'Futura PT Bold';
+    font-size: 29px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 18px;
+    letter-spacing: $var-letter-spacing;
+  }
+
+  form {
+    .form-group {
+      label {
+        color: $gray-600;
+        font-size: 13px;
+        font-family: 'Futura PT Heavy';
+        text-transform: uppercase;
+        letter-spacing: $var-letter-spacing;
+      }
+    }
+  }
+
+  .qstn span {
+    background-color: $white;
+  }
+
+  .qstn-accnt {
+    margin-top: 30px;
+  }
+
+  .ftr-lnk {
+    margin-top: 20px;
+    color: $primary;
+  }
+
+  @include media-breakpoint-down(sm) {
+    width: 100%;
+  }
+}
+
+.sp {
+  padding: $var-page-padding-y $var-page-padding-x;
+
+  .ttl {
+    margin-bottom: 20px;
+  }
+}
+
+.lft,
+.rght {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.lft {
+  padding: $var-page-padding-y $var-page-padding-x;
+  width: 23%;
+
+  .XHRSpin {
+    height: 200px;
+  }
+}
+
+.lst {
+  table {
+    tr:first-child td {
+      border-top: none;
+    }
+  }
+}
+
+.rght {
+  width: 77%;
+}
+
+// Includes
+.FindEmailTips {
+  ul {
+    margin-bottom: 0;
+    margin-top: 7px;
+  }
+}
+
+.LoadMore {
+  $var-loadm-mode-color: #aaaab6 !default;
+
+  border-top: 1px solid #f2f2f7;
+  color: $var-loadm-mode-color;
+  font-family: 'Futura PT Heavy';
+  font-size: 16px;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 20px 0;
+
+  span {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .spnnr {
+    @include mask-image(url("#{$var-images-path}/spinner.svg"));
+    @include animation(spin 0.8s linear infinite);
+    background-color: $var-loadm-mode-color;
+    height: 20px;
+    margin-left: 5px;
+    margin-bottom: 3px;
+    width: 20px;
+  }
+}
+
+.Sidebar {
+  .ttl {
+    margin-bottom: 25px;
+  }
+
+  ul.lst {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      margin-bottom: 26px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    a {
+      font-size: 17px;
+      display: block;
+    }
+  }
+}
+
+.XHRSpin {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+@include media-breakpoint-down(xs) {
+  .lft,
+  .rght {
+    padding: 1rem !important;
+    width: 100%;
+  }
+
+  .lft {
+    text-align: center;
+  }
+}

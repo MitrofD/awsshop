@@ -1,0 +1,53 @@
+.dropdown-wrapper {
+  position: relative;
+}
+
+.Dropdown {
+  top: 100%;
+  z-index: $zindex-dropdown;
+  min-width: $dropdown-min-width;
+  padding: $dropdown-padding-y 0;
+  margin: 0; // override default ul
+  font-size: $font-size-base; // Redeclare because nesting can cause inheritance issues
+  color: $body-color;
+  text-align: left; // Ensures proper alignment if parent has it changed (e.g., modal footer)
+  list-style: none;
+  background-color: $dropdown-bg;
+  background-clip: padding-box;
+  border: $dropdown-border-width solid $dropdown-border-color;
+  @include border-radius($dropdown-border-radius);
+  @include box-shadow($dropdown-box-shadow);
+  white-space: nowrap;
+  overflow-y: auto;
+
+  .dropdown-item {
+    cursor: pointer;
+
+    a {
+      display: block;
+      color: $dark;
+      text-decoration: none;
+    }
+
+    border-color: $border-color;
+    border-bottom-style: solid;
+    border-width: $border-width;
+
+    &:last-child {
+      border-style: none;
+    }
+  }
+}
+
+.is-mobile {
+  .Dropdown {
+    @include media-breakpoint-down(sm) {
+      position: fixed !important;
+      top: auto !important;
+      bottom: 0 !important;
+      max-height: 100% !important;
+      width: 100% !important;
+      border-radius: 0;
+    }
+  }
+}

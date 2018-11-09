@@ -1,0 +1,46 @@
+@import 'catalog';
+
+.Admin {
+  .rght {
+    padding: $var-page-padding-y $var-page-padding-x $var-page-padding-y 0;
+
+    .actns {
+      margin-bottom: 1rem;
+      text-align: right;
+    }
+
+    .ttl {
+      padding-bottom: 1rem;
+    }
+
+    .lst {
+      max-height: 550px;
+      overflow-y: auto;
+    }
+
+    .XHRSpin {
+      min-height: 250px;
+    }
+  }
+
+  .NoHaveLabel {
+    color: $danger;
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 1rem 0;
+  }
+}
+
+@include media-breakpoint-down(xs) {
+  .Admin {
+    .actns {
+      div {
+        margin-bottom: 1rem;
+      }
+
+      div:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

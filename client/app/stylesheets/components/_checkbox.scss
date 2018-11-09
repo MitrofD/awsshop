@@ -1,0 +1,41 @@
+$checkbox-size: 18px !default;
+$checkbox-tmbl-size: 18px * 0.7 !default;
+$checkbox-tmbl-padding: 18px * 0.15 !default;
+
+.Checkbox {
+  position: relative;
+  display: inline-block;
+  height: $checkbox-size;
+  width: $checkbox-size;
+  vertical-align: middle;
+  border-radius: $border-radius;
+  border-style: solid;
+  border-width: $input-border-width;
+  border-color: $input-border-color;
+  margin-top: -2px;
+
+  input,
+  .tmblr {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  input {
+    opacity: 0;
+
+    &:checked ~ .tmblr {
+      @include mask-image(url("#{$var-images-path}/check.svg"));
+      background-color: $primary;
+    }
+  }
+
+  .tmblr {
+    background-color: transparent;
+    height: $checkbox-tmbl-size;
+    width: $checkbox-tmbl-size;
+    left: 2px;
+    top: 1px;
+    text-align: center;
+  }
+}

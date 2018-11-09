@@ -1,0 +1,14 @@
+.ItemsStack {
+  .item {
+    margin: 0 0 15px 0;
+    max-width: 100%;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}

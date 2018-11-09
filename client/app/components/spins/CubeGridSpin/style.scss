@@ -1,0 +1,87 @@
+@import '../../scss/entry';
+
+@-webkit-keyframes cbGridScaleDelay {
+  0%,
+  70%,
+  100% {
+    -webkit-transform: scale3D(1, 1, 1);
+    transform: scale3D(1, 1, 1);
+  }
+
+  35% {
+    -webkit-transform: scale3D(0, 0, 1);
+    transform: scale3D(0, 0, 1);
+  }
+}
+
+@keyframes cbGridScaleDelay {
+  0%,
+  70%,
+  100% {
+    -webkit-transform: scale3D(1, 1, 1);
+    transform: scale3D(1, 1, 1);
+  }
+
+  35% {
+    -webkit-transform: scale3D(0, 0, 1);
+    transform: scale3D(0, 0, 1);
+  }
+}
+
+.CubeGridSpin {
+  .insd {
+    div {
+      width: 33%;
+      height: 33%;
+      background-color: $tl-spin-color;
+      float: left;
+      -webkit-animation: cbGridScaleDelay 1.3s infinite ease-in-out;
+      animation: cbGridScaleDelay 1.3s infinite ease-in-out;
+    }
+
+    .cb1 {
+      -webkit-animation-delay: 0.2s;
+      animation-delay: 0.2s;
+    }
+
+    .cb2 {
+      -webkit-animation-delay: 0.3s;
+      animation-delay: 0.3s;
+    }
+
+    .cb3 {
+      -webkit-animation-delay: 0.4s;
+      animation-delay: 0.4s;
+    }
+
+    .cb4 {
+      -webkit-animation-delay: 0.1s;
+      animation-delay: 0.1s;
+    }
+
+    .cb5 {
+      -webkit-animation-delay: 0.2s;
+      animation-delay: 0.2s;
+    }
+
+    .cb6 {
+      -webkit-animation-delay: 0.3s;
+      animation-delay: 0.3s;
+    }
+
+    .cb7 {
+      -webkit-animation-delay: 0s;
+      animation-delay: 0s;
+    }
+
+    .cb8 {
+      -webkit-animation-delay: 0.1s;
+      animation-delay: 0.1s;
+    }
+
+    .cb9 {
+      -webkit-animation-delay: 0.2s;
+      animation-delay: 0.2s;
+    }
+  }
+}

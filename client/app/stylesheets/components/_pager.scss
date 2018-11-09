@@ -1,0 +1,13 @@
+.Pager {
+  text-align: center;
+  padding: 1rem 0;
+
+  .btn {
+    display: inline;
+    margin-right: 1rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}

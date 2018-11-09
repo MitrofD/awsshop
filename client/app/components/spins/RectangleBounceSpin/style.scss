@@ -1,0 +1,65 @@
+@import '../../scss/entry';
+
+@-webkit-keyframes tl-stretchdelay {
+  0%,
+  40%,
+  100% {
+    -webkit-transform: scaleY(0.4);
+  }
+
+  20% {
+    -webkit-transform: scaleY(1.0);
+  }
+}
+
+@keyframes tl-stretchdelay {
+  0%,
+  40%,
+  100% {
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }
+
+  20% {
+    transform: scaleY(1.0);
+    -webkit-transform: scaleY(1.0);
+  }
+}
+
+.RectangleBounceSpin {
+  .insd {
+    div {
+      background-color: $tl-spin-color;
+      margin: 0 8px 0 0;
+      height: 100%;
+      width: 6px;
+      display: inline-block;
+      -webkit-animation: tl-stretchdelay 1.2s infinite ease-in-out;
+      animation: tl-stretchdelay 1.2s infinite ease-in-out;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    .rct2 {
+      -webkit-animation-delay: -1.1s;
+      animation-delay: -1.1s;
+    }
+
+    .rct3 {
+      -webkit-animation-delay: -1.0s;
+      animation-delay: -1.0s;
+    }
+
+    .rct4 {
+      -webkit-animation-delay: -0.9s;
+      animation-delay: -0.9s;
+    }
+
+    .rct5 {
+      -webkit-animation-delay: -0.8s;
+      animation-delay: -0.8s;
+    }
+  }
+}

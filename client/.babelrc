@@ -1,0 +1,14 @@
+{
+  "compact": false,
+  "presets": [
+    "env",
+    "react",
+    "flow"
+  ],
+  "plugins": [
+    "react-hot-loader/babel",
+    "transform-class-properties",
+    "transform-object-rest-spread",
+    "syntax-dynamic-import"
+  ]
+}

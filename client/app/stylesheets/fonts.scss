@@ -1,0 +1,58 @@
+$fonts-path: 'fonts' !default;
+
+@font-face {
+  font-family: 'Futura PT Bold';
+  src: url('#{$fonts-path}/FuturaPT-Bold.eot');
+  src: url('#{$fonts-path}/FuturaPT-Bold.eot?#iefix') format('embedded-opentype'),
+  url('#{$fonts-path}/FuturaPT-Bold.woff2') format('woff2'),
+  url('#{$fonts-path}/FuturaPT-Bold.woff') format('woff'),
+  url('#{$fonts-path}/FuturaPT-Bold.ttf') format('truetype'),
+  url('#{$fonts-path}/FuturaPT-Bold.svg#fontawesome') format('svg');
+}
+
+@font-face {
+  font-family: 'Futura PT Heavy';
+  src: url('#{$fonts-path}/FuturaPT-Heavy.eot');
+  src: url('#{$fonts-path}/FuturaPT-Heavy.eot?#iefix') format('embedded-opentype'),
+  url('#{$fonts-path}/FuturaPT-Heavy.woff2') format('woff2'),
+  url('#{$fonts-path}/FuturaPT-Heavy.woff') format('woff'),
+  url('#{$fonts-path}/FuturaPT-Heavy.ttf') format('truetype'),
+  url('#{$fonts-path}/FuturaPT-Heavy.svg#fontawesome') format('svg');
+  letter-spacing: 1.0025px;
+}
+
+@font-face {
+  font-family: 'Futura PT Demi';
+  src: url('#{$fonts-path}/FuturaPT-Demi.eot');
+  src: url('#{$fonts-path}/FuturaPT-Demi.eot?#iefix') format('embedded-opentype'),
+  url('#{$fonts-path}/FuturaPT-Demi.woff2') format('woff2'),
+  url('#{$fonts-path}/FuturaPT-Demi.woff') format('woff'),
+  url('#{$fonts-path}/FuturaPT-Demi.ttf') format('truetype'),
+  url('#{$fonts-path}/FuturaPT-Demi.svg#fontawesome') format('svg');
+}
+
+@font-face {
+  font-family: 'Futura PT Medium';
+  src: url('#{$fonts-path}/FuturaPT-Medium.eot');
+  src: url('#{$fonts-path}/FuturaPT-Medium.eot?#iefix') format('embedded-opentype'),
+  url('#{$fonts-path}/FuturaPT-Medium.woff2') format('woff2'),
+  url('#{$fonts-path}/FuturaPT-Medium.woff') format('woff'),
+  url('#{$fonts-path}/FuturaPT-Medium.ttf') format('truetype'),
+  url('#{$fonts-path}/FuturaPT-Medium.svg#fontawesome') format('svg');
+}
+
+@font-face {
+  font-family: 'Open Sans Regular';
+  src: url('#{$fonts-path}/OpenSans-Regular.eot');
+  src: url('#{$fonts-path}/OpenSans-Regular.eot?#iefix') format('embedded-opentype'),
+  url('#{$fonts-path}/OpenSans-Regular.woff') format('woff'),
+  url('#{$fonts-path}/OpenSans-Regular.ttf') format('truetype'),
+}
+
+@font-face {
+  font-family: 'Open Sans SemiBold';
+  src: url('#{$fonts-path}/OpenSans-SemiBold.eot');
+  src: url('#{$fonts-path}/OpenSans-SemiBold.eot?#iefix') format('embedded-opentype'),
+  url('#{$fonts-path}/OpenSans-SemiBold.woff') format('woff'),
+  url('#{$fonts-path}/OpenSans-SemiBold.ttf') format('truetype'),
+}

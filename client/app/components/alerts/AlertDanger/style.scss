@@ -1,0 +1,6 @@
+@import '../../scss/entry';
+@import '../style';
+
+.AlertDanger {
+  @include alert-variant($tl-red);
+}

@@ -1,0 +1,6 @@
+@import '../../scss/entry';
+@import '../style';
+
+.AlertInfo {
+  @include alert-variant($tl-cyan);
+}

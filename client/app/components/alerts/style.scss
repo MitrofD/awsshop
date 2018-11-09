@@ -1,0 +1,28 @@
+@import '../scss/entry';
+
+@mixin alert-variant($color) {
+  color: darken($color, 30%);
+  background-color: lighten($color, 15%);
+  border-color: $color;
+
+  hr {
+    border-top-color: darken($color, 5%);
+  }
+
+  .link {
+    color: darken($color, 10%);
+  }
+}
+
+.Alert {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: $tl-border-radius;
+  margin-bottom: 1rem;
+  padding: .75rem 1.25rem;
+  box-sizing: border-box;
+
+  .link {
+    font-weight: bold;
+  }
+}

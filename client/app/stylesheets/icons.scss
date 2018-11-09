@@ -1,0 +1,36 @@
+$var-icon-height: 18px !default;
+$var-icon-width: 18px !default;
+$var-background-margin-x: 7px !default;
+
+.icn {
+  display: inline-block;
+  height: $var-icon-height;
+  width: $var-icon-width;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  &.icn-prfl {
+    background-image: url("#{$var-images-path}/profile-icon.svg");
+  }
+
+  /*
+  &.icn-pls {
+    background-image: url("#{$var-images-path}/plus-circle.svg");
+  }
+  */
+
+  &.icn-shppng-crt {
+    background-image: url("#{$var-images-path}/shopping-bag.svg");
+  }
+}
+
+.icn-wrppr {
+  position: relative;
+  padding-left: $var-icon-width + $var-background-margin-x;
+
+  .icn {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}

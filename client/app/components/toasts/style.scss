@@ -1,0 +1,10 @@
+@import '../scss/entry';
+
+.Toast {
+  color: #fff;
+  font-size: 17px;
+  padding: 30px 35px; 
+  text-align: center;
+  border-radius: $tl-border-radius * 2;
+  letter-spacing: $tl-letter-spacing;
+}

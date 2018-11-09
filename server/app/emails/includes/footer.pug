@@ -1,0 +1,14 @@
+include common.pug
+  div(style={ width: '100%', padding: '20px 0', 'background-color': '#f7f7f7', color: '#999', 'font-size': '12px', 'text-align': 'center' })
+    | © #{NowTime.getUTCFullYear()} #{AppUrl} All Rights Reserved
+    br
+    | URL: 
+    a(
+      style={ color: '#999', 'text-decoration': 'none', 'margin-right': '5px' }
+      href=AppFullUrl
+    ) #{AppUrl}
+    | Email: 
+    a(
+      style={ color: '#999', 'text-decoration': 'none' }
+      href='mailto:' + SupportEmail
+    ) #{SupportEmail}

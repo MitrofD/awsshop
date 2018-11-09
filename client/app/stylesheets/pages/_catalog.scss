@@ -1,0 +1,93 @@
+.Catalog {
+  .Advertising {
+    img {
+      width: 100%;
+    }
+  }
+
+  .btn-plugin {
+    margin-bottom: 40px;
+  }
+
+  .Sidebar {
+    margin-bottom: 65px;
+  }
+
+  .Products {
+    padding: 28px 18px 0 30px;
+
+    .ttl {
+      margin-bottom: 20px;
+    }
+  }
+
+  .Product {
+    display: block;
+    margin-bottom: 35px;
+
+    .nm {
+      @extend .text-truncate;
+      font-size: 17px;
+      padding: 10px 0;
+    }
+
+    .actn {
+      background-color: $primary;
+      bottom: 0;
+      border-radius: $border-radius;
+      box-shadow: 0px -3px 9px 0px rgba(64, 85, 238, 0.4);
+      display: none;
+      text-align: center;
+      padding: 35px 0;
+      position: absolute;
+      opacity: 0.98;
+      left: 0;
+      width: 100%;
+
+      .btn {
+        color: $primary;
+      }
+    }
+
+    .prvw {
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 85%;
+      border: solid 1px $border-color;
+      border-radius: $border-radius;
+      height: 268px;
+      width: 100%;
+      position: relative;
+    }
+
+    .prc {
+      color: $primary;
+      font-family: 'Futura PT Heavy';
+      font-size: 18px;
+    }
+
+    &:hover {
+      .actn {
+        display: block;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    .Advertising {
+      display: none;
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .Products {
+      padding: 0;
+    }
+  }
+}
+
+.init-md .Catalog {
+  .sd {
+    display: none;
+  }
+}

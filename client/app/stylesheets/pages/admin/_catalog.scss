@@ -1,0 +1,30 @@
+.Categories {
+  table {
+    td:first-child,
+    th:first-child {
+      width: 50%;
+    }
+
+    td:nth-child(2),
+    th:nth-child(2) {
+      width: 15%;
+      text-align: right;
+    }
+
+    td:last-child,
+    th:last-child {
+      text-align: right;
+    }
+  }
+}
+
+@include media-breakpoint-down(xs) {
+  .Categories {
+    table {
+      td:nth-child(2),
+      th:nth-child(2) {
+        display: none;
+      }
+    }
+  }
+}

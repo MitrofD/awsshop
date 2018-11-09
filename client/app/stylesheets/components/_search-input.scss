@@ -1,0 +1,19 @@
+.SearchInput {
+  color: $gray;
+
+  input {
+    height: 24px;
+    border-radius: 12px;
+    border: 1px solid $gray-300;
+    padding: 5px 25px 5px 10px;
+    outline-style: none;
+  }
+
+  &::after {
+    @extend .fas;
+    content: "\F002";
+    position: absolute;
+    top: 6px;
+    right: 7px;
+  }
+}

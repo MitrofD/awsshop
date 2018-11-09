@@ -1,0 +1,33 @@
+.Select {
+  position: relative;
+  width: 100px;
+  cursor: pointer;
+
+  input[type="text"] {
+    border: none;
+    width: 100%;
+    cursor: inherit;
+  }
+
+  &.active {
+    input[type="text"] {
+      z-index: 99999;
+    }
+  }
+
+  .caret {
+    position: absolute;
+    margin-top: 0.25rem;
+    right: 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .Dropdown {
+    position: absolute;
+    max-height: 240px;
+
+    .Option {
+      border-bottom: 1px solid $table-border-color;
+    }
+  }
+}

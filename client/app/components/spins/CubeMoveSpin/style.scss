@@ -1,0 +1,58 @@
+@import '../../scss/entry';
+
+@-webkit-keyframes tl-cubemove {
+  25% {
+    -webkit-transform: translateX(567%) rotate(-90deg) scale(0.5);
+  }
+
+  50% {
+    -webkit-transform: translateX(567%) translateY(467%) rotate(-180deg);
+  }
+
+  75% {
+    -webkit-transform: translateX(0px) translateY(467%) rotate(-270deg) scale(0.5);
+  }
+
+  100% {
+    -webkit-transform: rotate(-360deg);
+  }
+}
+
+@keyframes tl-cubemove {
+  25% {
+    transform: translateX(567%) rotate(-90deg) scale(0.5);
+    -webkit-transform: translateX(567%) rotate(-90deg) scale(0.5);
+  }
+
+  50% {
+    transform: translateX(567%) translateY(467%) rotate(-179deg);
+    -webkit-transform: translateX(567%) translateY(467%) rotate(-179deg);
+  }
+
+  75% {
+    transform: translateX(0px) translateY(467%) rotate(-270deg) scale(0.5);
+    -webkit-transform: translateX(0px) translateY(467%) rotate(-270deg) scale(0.5);
+  }
+
+  100% {
+    transform: rotate(-360deg);
+    -webkit-transform: rotate(-360deg);
+  }
+}
+
+.CubeMoveSpin {
+  .insd {
+    div {
+      background-color: $tl-spin-color;
+      width: 15%;
+      height: 15%;
+      -webkit-animation: tl-cubemove 1.8s infinite ease-in-out;
+      animation: tl-cubemove 1.8s infinite ease-in-out;
+    }
+
+    .cb2 {
+      -webkit-animation-delay: -0.9s;
+      animation-delay: -0.9s;
+    }
+  }
+}

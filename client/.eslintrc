@@ -1,0 +1,75 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "airbnb",
+    "plugin:flowtype/recommended"
+  ],
+  "globals": {
+    "asHOT": true,
+    "Config": true,
+    "Enums": true,
+    "isDevMode": true,
+    "NumberFormat": true,
+    "RootNode": true,
+    "Tools": true,
+    "showConfirmModal": true,
+    "showAppError": true
+  },
+  "plugins": [
+    "html",
+    "jsx-a11y",
+    "import",
+    "flowtype",
+    "flowtype-errors",
+    "react"
+  ],
+  "env": {
+    "browser": true
+  },
+  "settings": {
+    "import/resolver": {
+      "browser": {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
+    }
+  },
+  "rules": {
+    "max-len": 0,
+    "no-underscore-dangle": 0,
+    "dot-notation": 0,
+    "radix": 0,
+    "no-console": 1,
+    "no-unused-vars": 1,
+    "no-eval": 0,
+    "function-paren-newline": 0,
+    "flowtype-errors/show-errors": 2,
+    "flowtype-errors/show-warnings": 1,
+    "react/no-unused-state": 0,
+    "prefer-const": 1,
+    "import/no-extraneous-dependencies": 0,
+    "jsx-a11y/anchor-is-valid": 0,
+    "jsx-a11y/label-has-for": [2, {
+      "components": [
+        "Label"
+      ],
+      "required": {
+          "every": [
+            "nesting",
+            "id"
+          ]
+      },
+      "allowChildren": true
+    }],
+    "react/no-find-dom-node": 0,
+    "react/no-unused-prop-types": 1,
+    "react/jsx-no-undef": [
+      2,
+      {
+        "allowGlobals": true
+      }
+    ]
+  }
+}

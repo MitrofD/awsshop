@@ -1,0 +1,4 @@
+@mixin mask-image($value) {
+  -webkit-mask-image: $value;
+  mask-image: $value;
+}

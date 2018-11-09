@@ -1,0 +1,32 @@
+$var-badge-height: 22px !default;
+$var-badge-width: 22px !default;
+$var-badge-padding-x: 6px !default;
+
+.Badge {
+  color: $white;
+  display: inline-block;
+  height: $var-badge-height;
+  line-height: $var-badge-height;
+  min-width: $var-badge-width;
+  text-align: center;
+  border-radius: $var-badge-height / 2;
+  padding-right: $var-badge-padding-x;
+  padding-left: $var-badge-padding-x;
+  vertical-align: text-bottom;
+
+  &.danger {
+    background-color: $danger;
+  }
+
+  &.primary {
+    background-color: $primary;
+  }
+
+  &.success {
+    background-color: $success;
+  }
+
+  &.warning {
+    background-color: $warning;
+  }
+}
