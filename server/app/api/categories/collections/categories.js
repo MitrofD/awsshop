@@ -1,8 +1,19 @@
 // @flow
 const collection = MongoStore.collection('categories');
 
+[
+  'createdAt',
+  'productsCount',
+].forEach((key) => {
+  collection.createIndex({
+    [key]: 1,
+  });
+});
+
 collection.createIndex({
-  pos: 1,
+  name: 1,
+}, {
+  unique: 1,
 });
 
 module.exports = collection;

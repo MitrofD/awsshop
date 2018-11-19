@@ -14,7 +14,7 @@ const appPath = path.resolve(__dirname, 'app');
 const bundlePath = path.resolve(__dirname, 'bundle');
 const nodeModulesPath = path.resolve(__dirname, 'node_modules');
 const libsDirName = 'libs';
-const libsPathName = `/${libsDirName}/`;
+const libsPath = `/${libsDirName}/`;
 const isDevMode = process.env.NODE_ENV === 'development';
 
 const config = {
@@ -79,18 +79,17 @@ const config = {
   plugins: [
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
-      libsPath: libsPathName,
+      libsPath,
       isDevMode: JSON.stringify(isDevMode),
     }),
     new MiniCssExtractPlugin({
       filename: 'style.css',
     }),
     new HTMLWebpackPlugin({
-      // favicon: `${appPath}/images/favicon.ico`,
       template: `${appPath}/index.html`,
     }),
     new CopyWebpackPlugin([{
-      from: appPath + libsPathName,
+      from: appPath + libsPath,
       to: libsDirName,
     }]),
   ],

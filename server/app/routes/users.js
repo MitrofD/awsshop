@@ -1,6 +1,7 @@
 // @flow
 const users = require('../api/users');
-const userRoles = require('../api/user-roles');
+
+const PERMISSION_DENIED_TEXT = 'Permission denied';
 
 const verificationMiddleware = (req, res, next) => {
   const parts = req.body.verificationCode.split(':');
@@ -30,10 +31,10 @@ const sendVerificationMessageToEmail = async (email: string): Promise<boolean> =
   });
 };
 
-const hourInMs = 3600000;
-const maxLoginAttempts = 5;
-const sessLoginAttemptsNum = 'loginAttemptsNum';
-const sessLoginTime = 'loginTime';
+const HOUR_IN_MS = 3600000;
+const MAX_LOGIN_ATTEMPTS = 5;
+const SESS_LOGIN_ATTEMPTS_NUM = 'loginAttemptsNum';
+const SESS_LOGIN_TIME = 'loginTime';
 
 module.exports = function usersRoute() {
   this.post('/emailVerification', Middleware.jsonBodyParser, verificationMiddleware, (req, res, next) => {
@@ -64,15 +65,15 @@ module.exports = function usersRoute() {
   this.post('/login', Middleware.onlyNotAuth_Sess, Middleware.jsonBodyParser, (req, res, next) => {
     const nowTime = Date.now();
     const retryHours = 2;
-    const retryLoginTimeoutMs = hourInMs * retryHours;
-    const lastLoginTime = req.session.get(sessLoginTime) || nowTime;
-    let loginAttemtsNum = parseInt(req.session.get(sessLoginAttemptsNum)) || 0;
+    const retryLoginTimeoutMs = HOUR_IN_MS * retryHours;
+    const lastLoginTime = req.session.get(SESS_LOGIN_TIME) || nowTime;
+    let loginAttemtsNum = parseInt(req.session.get(SESS_LOGIN_ATTEMPTS_NUM)) || 0;
 
     if ((nowTime - lastLoginTime) > retryLoginTimeoutMs) {
       loginAttemtsNum = 0;
     }
 
-    const remLoginAttempts = maxLoginAttempts - loginAttemtsNum;
+    const remLoginAttempts = MAX_LOGIN_ATTEMPTS - loginAttemtsNum;
 
     if (remLoginAttempts < 1) {
       const tooManyError = new Error(`Too many invalid login attemps, please retry ${retryHours} hours later`);
@@ -80,7 +81,7 @@ module.exports = function usersRoute() {
       return;
     }
 
-    req.session.set(sessLoginTime, nowTime);
+    req.session.set(SESS_LOGIN_TIME, nowTime);
 
     users.login(req.body.email, req.body.password).then((user) => {
       const userId = user._id.toString();
@@ -92,11 +93,11 @@ module.exports = function usersRoute() {
       }
 
       req.session.set(Enums.SESS_USER_EMAIL, user.email);
-      req.session.set(Enums.SESS_USER_ROLE, user.role);
+      req.session.set(Enums.SESS_USER_IS_ADMIN, user.isAdmin);
       req.session.set(Enums.SESS_USER_ID, userId);
       res.json(safeUser);
     }).catch((error) => {
-      req.session.set(sessLoginAttemptsNum, loginAttemtsNum + 1);
+      req.session.set(SESS_LOGIN_ATTEMPTS_NUM, loginAttemtsNum + 1);
 
       if (remLoginAttempts <= 3) {
         const triesLeftError = new Error(error.message + `, you have ${remLoginAttempts} tries left`);
@@ -109,8 +110,8 @@ module.exports = function usersRoute() {
 
   this.post('/logout', Middleware.userId_Sess, (req, res) => {
     req.session.reset([
-      sessLoginAttemptsNum,
-      sessLoginTime,
+      SESS_LOGIN_ATTEMPTS_NUM,
+      SESS_LOGIN_TIME,
     ]);
 
     res.json(Tools.okObj);
@@ -122,7 +123,7 @@ module.exports = function usersRoute() {
         Mailer.sendTo(user.email, {
           data: {
             ...user,
-            confirmTTLMin: users.confirmTTLMin,
+            confirmTTLMin: users.CONFIRM_TTL_MIN,
           },
           subject: 'Password changed',
           template: 'password-changed',
@@ -140,9 +141,9 @@ module.exports = function usersRoute() {
 
   this.post('/registration', Middleware.onlyNotAuth_Sess, Middleware.jsonBodyParser, (req, res, next) => {
     users.has().then((hasUser) => {
-      const role = hasUser ? userRoles.TYPE.USER : userRoles.TYPE.ADMIN;
+      const asAdmin = !hasUser;
 
-      users.registration(role, req.body.email, req.body.password, req.body.ethAddress).then((answer) => {
+      users.registration(req.body.email, req.body.password, req.body.ethAddress, asAdmin).then((answer) => {
         if (answer.data) {
           sendVerificationMessageToEmail(answer.data.email).catch(Tools.emptyRejectExeption);
         }
@@ -158,9 +159,24 @@ module.exports = function usersRoute() {
     }).catch(next);
   });
 
-  this.post('/setPassword', Middleware.userId_Sess, Middleware.jsonBodyParser, Middleware.checkPassword, (req, res, next) => {
-    users.setPassword(req.userId, req.body.newPassword).then(() => {
-      res.json(Tools.okObj);
+  this.get('/users', Middleware.admin_Sess, (req, res, next) => {
+    users.get(req.query).then((data) => {
+      res.json(data);
+    }).catch(next);
+  });
+
+  this.put('/users/:id?', Middleware.userId_Sess, Middleware.jsonBodyParser, (req, res, next) => {
+    const pureUserId = req.params.id || req.userId;
+    const isAdmin = req.session.get(Enums.SESS_USER_IS_ADMIN);
+
+    if (!isAdmin && pureUserId !== req.userId) {
+      const error = new Error(PERMISSION_DENIED_TEXT);
+      next(error);
+      return;
+    }
+
+    users.update(pureUserId, req.body).then((result) => {
+      res.json(result);
     }).catch(next);
   });
 

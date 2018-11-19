@@ -1,49 +1,72 @@
 // @flow
 import React from 'react';
-import AlertDanger from '../../components/alerts/AlertDanger';
+import { Link } from 'react-router-dom';
+import LoadMore from '../includes/LoadMore';
+import XHRSpin from '../includes/XHRSpin';
 import { tt } from '../../components/TranslateElement';
-import Sidebar from '../includes/Sidebar';
 import categories from '../../api/categories';
+import windowScroll from '../../api/window-scroll';
+
+const ITEM_CLASS_NAME = 'itm';
+const ACTIVE_ITEM_CLASS_NAME = ' active';
+const SCROLL_FAULT = 40;
 
 type Props = {
-  onDidInit: Function,
+  category: ?string,
+  limit: number,
 };
 
 type State = {
-  alert: React$Node,
-  items: Object[],
+  showLoadMore: boolean,
   xhrRequest: boolean,
 };
 
-class Categories extends React.PureComponent<Props, State> {
-  state = {
-    alert: null,
-    items: [],
-    xhrRequest: true,
-  };
+const defaultProps = {
+  category: null,
+  limit: 50,
+};
+
+class Categories extends React.Component<Props, State> {
+  static defaultProps = defaultProps;
+
+  constructor(props: Props, context: null) {
+    super(props, context);
+
+    this.state = {
+      showLoadMore: false,
+      xhrRequest: true,
+    };
+
+    const self: any = this;
+    self.onScrollWindow = this.onScrollWindow.bind(this);
+    self.onSetRootNode = this.onSetRootNode.bind(this);
+  }
 
   componentDidMount() {
     this.unmounted = false;
-
-    const finishWithData = (data: Object) => {
-      this.setStateAfterRequest(data);
-      this.props.onDidInit();
-    };
-
-    categories.get().then(({ items }) => {
-      finishWithData({
-        items,
-      });
-    }).catch((error) => {
-      const alertDanger = <AlertDanger>{error.message}</AlertDanger>;
-      finishWithData({
-        alert: alertDanger,
-      });
-    });
+    this.next();
   }
 
   componentWillUnmount() {
     this.unmounted = true;
+    this.stopListenWindowScroll();
+  }
+
+  onScrollWindow(scrollData: Object) {
+    const rootNodeHeight = this.rootNode.offsetHeight;
+    const rootNodeTop = this.rootNode.offsetTop;
+    const rootNodeBottom = rootNodeHeight + rootNodeTop;
+    const windowBottom = SCROLL_FAULT + scrollData.height + scrollData.topPos;
+
+    if (windowBottom >= rootNodeBottom) {
+      this.next();
+    }
+  }
+
+  onSetRootNode(el: ?HTMLElement) {
+    if (el) {
+      this.rootNode = el;
+    }
   }
 
   setStateAfterRequest(newState: Object) {
@@ -51,44 +74,116 @@ class Categories extends React.PureComponent<Props, State> {
       return;
     }
 
-    const pureState = Object.assign({
+    const pureNewState = Object.assign({
       xhrRequest: false,
     }, newState);
 
-    this.setState(pureState);
+    this.setState(pureNewState);
   }
 
+  stopListenWindowScroll() {
+    if (this.scrollFunc) {
+      windowScroll.unbind(this.scrollFunc);
+      this.scrollFunc = null;
+    }
+  }
+
+  next() {
+    this.stopListenWindowScroll();
+
+    const query = {
+      limit: this.props.limit,
+      sortBy: 'productsCount',
+      sortDesc: -1,
+      skip: this.items.length,
+    };
+
+    categories.get(query).then(({ items, loadMore }) => {
+      this.items = this.items.concat(items);
+
+      this.setStateAfterRequest({
+        showLoadMore: loadMore,
+      });
+
+      if (loadMore) {
+        this.scrollFunc = windowScroll.bind(this.onScrollWindow);
+      }
+    }).catch((error) => {
+      NotificationBox.danger(error.message);
+    });
+  }
+
+  items: Object[] = [];
+  rootNode: HTMLElement;
+  scrollFunc: ?Function = null;
   unmounted = true;
 
   render() {
     const {
-      items,
+      showLoadMore,
       xhrRequest,
     } = this.state;
 
     let content = null;
 
-    if (items.length > 0) {
-      content = (
-        <Sidebar title={tt('Categories')}>
-          {items.map((item) => {
-            const itemCN = 'itm';
+    if (xhrRequest) {
+      content = <XHRSpin />;
+    } else {
+      let allItemCN = ITEM_CLASS_NAME;
+      let getItemCN: Function = () => ITEM_CLASS_NAME;
 
-            return (
-              <a
-                className={itemCN}
-                href="#!"
-                key={item._id}
+      if (this.props.category) {
+        getItemCN = (name: string) => {
+          let itemCN = ITEM_CLASS_NAME;
+
+          if (name === this.props.category) {
+            itemCN += ACTIVE_ITEM_CLASS_NAME;
+          }
+
+          return itemCN;
+        };
+      } else {
+        allItemCN += ACTIVE_ITEM_CLASS_NAME;
+      }
+
+      content = (
+        <div className="Categories sdbr">
+          <div className="ttl">
+            {tt('Categories')}
+          </div>
+          <ul className="lst">
+            <li>
+              <Link
+                className={allItemCN}
+                to="/"
               >
-                {item.name} {item.productsCount}
-              </a>
-            );
-          })}
-        </Sidebar>
+                {tt('All')}
+              </Link>
+            </li>
+            {this.items.map(item => (
+              <li key={item._id}>
+                <Link
+                  className={getItemCN(item.name)}
+                  to={Config.categoryPath + item.name}
+                >
+                  {tt(item.name)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          {showLoadMore && <LoadMore />}
+        </div>
       );
     }
 
-    return content;
+    return (
+      <div
+        className="Categories"
+        ref={this.onSetRootNode}
+      >
+        {content}
+      </div>
+    );
   }
 }
 

@@ -32,7 +32,7 @@ class EmailVerification extends React.PureComponent<Props, State> {
       });
     };
 
-    axios.post('/call/emailVerification', {
+    axios.post(`${proxyPath}/emailVerification`, {
       verificationCode: this.props.verificationCode,
     }).then(({ data }) => {
       if (!data.ok) {

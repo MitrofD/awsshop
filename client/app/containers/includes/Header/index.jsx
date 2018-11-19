@@ -15,6 +15,18 @@ type State = {
   showMobileMenu: boolean,
 };
 
+const isActiveCatalogLink = (function makeIsActiveCatalogLink() {
+  const catergoryPathRegExp = new RegExp(`^${Config.categoryPath}.*`);
+
+  return (match: ?Object, location: Object) => {
+    if (match) {
+      return true;
+    }
+
+    return catergoryPathRegExp.test(location.pathname);
+  };
+}());
+
 class Header extends React.PureComponent<Props, State> {
   constructor(props: Props, context: null) {
     super(props, context);
@@ -64,8 +76,9 @@ class Header extends React.PureComponent<Props, State> {
               <ul className="navbar-nav mr-auto">
                 <li className="nav-item">
                   <NavLink
-                    className="nav-link"
                     exact
+                    className="nav-link"
+                    isActive={isActiveCatalogLink}
                     to="/"
                   >
                     {tt('Catalog')}

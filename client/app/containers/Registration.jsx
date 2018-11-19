@@ -147,7 +147,7 @@ class Registration extends React.Component<Props, State> {
       this.setState(newState);
     };
 
-    axios.post('/call/registration', {
+    axios.post(`${proxyPath}/registration`, {
       email: this.email,
       ethAddress: this.ethAddress,
       password: this.password,
@@ -331,7 +331,7 @@ class Registration extends React.Component<Props, State> {
                   onChange={this.onChangeETHAddressInput}
                   name="ethAddress"
                   type="password"
-                  placeholder="Ex: 0xda184e54416525de03da629d3ac85280802f55e8"
+                  placeholder="Ex: 0x8324D36942f25b881607B087c87233F6Be226854"
                 />
                 {errorLabels.ethAddress}
               </div>

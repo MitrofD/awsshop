@@ -67,7 +67,7 @@ class EmailVerificationResent extends React.PureComponent<Props, State> {
       });
     };
 
-    axios.post('/call/resentRegisterMail', {
+    axios.post(`${proxyPath}/resentRegisterMail`, {
       email: this.props.email,
     }).then(() => {
       const alertSuccess = <AlertSuccess>The message has been sent</AlertSuccess>;

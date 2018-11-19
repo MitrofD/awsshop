@@ -60,7 +60,7 @@ class Password extends React.PureComponent<Props, State> {
       });
     };
 
-    axios.post('/call/setPassword', sendData).then(() => {
+    axios.post(`${proxyPath}/setPassword`, sendData).then(() => {
       const alertSuccess = <AlertSuccess>Password has been changed<AlertSuccess>;
       finishWithAlert(alertSuccess);
       form.reset();

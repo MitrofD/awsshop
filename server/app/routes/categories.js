@@ -2,8 +2,14 @@
 const categories = require('../api/categories');
 
 module.exports = function categoriesRoute() {
-  this.get('/categories/:skip?', (req, res, next) => {
-    categories.get(req.params.skip, req.query).then((data) => {
+  this.get('/categories', (req, res, next) => {
+    categories.get(req.query).then((data) => {
+      res.json(data);
+    }).catch(next);
+  });
+
+  this.get('/categories/:name', (req, res, next) => {
+    categories.withName(req.params.name).then((data) => {
       res.json(data);
     }).catch(next);
   });

@@ -1,80 +1,32 @@
 // @flow
-import React from 'react';
-import Page from '../includes/Page';
-import PluginButton from '../includes/PluginButton';
-import LoadMore from '../includes/LoadMore';
-import XHRSpin from '../includes/XHRSpin';
-import Advertising from './Advertising';
+import React, { Fragment } from 'react';
 import Categories from './Categories';
 import Products from './Products';
+import Page from '../includes/Page';
+import PluginButton from '../includes/PluginButton';
 
-type Props = {};
-
-type State = {
-  isDidInit: boolean,
+type Props = {
+  category: ?string,
 };
 
-class Catalog extends React.PureComponent<Props, State> {
-  constructor(props: Props, context: null) {
-    super(props, context);
-    RootNode.isInitMode = true;
+const Catalog = (props: Props) => {
+  let pureCategory: ?string = null;
 
-    this.state = {
-      isDidInit: false,
-    };
-
-    const self: any = this;
-    self.onDidInitCategories = this.onDidInitCategories.bind(this);
+  if (props.category) {
+    pureCategory = decodeURI(props.category);
   }
 
-  componentWillUnmount() {
-    RootNode.isInitMode = false;
-  }
-
-  onDidInitCategories() {
-    this.isInitCategories = true;
-    this.checkIsInit();
-  }
-
-  checkIsInit() {
-    let isDidInit = false;
-
-    if (this.isInitCategories && this.isInitProducts) {
-      RootNode.isInitMode = false;
-      isDidInit = true;
-    }
-
-    this.setState({
-      isDidInit,
-    });
-  }
-
-  isInitCategories = false;
-  isInitProducts = true;
-
-  render() {
-    let className = 'Catalog';
-    let xhrSpin = null;
-
-    if (!this.state.isDidInit) {
-      xhrSpin = <XHRSpin />;
-    }
-
-    return (
-      <Page className={className}>
-        {xhrSpin}
-        <div className="sd lft">
-          <PluginButton />
-          <Categories onDidInit={this.onDidInitCategories} />
-          <Advertising />
-        </div>
-        <div className="sd rght">
-          <Products />
-          <LoadMore />
-        </div>
-      </Page>
-    );
-  }
-}
+  return (
+    <Page className="Catalog">
+      <div className="sd lft">
+        <PluginButton />
+        <Categories category={pureCategory} />
+      </div>
+      <div className="sd rght">
+        <Products category={pureCategory} />
+      </div>
+    </Page>
+  );
+};
 
 export default asHOT(module)(Catalog);

@@ -55,7 +55,7 @@ class ResentReactivateAccount extends React.PureComponent<Props, State> {
       });
     };
 
-    axios.post('/call/wantReactivateAccount').then(() => {
+    axios.post(`${proxyPath}/wantReactivateAccount`).then(() => {
       const alertSuccess = <AlertSuccess>The message has been sent</AlertSuccess>;
       finishWithAlert(alertSuccess);
     }, (error) => {

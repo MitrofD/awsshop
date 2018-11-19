@@ -43,7 +43,7 @@ const user = (function genUserObj() {
 
     login(email: string, password: string): Promise<Object> {
       const loginPromise = new Promise((resolve, reject) => {
-        axios.post('/call/login', {
+        axios.post(`${proxyPath}/login`, {
           email,
           password,
         }).then((response) => {
@@ -64,7 +64,7 @@ const user = (function genUserObj() {
       }
 
       return new Promise((resolve, reject) => {
-        axios.post('/call/logout').then(() => {
+        axios.post(`${proxyPath}/logout`).then(() => {
           rObj.apply(null);
           resolve();
         }, (error) => {
@@ -76,7 +76,7 @@ const user = (function genUserObj() {
 
     config(): Promise<Object> {
       return new Promise((resolve, reject) => {
-        axios.get('/call/userInfo').then(({ data }) => {
+        axios.get(`${proxyPath}/userInfo`).then(({ data }) => {
           rObj.apply(data);
           resolve(data);
         }, (error) => {

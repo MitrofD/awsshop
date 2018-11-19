@@ -8,7 +8,7 @@ const dropdownItemName = 'DropdownItem';
 DropdownDivider.displayName = dropdownItemName;
 
 type ItemProps = {
-  children: React.DOM,
+  children: React$Node,
   className: ?string,
   data: any,
   onClick: ?Function,
@@ -26,8 +26,8 @@ const DropdownItem = (props: ItemProps) => {
   const {
     className,
     children,
-    onClick,
     data,
+    onClick,
   } = props;
 
   const itemsProps = {};
@@ -39,7 +39,7 @@ const DropdownItem = (props: ItemProps) => {
 
   if (onClick) {
     itemsProps.onClick = (event) => {
-      onClick(event, data);
+      onClick(data, event);
     };
   }
 

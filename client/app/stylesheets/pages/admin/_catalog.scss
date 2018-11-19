@@ -16,10 +16,8 @@
       text-align: right;
     }
   }
-}
 
-@include media-breakpoint-down(xs) {
-  .Categories {
+  @include media-breakpoint-down(xs) {
     table {
       td:nth-child(2),
       th:nth-child(2) {

@@ -11,7 +11,7 @@ app.set('trust proxy', true);
 
 const appError = (error) => {
   // eslint-disable-next-line no-console
-  console.log('💉  \x1b[31m[App error] ' + error.message + '\x1b[37m');
+  console.log(`🐞 \x1b[31m[App error] ${error.message}\x1b[37m`);
   process.exit(0);
 };
 
@@ -20,26 +20,28 @@ if (!Config.isDevMode) {
   process.on('unhandledRejection', appError);
 }
 
-const certFilesPath = process.env.CERT_FILES_PATH;
+(function serverSettings() {
+  const certFilesPath = process.env.CERT_FILES_PATH;
 
-if (Config.isSecure && certFilesPath) {
-  const certExtension = 'pem';
-  const certFN = `cert.${certExtension}`;
-  const keyFN = `key.${certExtension}`;
+  if (Config.isSecure && certFilesPath) {
+    const certExtension = 'pem';
+    const certFN = `cert.${certExtension}`;
+    const keyFN = `key.${certExtension}`;
 
-  const serverOptions = {
-    cert: fs.readFileSync(certFilesPath + certFN),
-    key: fs.readFileSync(certFilesPath + keyFN),
-  };
+    const serverOptions = {
+      cert: fs.readFileSync(certFilesPath + certFN),
+      key: fs.readFileSync(certFilesPath + keyFN),
+    };
 
-  Server = https.createServer(serverOptions, app);
-} else {
-  Server = http.createServer(app);
-}
+    Server = https.createServer(serverOptions, app);
+  } else {
+    Server = http.createServer(app);
+  }
+}());
 
 require('./startup').then(() => {
   // eslint-disable-next-line global-require
-  app.use('/call', require('./routes'));
+  app.use(require('./routes'));
 
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
@@ -63,6 +65,6 @@ require('./startup').then(() => {
     }
 
     // eslint-disable-next-line no-console
-    console.log(`\n🚀 \x1b[1m\x1b[32m[[[ Running on ${Config.url} ]]]\x1b[37m\x1b[0m`);
+    console.log(`\n\x1b[1m\x1b[32m[[[ Running on ${Config.url} ]]]\x1b[37m\x1b[0m`);
   });
 }).catch(appError);

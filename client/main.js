@@ -12,15 +12,21 @@ const webpackCompiler = webpack(webpackConfig);
 const app = express();
 
 // Proxy settings ...
-app.use('/call', proxy({
-  logLevel,
-  target: `${localhost}:${port + 1}`,
-}));
+(function configProxy() {
+  const proxyPath = '/prx';
+
+  app.use(proxyPath, proxy({
+    logLevel,
+    target: `${localhost}:${port + 1}`,
+    pathRewrite: {
+      [`^${proxyPath}`]: '',
+    },
+  }));
+}());
 
 // Dev middleware settings ...
 const webpackDevMiddlewareInstance = (require('webpack-dev-middleware'))(webpackCompiler, {
   logLevel,
-  logTime: true,
   publicPath: webpackConfig.output.publicPath,
   stats: 'errors-only',
   progress: true,

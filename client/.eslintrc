@@ -9,11 +9,12 @@
     "Config": true,
     "Enums": true,
     "isDevMode": true,
+    "NotificationBox": true,
     "NumberFormat": true,
-    "RootNode": true,
     "Tools": true,
-    "showConfirmModal": true,
-    "showAppError": true
+    "proxyPath": true,
+    "RootNode": true,
+    "showConfirmModal": true
   },
   "plugins": [
     "html",

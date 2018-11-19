@@ -5,7 +5,7 @@ import tools from './tools';
 const Categories = {
   add(category?: Object): Promise<Object> {
     const promise = new Promise((resolve, reject) => {
-      axios.post('/call/categories', category).then(({ data }) => {
+      axios.post(`${proxyPath}/categories`, category).then(({ data }) => {
         resolve(data);
       }).catch((error) => {
         const addError = new Error(error.response.data);
@@ -16,23 +16,17 @@ const Categories = {
     return promise;
   },
 
-  get(skip?: number, query: any): Promise<Object> {
-    const pureObj = {
+  get(query: any): Promise<Object> {
+    const pureQuery = {
       limit: 100,
+      skip: 0,
     };
 
     if (typeof query === 'object' && query !== null) {
-      Object.assign(pureObj, query);
+      Object.assign(pureQuery, query);
     }
 
-    let queryStr = '/call/categories/';
-
-    if (typeof skip === 'number') {
-      queryStr += skip;
-    }
-
-    const paramsStr = tools.objToQuery(pureObj);
-    queryStr += `?${paramsStr}`;
+    const queryStr = `${proxyPath}/categories?${tools.objToQuery(pureQuery)}`;
 
     const promise = new Promise((resolve, reject) => {
       axios.get(queryStr).then(({ data }) => {
@@ -48,7 +42,7 @@ const Categories = {
 
   remove(id: string): Promise<void> {
     const promise = new Promise((resolve, reject) => {
-      axios.delete(`/call/categories/${id}`).then(() => {
+      axios.delete(`${proxyPath}/categories/${id}`).then(() => {
         resolve();
       }).catch((error) => {
         const removeError = new Error(error.response.data);
@@ -63,11 +57,24 @@ const Categories = {
 
   update(id: string, newData: Object): Promise<Object> {
     const promise = new Promise((resolve, reject) => {
-      axios.put(`/call/categories/${id}`, newData).then(({ data }) => {
+      axios.put(`${proxyPath}/categories/${id}`, newData).then(({ data }) => {
         resolve(data);
       }).catch((error) => {
         const editError = new Error(error.response.data);
         reject(editError);
+      });
+    });
+
+    return promise;
+  },
+
+  withName(name: string): Promise<Object> {
+    const promise = new Promise((resolve, reject) => {
+      axios.get(`${proxyPath}/categories/${name}`).then(({ data }) => {
+        resolve(data);
+      }).catch((error) => {
+        const errorObj = new Error(error.response.data);
+        reject(errorObj);
       });
     });
 

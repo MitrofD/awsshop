@@ -70,7 +70,7 @@ class Category extends React.PureComponent<Props, State> {
         this.props.onRemove(category._id);
       }).catch((error) => {
         button.disabled = false;
-        showAppError(error.message);
+        NotificationBox.dangerMessage(error.message);
       });
     };
 
@@ -92,7 +92,6 @@ class Category extends React.PureComponent<Props, State> {
     this.onCloseModal();
   }
 
-  input: ?HTMLInputElement;
   unmounted = true;
 
   render() {

@@ -31,7 +31,7 @@ class UserMenu extends React.PureComponent<Props, State> {
     self.onLeaveDropdown = this.onLeaveDropdown.bind(this);
   }
 
-  onClickLogoutLink(event: SyntheticEvent<HTMLElement>) {
+  onClickLogoutLink(data: any, event: SyntheticEvent<HTMLElement>) {
     event.preventDefault();
     this.setDropdownShown(false);
 
@@ -42,7 +42,7 @@ class UserMenu extends React.PureComponent<Props, State> {
     });
   }
 
-  onClickToItem(event: SyntheticEvent<HTMLElement>) {
+  onClickToItem(data: any, event: SyntheticEvent<HTMLElement>) {
     event.preventDefault();
     this.setDropdownShown(false);
   }
@@ -84,7 +84,7 @@ class UserMenu extends React.PureComponent<Props, State> {
             <Link to="/admin">{tt('Admin panel')}</Link>
           </DropdownItem>
           <DropdownItem onClick={this.onClickToItem}>
-            <Link to={Config.accountCenterPath}>{tt('Dashboard')}</Link>
+            <Link to={Config.dashboardPath}>{tt('Dashboard')}</Link>
           </DropdownItem>
           <DropdownItem onClick={this.onClickLogoutLink}>
             {tt('Logout')}

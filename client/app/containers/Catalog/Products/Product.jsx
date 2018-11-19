@@ -1,12 +1,12 @@
 // @flow
 import React from 'react';
-import { tt } from '../../components/TranslateElement';
+import { tt } from '../../../components/TranslateElement';
 
 type Props = {
   _id: string,
   image: string,
-  name: string,
   price: number,
+  title: string,
 };
 
 const Product = (props: Props) => {
@@ -18,7 +18,7 @@ const Product = (props: Props) => {
 
   return (
     <a
-      className="Product"
+      className="Product col-md-3"
       href={productLink}
     >
       <div
@@ -31,7 +31,7 @@ const Product = (props: Props) => {
           </button>
         </div>
       </div>
-      <div className="nm">{props.name}</div>
+      <div className="nm">{props.title}</div>
       <div className="prc">ETH {props.price}</div>
     </a>
   );

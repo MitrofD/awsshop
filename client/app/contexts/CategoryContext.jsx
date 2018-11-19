@@ -1,27 +1,22 @@
 // @flow
 import React from 'react';
 
-const defVal = null;
-
-const CategoryContext = React.createContext(defVal);
+const CategoryContext = React.createContext(null);
 
 const withCategory = (Component: React.DOM) => {
   const connectedComponent = (props: any) => (
     <CategoryContext.Consumer>
-    {category => (
-      <Component
-        {...props}
-        category={category}
-      />
-    )}
+      {category => (
+        <Component
+          {...props}
+          category={category}
+        />
+      )}
     </CategoryContext.Consumer>
   );
 
   return connectedComponent;
 };
 
-export {
-  withCategory,
-};
-
+export { withCategory };
 export default CategoryContext;

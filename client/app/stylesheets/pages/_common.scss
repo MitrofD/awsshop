@@ -1,0 +1,39 @@
+.Admin,
+.Dashboard {
+  .actns {
+    margin-bottom: 1rem;
+    text-align: right;
+  }
+
+  .rght {
+    padding: $var-page-padding-y $var-page-padding-x $var-page-padding-y 0;
+
+    .ttl {
+      padding-bottom: 1rem;
+    }
+
+    .lst {
+      overflow-y: auto;
+
+      table {
+        margin-bottom: 0;
+      }
+    }
+
+    .XHRSpin {
+      min-height: 250px;
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .actns {
+      div {
+        margin-bottom: 1rem;
+      }
+
+      div:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

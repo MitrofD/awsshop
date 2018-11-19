@@ -68,7 +68,7 @@ class ForgotPassword extends React.PureComponent<Props, State> {
       xhrRequest: true,
     });
 
-    axios.post('/call/forgotPassword', {
+    axios.post(`${proxyPath}/forgotPassword`, {
       email: this.email,
     }).then(() => {
       this.props.history.push('/find-pwd-tip');

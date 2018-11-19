@@ -3,8 +3,9 @@ import axios from 'axios';
 
 const applyClientConfig = (data: Object): Object => {
   const advancedData = {
-    accountCenterPath: '/account',
     adminPath: '/admin',
+    categoryPath: '/category/',
+    dashboardPath: '/dashboard',
     inputTimeout: 150,
   };
 
@@ -12,7 +13,7 @@ const applyClientConfig = (data: Object): Object => {
 };
 
 const startupPromise: Promise<any[]> = new Promise((resolve, reject) => {
-  axios.get('/call/config').then(({ data }) => {
+  axios.get(`${proxyPath}/config`).then(({ data }) => {
     const pureConfig = applyClientConfig(data);
     window.Config = Object.freeze(pureConfig);
 

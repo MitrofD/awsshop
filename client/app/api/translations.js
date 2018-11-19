@@ -23,7 +23,7 @@ const setLang = (lang: string, data: Object) => {
 
 const translations = Object.freeze({
   config(lang: any): Promise<string> {
-    let fullUrl = '/call/translationsInfo';
+    let fullUrl = `${proxyPath}/translationsInfo`;
 
     if (tools.isString(lang)) {
       fullUrl += `?lang=${lang}`;
@@ -72,7 +72,7 @@ const translations = Object.freeze({
     }
 
     return new Promise((resolve, reject) => {
-      axios.get(`/call/translation?lang=${lang}`).then(({ data }) => {
+      axios.get(`${proxyPath}/translation?lang=${lang}`).then(({ data }) => {
         setLang(data.code, data.data);
         resolve(data.code);
       }).catch((error) => {

@@ -32,7 +32,8 @@ type User = {
   _id: string,
   email: string,
   ethAddress: string,
-  role: string,
+  isAdmin: boolean,
+  isBlocked?: Date,
   verification?: string,
   verificationResetPassword?: VerificationData,
 };

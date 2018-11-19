@@ -2,11 +2,14 @@
 import React from 'react';
 import Category from './Category';
 import AddEditCategory from './AddEditCategory';
-import NoHaveLabel from '../includes/NoHaveLabel';
+import NoHaveLabel from '../../includes/NoHaveLabel';
 import LoadMore from '../../includes/LoadMore';
 import XHRSpin from '../../includes/XHRSpin';
 import { tt } from '../../../components/TranslateElement';
 import categories from '../../../api/categories';
+import windowScroll from '../../../api/window-scroll';
+
+const SCROLL_FAULT = 40;
 
 type Props = {
   limit: number,
@@ -21,8 +24,6 @@ type State = {
 const defaultProps = {
   limit: 50,
 };
-
-const scrollFault = 40;
 
 class Categories extends React.Component<Props, State> {
   static defaultProps = defaultProps;
@@ -41,9 +42,9 @@ class Categories extends React.Component<Props, State> {
     self.onChangeSearchInput = this.onChangeSearchInput.bind(this);
     self.onClickAddButton = this.onClickAddButton.bind(this);
     self.onCloseModal = this.onCloseModal.bind(this);
-    self.setItemsListRef = this.setItemsListRef.bind(this);
     self.onRemoveCategory = this.onRemoveCategory.bind(this);
-    self.onScrollItemsList = this.onScrollItemsList.bind(this);
+    self.onSetRootNode = this.onSetRootNode.bind(this);
+    self.onScrollWindow = this.onScrollWindow.bind(this);
     self.onSubmitSearchForm = this.onSubmitSearchForm.bind(this);
   }
 
@@ -54,7 +55,7 @@ class Categories extends React.Component<Props, State> {
 
   componentWillUnmount() {
     this.unmounted = true;
-    this.itemsListElement.removeEventListener('scroll', this.onScrollItemsList);
+    this.stopListenWindowScroll();
   }
 
   onAddedCategory(item: Object) {
@@ -111,12 +112,19 @@ class Categories extends React.Component<Props, State> {
     }
   }
 
-  onScrollItemsList() {
-    const itemsListHeight = this.itemsListElement.offsetHeight;
-    const itemsListScrollTop = this.itemsListElement.scrollTop;
-    const commonValue = scrollFault + itemsListScrollTop + itemsListHeight;
+  onSetRootNode(el: ?HTMLElement) {
+    if (el) {
+      this.rootNode = el;
+    }
+  }
 
-    if (commonValue >= this.itemsListElement.scrollHeight) {
+  onScrollWindow(scrollData: Object) {
+    const rootNodeHeight = this.rootNode.offsetHeight;
+    const rootNodeTop = this.rootNode.offsetTop;
+    const rootNodeBottom = rootNodeHeight + rootNodeTop;
+    const windowBottom = SCROLL_FAULT + scrollData.height + scrollData.topPos;
+
+    if (windowBottom >= rootNodeBottom) {
       this.filter();
     }
   }
@@ -140,12 +148,6 @@ class Categories extends React.Component<Props, State> {
     return findNamePattern ? new RegExp(findNamePattern, 'i') : null;
   }
 
-  setItemsListRef(el: ?HTMLElement) {
-    if (el) {
-      this.itemsListElement = el;
-    }
-  }
-
   setStateAfterRequest(newState: Object) {
     if (this.unmounted) {
       return;
@@ -158,17 +160,8 @@ class Categories extends React.Component<Props, State> {
     this.setState(pureNewState);
   }
 
-  reset() {
-    this.items = [];
-    this.itemIds = [];
-
-    this.setState({
-      xhrRequest: true,
-    });
-  }
-
   filter() {
-    this.itemsListElement.removeEventListener('scroll', this.onScrollItemsList);
+    this.stopListenWindowScroll();
 
     const queryObj = {};
     queryObj.limit = this.props.limit;
@@ -179,7 +172,11 @@ class Categories extends React.Component<Props, State> {
       queryObj.namePattern = findNamePattern;
     }
 
-    categories.get(this.items.length, queryObj).then(({ items, loadMore }) => {
+    queryObj.sortBy = 'createdAt';
+    queryObj.sortDesc = -1;
+    queryObj.skip = this.items.length;
+
+    categories.get(queryObj).then(({ items, loadMore }) => {
       items.forEach((item) => {
         const categoryId = item._id;
         this.items.push((
@@ -198,18 +195,35 @@ class Categories extends React.Component<Props, State> {
       });
 
       if (loadMore) {
-        this.itemsListElement.addEventListener('scroll', this.onScrollItemsList);
+        this.scrollFunc = windowScroll.bind(this.onScrollWindow);
       }
     }).catch((error) => {
-      showAppError(error.message);
+      NotificationBox.dangerMessage(error.message);
       this.setStateAfterRequest({});
+    });
+  }
+
+  stopListenWindowScroll() {
+    if (this.scrollFunc) {
+      windowScroll.unbind(this.scrollFunc);
+      this.scrollFunc = null;
+    }
+  }
+
+  reset() {
+    this.items = [];
+    this.itemIds = [];
+
+    this.setState({
+      xhrRequest: true,
     });
   }
 
   findName: ?string = null;
   items: React$Element<typeof Category>[] = [];
-  itemsListElement: HTMLElement;
   itemIds: string[] = [];
+  rootNode: HTMLElement;
+  scrollFunc: ?Function = null;
   unmounted = true;
 
   render() {
@@ -299,7 +313,7 @@ class Categories extends React.Component<Props, State> {
           {headerContent}
           <div
             className="lst"
-            ref={this.setItemsListRef}
+            ref={this.onSetRootNode}
           >
             {itemsContent}
             {showLoadMore && <LoadMore />}

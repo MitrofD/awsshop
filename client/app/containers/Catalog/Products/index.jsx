@@ -1,14 +1,122 @@
 // @flow
 import React from 'react';
-import Product from './Product';
-import { tt } from '../../components/TranslateElement';
+import Grid from './Grid';
+import { tt } from '../../../components/TranslateElement';
+import categories from '../../../api/categories';
 
+const ALL_TEXT = 'All products';
+
+type Props = {
+  category: ?string,
+};
+
+type State = {
+  xhrRequest: boolean,
+};
+
+const defaultProps = {
+  category: null,
+};
+
+class Products extends React.PureComponent<Props, State> {
+  static defaultProps = defaultProps;
+
+  constructor(props: Props, context: null) {
+    super(props, context);
+
+    this.state = {
+      xhrRequest: !!props.category,
+    };
+  }
+
+  componentDidMount() {
+    this.unmounted = false;
+
+    if (this.props.category) {
+      this.requestWithCategory(this.props.category);
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.category !== prevProps.category) {
+      if (this.props.category) {
+        this.requestWithCategory(this.props.category);
+      } else {
+        this.category = null;
+        this.forceUpdate();
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    this.unmounted = true;
+  }
+
+  requestWithCategory(categoryName: string) {
+    this.setState({
+      xhrRequest: true,
+    });
+
+    categories.withName(categoryName).then((category) => {
+      this.category = category;
+      this.stopRequest();
+    }).catch((error) => {
+      NotificationBox.danger(error.message);
+      this.category = null;
+      this.stopRequest();
+    });
+  }
+
+  stopRequest() {
+    if (this.unmounted) {
+      return;
+    }
+
+    this.setState({
+      xhrRequest: false,
+    });
+  }
+
+  category: ?Object = null;
+  unmounted = true;
+
+  render() {
+    const title = this.props.category || ALL_TEXT;
+    let goodLabel = null;
+    let categoryId = null;
+
+    if (this.category) {
+      const {
+        _id,
+        productsCount,
+      } = this.category;
+
+      categoryId = _id;
+
+      goodLabel = (
+        <div className="inf">
+          {tt('Goods')}: {productsCount}
+        </div>
+      );
+    }
+
+    return (
+      <div className="Products">
+        <div className="ttl">
+          {tt(title)}
+          {goodLabel}
+        </div>
+        <Grid categoryId={categoryId} />
+      </div>
+    );
+  }
+}
+
+/*
 const randomFromTo = (from: number, to: number): number => {
   const rVal = Math.floor(Math.random() * to) + from;
   return rVal;
 };
-
-/* eslint-disable max-len */
 
 const images: string[] = [
   'https://www.notebookcheck-ru.com/uploads/tx_nbc2/SamsungGalaxyS8Active__1_.jpg',
@@ -21,8 +129,6 @@ const images: string[] = [
   'https://hniesfp.imgix.net/8/images/detailed/73/playstation_vr_worlds.jpg',
   'https://istyle.ro/pub/media/wysiwyg/MK/m2-cat-_0003s_0002_iphone-x.jpg',
 ];
-
-/* eslint-enable max-len */
 
 const names: string[] = [
   'Sony Playstation 4 Slim 500GB',
@@ -128,5 +234,6 @@ const Products = () => {
     </div>
   );
 };
+*/
 
 export default Products;

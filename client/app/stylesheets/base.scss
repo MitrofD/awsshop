@@ -270,7 +270,15 @@ main {
   font-family: 'Futura PT Heavy';
   font-size: 18px;
   text-transform: uppercase;
-  letter-spacing: 1.0050px;
+  letter-spacing: $var-letter-spacing;
+
+  .inf {
+    color: $var-info-color;
+    display: inline-block;
+    font-size: 13px;
+    float: right;
+    letter-spacing: 1.0050px;
+  }
 }
 
 .frm-cntnr {
@@ -367,6 +375,31 @@ main {
   }
 }
 
+.sdbr {
+  .ttl {
+    margin-bottom: 25px;
+  }
+
+  ul.lst {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      margin-bottom: 26px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    a {
+      font-size: 17px;
+      display: block;
+    }
+  }
+}
+
 .lft,
 .rght {
   display: inline-block;
@@ -403,10 +436,8 @@ main {
 }
 
 .LoadMore {
-  $var-loadm-mode-color: #aaaab6 !default;
-
   border-top: 1px solid #f2f2f7;
-  color: $var-loadm-mode-color;
+  color: $var-info-color;
   font-family: 'Futura PT Heavy';
   font-size: 16px;
   text-align: center;
@@ -420,8 +451,8 @@ main {
 
   .spnnr {
     @include mask-image(url("#{$var-images-path}/spinner.svg"));
-    @include animation(spin 0.8s linear infinite);
-    background-color: $var-loadm-mode-color;
+    @include animation(spin 0.6s linear infinite);
+    background-color: $var-info-color;
     height: 20px;
     margin-left: 5px;
     margin-bottom: 3px;
@@ -429,29 +460,12 @@ main {
   }
 }
 
-.Sidebar {
-  .ttl {
-    margin-bottom: 25px;
-  }
-
-  ul.lst {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-
-    li {
-      margin-bottom: 26px;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    a {
-      font-size: 17px;
-      display: block;
-    }
-  }
+.NoHaveLabel {
+  color: $secondary;
+  font-size: 1.5rem;
+  margin-top: 70px;
+  text-align: center;
+  padding: 1rem 0;
 }
 
 .XHRSpin {

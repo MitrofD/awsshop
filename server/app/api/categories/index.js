@@ -2,9 +2,10 @@
 const tools = require('../tools');
 const collection = require('./collections/categories');
 
-const defProductsCount = 0;
-const defLimit = 100;
-const maxLimit = 300;
+const MIN_PRODUCTS_COUNT = 0;
+const DEF_LIMIT = 100;
+const MAX_LIMIT = 300;
+const NOT_FOUND_TEXT = 'Category not found';
 
 const incPromise = (id: MongoID, toInc: number): Promise<Object> => {
   const promise = collection.findOneAndUpdate({
@@ -18,23 +19,29 @@ const incPromise = (id: MongoID, toInc: number): Promise<Object> => {
   return promise;
 };
 
-const categories = {
-  async add(name?: string): Promise<Object> {
-    const count = await collection.estimatedDocumentCount();
-    const pos = count + 1;
-    let pureName = name;
+const nameIsUnique = async (name: string): Promise<void> => {
+  const res = await collection.findOne({
+    name,
+  });
 
-    if (typeof pureName !== 'string') {
-      const prefix = 'Category';
-      pureName = `${prefix} ${pos}`;
-    } else {
-      pureName = pureName.trim();
+  if (res) {
+    throw new Error(`Category with name "${name}" already exists`);
+  }
+};
+
+const categories = {
+  async add(name: any): Promise<Object> {
+    const pureName = typeof name === 'string' ? name.trim() : '';
+
+    if (pureName.length === 0) {
+      throw new Error('Category name is required');
     }
 
+    await nameIsUnique(pureName);
+
     const insertData: { [string]: any } = {
-      pos,
       name: pureName,
-      productsCount: defProductsCount,
+      productsCount: MIN_PRODUCTS_COUNT,
     };
 
     const insertRes = await collection.insertOne(insertData);
@@ -47,18 +54,17 @@ const categories = {
     return value;
   },
 
-  async get(skip?: number, query: any): Promise<Object> {
+  async get(query: any): Promise<Object> {
     const rQuery = typeof query === 'object' && query !== null ? query : {};
+    const pureQuery = {};
+    const pureSkip = parseInt(rQuery.skip) || 0;
     let pureLimit = parseInt(rQuery.limit);
 
     if (Number.isNaN(pureLimit)) {
-      pureLimit = defLimit;
-    } else if (pureLimit > maxLimit) {
-      pureLimit = maxLimit;
+      pureLimit = DEF_LIMIT;
+    } else if (pureLimit > MAX_LIMIT) {
+      pureLimit = MAX_LIMIT;
     }
-
-    const pureSkip = parseInt(skip) || 0;
-    const pureQuery = {};
 
     if (typeof rQuery.namePattern === 'string') {
       pureQuery.name = {
@@ -66,11 +72,18 @@ const categories = {
       };
     }
 
-    const promise = new Promise((resolve, reject) => {
+    const pureSort = {};
+
+    if (typeof rQuery.sortBy === 'string') {
+      const sortDesc = parseInt(rQuery.sortDesc) || 1;
+      pureSort[rQuery.sortBy] = sortDesc;
+    }
+
+    const findPromise = new Promise((resolve, reject) => {
       collection.find(pureQuery, {
         limit: pureLimit + 1,
         skip: pureSkip,
-      }).sort('pos', -1).toArray((error, items) => {
+      }).sort(pureSort).toArray((error, items) => {
         if (error) {
           reject(error);
           return;
@@ -92,7 +105,7 @@ const categories = {
       });
     });
 
-    return promise;
+    return findPromise;
   },
 
   async remove(id: MongoID): Promise<Object> {
@@ -104,7 +117,7 @@ const categories = {
       return value;
     }
 
-    throw new Error(`Category with id "${id.toString()}" not found`);
+    throw new Error(NOT_FOUND_TEXT);
   },
 
   async removeProduct(id: string): Promise<Object> {
@@ -113,20 +126,15 @@ const categories = {
   },
 
   async update(id: MongoID, updateData: Object): Promise<Object> {
-    let newData = {};
-
-    if (typeof updateData === 'object' && updateData !== null) {
-      newData = updateData;
-    }
-
     const setObject = {};
-    const pureName = typeof newData.name === 'string' ? newData.name.trim() : '';
+    const pureName = typeof updateData.name === 'string' ? updateData.name.trim() : '';
 
     if (pureName.length > 0) {
+      await nameIsUnique(pureName);
       setObject.name = pureName;
     }
 
-    const pureProductsCount = parseInt(newData.productsCount);
+    const pureProductsCount = parseInt(updateData.productsCount);
 
     if (!Number.isNaN(pureProductsCount)) {
       setObject.productsCount = Math.abs(pureProductsCount);
@@ -140,7 +148,23 @@ const categories = {
       returnOriginal: false,
     });
 
+    if (typeof value !== 'object' || value === null) {
+      throw new Error(NOT_FOUND_TEXT);
+    }
+
     return value;
+  },
+
+  async withName(name: string): Promise<Object> {
+    const category = await collection.findOne({
+      name,
+    });
+
+    if (!category) {
+      throw new Error(NOT_FOUND_TEXT);
+    }
+
+    return category;
   },
 };
 

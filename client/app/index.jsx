@@ -1,15 +1,16 @@
 // @flow
-import React, { Fragment } from 'react';
+import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import FadingCircleSpin from './components/spins/FadingCircleSpin';
 import ItemsStack from './components/ItemsStack';
 import ToastDanger from './components/toasts/ToastDanger';
+import ToastSuccess from './components/toasts/ToastSuccess';
 import Modal from './components/Modal';
 import ConfirmModal from './components/ConfirmModal';
+import './config';
 import translations from './api/translations';
 import user from './api/user';
-import './config';
 import './images/favicon.ico';
 import './main.scss';
 
@@ -29,7 +30,7 @@ if (rBody) {
   const modalBox = document.createElement('div');
   rBody.appendChild(modalBox);
 
-  window.RootNode = (function roonNodeGen() {
+  window.RootNode = (function genRootNode() {
     let importantCN = 'cntnt';
 
     if (/iPhone|iPad|iPod|Android/.test(window.navigator.userAgent)) {
@@ -53,12 +54,6 @@ if (rBody) {
 
       classExists: (className: string) => Tools.has.call(classesObj, className),
 
-      set isInitMode(val: boolean) {
-        const initModeCN = 'init-md';
-        const methodName = val ? 'addClass' : 'removeClass';
-        this[methodName](initModeCN);
-      },
-
       toggleClass(className: string) {
         if (this.classExists(className)) {
           this.removeClass(className);
@@ -76,16 +71,39 @@ if (rBody) {
     return retObj;
   }());
 
-  window.showAppError = (errorMessage: string) => {
-    const itemsStack = ItemsStack.get(Enums.GLOB_ITEMS_STACK_NAME);
-    const toast = <ToastDanger>{errorMessage}</ToastDanger>;
-    itemsStack.add(toast);
-  };
+  window.NotificationBox = (function configNotificationBox() {
+    type itemsStackRefType = React$Element<typeof ItemsStack>;
+    let itemsStackRef: ItemsStack;
+
+    const notificationBoxEl = document.createElement('div');
+    notificationBoxEl.className = 'ntfctns';
+    rBody.appendChild(notificationBoxEl);
+
+    const setItemsStackRef = (el: any) => {
+      if (el) {
+        itemsStackRef = el;
+      }
+    };
+
+    render(<ItemsStack ref={setItemsStackRef} />, notificationBoxEl);
+
+    return {
+      danger(message: string) {
+        const toast = <ToastDanger>{message}</ToastDanger>;
+        itemsStackRef.add(toast);
+      },
+
+      success(message: string) {
+        const toast = <ToastSuccess>{message}</ToastSuccess>;
+        itemsStackRef.add(toast);
+      },
+    };
+  }());
 
   window.showConfirmModal = (function makeConfirmModal() {
-    const name = 'confirmModal';
+    const name = 'cnfrmMdl';
 
-    return (content: React.DOM, func: Function) => {
+    return (content: React$Node, func: Function) => {
       const rConfirm = () => {
         unmountComponentAtNode(modalBox);
         func();
@@ -106,12 +124,11 @@ if (rBody) {
 
   render(<FadingCircleSpin />, rootNode);
 
-  const startupDone = (error?: Error): void => {
+  const startupDone = (error?: Error) => {
     unmountComponentAtNode(rootNode);
 
     if (error) {
-      // eslint-disable-next-line no-alert
-      alert(error.message);
+      NotificationBox.danger(error.message);
       return;
     }
 
@@ -134,14 +151,9 @@ if (rBody) {
     const Routes = require('./containers/Routes').default;
 
     render((
-      <Fragment>
-        <BrowserRouter>
-          <Routes />
-        </BrowserRouter>
-        <div className="ntfctns">
-          <ItemsStack name={Enums.GLOB_ITEMS_STACK_NAME} />
-        </div>
-      </Fragment>
+      <BrowserRouter>
+        <Routes />
+      </BrowserRouter>
     ), rootNode);
   };
 

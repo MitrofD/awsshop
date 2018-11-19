@@ -123,7 +123,7 @@ class Login extends React.Component<Props, State> {
         xhrRequest: false,
       });
 
-      showAppError(error.message);
+      NotificationBox.danger(error.message);
     });
   }
 

@@ -110,7 +110,7 @@ class ResetPassword extends React.PureComponent<Props, State> {
       this.setState(stateData);
     };
 
-    axios.post('/call/resetPassword', {
+    axios.post(`${proxyPath}/resetPassword`, {
       password: this.password,
       verificationCode: this.props.verificationCode,
     }).then(() => {

@@ -1,6 +1,5 @@
 // @flow
 const users = require('../api/users');
-const userRoles = require('../api/user-roles');
 
 const bodyParser = (req, callback) => {
   let body = '';
@@ -74,9 +73,9 @@ Middleware.userId_Sess = (req, res, next) => {
 
 Middleware.admin_Sess = (req, res, next) => {
   applyUserId(req, res, () => {
-    const role = req.session.get(Enums.SESS_USER_ROLE);
+    const isAdmin = req.session.get(Enums.SESS_USER_IS_ADMIN);
 
-    if (role !== userRoles.TYPE.ADMIN) {
+    if (!isAdmin) {
       const error = new Error('Only for administrator');
       next(error);
       return;
