@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import EditOrPush from './EditOrPush';
 import Product from './Product';
 import NoHaveLabel from '../../includes/NoHaveLabel';
 import LoadMore from '../../includes/LoadMore';
@@ -15,6 +16,7 @@ type Props = {
 };
 
 type State = {
+  editOrPush: ?React$Element<typeof EditOrPush>,
   showLoadMore: boolean,
   xhrRequest: boolean,
 };
@@ -30,12 +32,15 @@ class ImportedProducts extends React.Component<Props, State> {
     super(props, context);
 
     this.state = {
+      editOrPush: null,
       showLoadMore: false,
       xhrRequest: true,
     };
 
     const self: any = this;
     self.onChangeSearchInput = this.onChangeSearchInput.bind(this);
+    self.onClickProductPushButton = this.onClickProductPushButton.bind(this);
+    self.onClickEditOrPushCancelButton = this.onClickEditOrPushCancelButton.bind(this);
     self.onSetRootNode = this.onSetRootNode.bind(this);
     self.onScrollWindow = this.onScrollWindow.bind(this);
     self.onSubmitSearchForm = this.onSubmitSearchForm.bind(this);
@@ -55,6 +60,23 @@ class ImportedProducts extends React.Component<Props, State> {
     const input = event.currentTarget;
     const pureValue = input.value.trim();
     this.findTitle = pureValue.length > 0 ? pureValue : null;
+  }
+
+  onClickProductPushButton(data: Object) {
+    this.setState({
+      editOrPush: (
+        <EditOrPush
+          {...data}
+          onClickCancelButton={this.onClickEditOrPushCancelButton}
+        />
+      ),
+    });
+  }
+
+  onClickEditOrPushCancelButton() {
+    this.setState({
+      editOrPush: null,
+    });
   }
 
   onSetRootNode(el: ?HTMLElement) {
@@ -128,6 +150,7 @@ class ImportedProducts extends React.Component<Props, State> {
           <Product
             data={item}
             key={itemId}
+            onClickPushButton={this.onClickProductPushButton}
           />
         ));
         this.itemIds.push(itemId);
@@ -171,6 +194,7 @@ class ImportedProducts extends React.Component<Props, State> {
 
   render() {
     const {
+      editOrPush,
       showLoadMore,
       xhrRequest,
     } = this.state;
@@ -181,8 +205,6 @@ class ImportedProducts extends React.Component<Props, State> {
     if (xhrRequest) {
       content = <XHRSpin />;
     } else {
-      itemsContent = this.items;
-
       content = (
         <form
           noValidate
@@ -208,20 +230,39 @@ class ImportedProducts extends React.Component<Props, State> {
           </div>
         </form>
       );
+
+      if (this.items.length > 0) {
+        itemsContent = this.items;
+      } else {
+        itemsContent = (
+          <NoHaveLabel>
+            {tt('No have imported products')}
+          </NoHaveLabel>
+        );
+      }
+    }
+
+    let className = 'ImportedProducts';
+
+    if (editOrPush) {
+      className += ' edt-md';
     }
 
     return (
-      <div className="ImportedProducts">
-        <div className="ttl">{tt('Imported products')}</div>
+      <div className={className}>
+        {editOrPush}
         <div className="dt">
-          {content}
-          <div
-            className="lst row"
-            ref={this.onSetRootNode}
-          >
-            {itemsContent}
+          <div className="ttl">{tt('Imported products')}</div>
+          <div className="dt">
+            {content}
+            <div
+              className="lst row"
+              ref={this.onSetRootNode}
+            >
+              {itemsContent}
+            </div>
+            {showLoadMore && <LoadMore />}
           </div>
-          {showLoadMore && <LoadMore />}
         </div>
       </div>
     );

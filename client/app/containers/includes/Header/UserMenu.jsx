@@ -86,6 +86,9 @@ class UserMenu extends React.PureComponent<Props, State> {
           <DropdownItem onClick={this.onClickToItem}>
             <Link to={Config.dashboardPath}>{tt('Dashboard')}</Link>
           </DropdownItem>
+          <DropdownItem onClick={this.onClickToItem}>
+            <Link to={Config.settingsPath}>{tt('Settings')}</Link>
+          </DropdownItem>
           <DropdownItem onClick={this.onClickLogoutLink}>
             {tt('Logout')}
           </DropdownItem>

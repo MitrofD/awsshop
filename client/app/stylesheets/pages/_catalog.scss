@@ -14,8 +14,6 @@
   }
 
   .Products {
-    padding: 28px 18px 0 30px;
-
     .ttl {
       margin-bottom: 20px;
     }
@@ -56,7 +54,7 @@
     .prvw {
       background-repeat: no-repeat;
       background-position: center;
-      background-size: 85%;
+      background-size: contain;
       border: solid 1px $border-color;
       border-radius: $border-radius;
       height: 268px;

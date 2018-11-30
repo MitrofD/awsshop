@@ -133,10 +133,11 @@ const products = {
     ];
 
     addIfExists.forEach((attr) => {
-      const attrValue = rData[attr];
+      const attrValue = rData[attr] === 'string' ? rData[attr].trim() : '';
+      const pureAttrVal = attrValue.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
 
-      if (typeof attrValue === 'string' && attrValue.length > 0) {
-        insertData[attr] = attrValue;
+      if (pureAttrVal.length > 0) {
+        insertData[attr] = pureAttrVal;
       }
     });
 

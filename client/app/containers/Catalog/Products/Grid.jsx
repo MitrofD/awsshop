@@ -12,6 +12,7 @@ const SCROLL_FAULT = 40;
 
 type Props = {
   categoryId: ?string,
+  findTitle: ?string,
   limit: number,
 };
 
@@ -22,6 +23,7 @@ type State = {
 
 const defaultProps = {
   categoryId: null,
+  findTitle: null,
   limit: 50,
 };
 
@@ -48,9 +50,25 @@ class Grid extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (this.props.categoryId !== prevProps.categoryId) {
+    const resetRequest = () => {
       this.reset();
       this.next();
+    };
+
+    if (prevProps.findTitle !== this.props.findTitle) {
+      this.titlePattern = null;
+
+      if (this.props.findTitle) {
+        const escapedStr = Tools.escapedString(this.props.findTitle);
+        this.titlePattern = `.*${escapedStr}.*`;
+      }
+
+      resetRequest();
+      return;
+    }
+
+    if (prevProps.categoryId !== this.props.categoryId) {
+      resetRequest();
     }
   }
 
@@ -102,6 +120,10 @@ class Grid extends React.Component<Props, State> {
       query.categoryId = this.props.categoryId;
     }
 
+    if (this.titlePattern) {
+      query.titlePattern = this.titlePattern;
+    }
+
     products.get(query).then(({ items, loadMore }) => {
       this.items = this.items.concat(items);
 
@@ -132,6 +154,7 @@ class Grid extends React.Component<Props, State> {
   items: Object[] = [];
   rootNode: HTMLElement;
   scrollFunc: ?Function = null;
+  titlePattern: ?string = null;
   unmounted = true;
 
   render() {

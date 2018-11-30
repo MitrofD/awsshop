@@ -13,7 +13,7 @@ const throwErrorIfNotExists = (option: string) => {
   }
 };
 
-const Settings = Object.freeze({
+const settings = Object.freeze({
   get(option: string) {
     throwErrorIfNotExists(option);
     return storage[keyPrefix + option];
@@ -53,4 +53,4 @@ const Settings = Object.freeze({
 });
 
 export { OPTION };
-export default Settings;
+export default settings;

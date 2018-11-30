@@ -23,6 +23,10 @@ a.active {
   color: $primary;
 }
 
+.actns {
+  margin-bottom: 1rem;
+}
+
 .admn-only {
   display: none;
 }
@@ -51,16 +55,6 @@ a.active {
   }
 }
 
-.cntnt.init-md {
-  .container {
-    height: 100%;
-
-    .innr {
-      height: 100%;
-    }
-  }
-}
-
 .chckkbx {
   color: $primary;
   cursor: pointer;
@@ -68,6 +62,13 @@ a.active {
 
   .Checkbox {
     margin-right: 13px;
+  }
+}
+
+.container {
+  button[type="submit"] {
+    @extend .float-right;
+    margin-top: 1rem;
   }
 }
 
@@ -85,6 +86,7 @@ main {
     box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.05);
     border-radius: $border-radius;
     background-color: $white;
+    position: relative;
   }
 }
 
@@ -185,7 +187,7 @@ main {
       margin-right: 0;
       padding-left: 20px;
       padding-right: 20px;
-      border-left: 2px solid $var-background-color;
+      border-left: $var-separator-border;
     }
   }
 
@@ -210,10 +212,6 @@ main {
       padding: $spacer;
       top: auto;
       bottom: 0;
-    }
-
-    .item {
-      box-shadow: 5px 9px 24px 0px rgba(241, 56, 64, 0.4);
     }
   }
 }
@@ -240,6 +238,30 @@ main {
   }
 }
 
+.mce-panel {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.mce-notification-warning {
+  display: none !important;
+}
+
+.mce-statusbar {
+  .mce-first,
+  .mce-branding {
+    display: none !important;
+  }
+}
+
+.tabs {
+  .nav-link {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    text-transform: capitalize;
+  }
+}
+
 .td-actns {
   button {
     background: none;
@@ -259,6 +281,14 @@ main {
 
 .tbl-hd {
   margin-bottom: 0;
+}
+
+.to-bck {
+  color: $primary;
+
+  .icn {
+    color: inherit;
+  }
 }
 
 .Toast {
@@ -406,13 +436,29 @@ main {
   vertical-align: top;
 }
 
+$var-left-side-width: 23% !default;
+
 .lft {
   padding: $var-page-padding-y $var-page-padding-x;
-  width: 23%;
+  width: $var-left-side-width;
 
   .XHRSpin {
     height: 200px;
   }
+}
+
+.rght {
+  padding: $var-page-padding-y $var-page-padding-x - 12px $var-page-padding-y $var-page-padding-x;
+  width: 77%;
+}
+
+.sprtr {
+  background-color: $input-border-color;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: $var-left-side-width;
+  width: 1px;
 }
 
 .lst {
@@ -421,10 +467,6 @@ main {
       border-top: none;
     }
   }
-}
-
-.rght {
-  width: 77%;
 }
 
 // Includes
@@ -436,7 +478,7 @@ main {
 }
 
 .LoadMore {
-  border-top: 1px solid #f2f2f7;
+  border-top: $var-separator-border;
   color: $var-info-color;
   font-family: 'Futura PT Heavy';
   font-size: 16px;
@@ -463,9 +505,10 @@ main {
 .NoHaveLabel {
   color: $secondary;
   font-size: 1.5rem;
-  margin-top: 70px;
+  margin-top: 1rem;
   text-align: center;
   padding: 1rem 0;
+  width: 100%;
 }
 
 .XHRSpin {
@@ -483,5 +526,19 @@ main {
 
   .lft {
     text-align: center;
+  }
+
+  .sprtr {
+    display: none;
+  }
+
+  .actns {
+    div {
+      margin-bottom: 1rem;
+    }
+
+    div:last-child {
+      margin-bottom: 0;
+    }
   }
 }

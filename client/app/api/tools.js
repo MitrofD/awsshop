@@ -1,5 +1,5 @@
 // @flow
-const tools = {
+const tools = Object.freeze({
   capitalize: (val: string): string => val.charAt(0).toUpperCase() + val.slice(1),
   emailRegExp: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   escapedString: (str: string) => str.replace(/[$[+*|()^?.\\/]/g, '\\$&'),
@@ -49,6 +49,6 @@ const tools = {
 
   strForRegExp: (val: string): string => val.replace(/[$[+*|()^?.\\/]/g, '\\$&'),
   urlRegExp: /^(https?:\/\/)?(?:[^@/\n]+@)?(?:www\.)?([^:/\n]+(?::\d+)?)/iy,
-};
+});
 
 export default tools;

@@ -2,7 +2,7 @@
 import axios from 'axios';
 import tools from './tools';
 
-const Categories = {
+const categories = Object.freeze({
   add(category?: Object): Promise<Object> {
     const promise = new Promise((resolve, reject) => {
       axios.post(`${proxyPath}/categories`, category).then(({ data }) => {
@@ -80,6 +80,6 @@ const Categories = {
 
     return promise;
   },
-};
+});
 
-export default Categories;
+export default categories;

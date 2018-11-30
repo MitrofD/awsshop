@@ -52,7 +52,7 @@ const config = {
           },
         ],
       }, {
-        test: /\.(ico|ttf|eot|woff|woff2|svg|png|jpe?g)$/,
+        test: /\.(ico|ttf|eot|woff|woff2|svg|png|gif|jpe?g)$/,
         loader: 'file-loader',
         options: {
           name: '[path][name].[ext]',

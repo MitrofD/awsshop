@@ -71,7 +71,7 @@ class AddEditCategory extends React.Component<Props, State> {
         xhrRequest: false,
       });
 
-      NotificationBox.dangerMessage(error.message);
+      NotificationBox.danger(error.message);
     };
 
     const newData = {

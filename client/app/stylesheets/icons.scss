@@ -2,12 +2,16 @@ $var-icon-height: 18px !default;
 $var-icon-width: 18px !default;
 $var-background-margin-x: 7px !default;
 
-.icn {
+i.icn {
   display: inline-block;
   height: $var-icon-height;
   width: $var-icon-width;
   background-repeat: no-repeat;
   background-position: center;
+
+  &.icn-lng-lft-arrw {
+    background-image: url("#{$var-images-path}/long-arrow-alt-left.svg");
+  }
 
   &.icn-prfl {
     background-image: url("#{$var-images-path}/profile-icon.svg");

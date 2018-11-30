@@ -1,5 +1,39 @@
 .Dashboard {
   .Product {
-    margin-bottom: 35px;
+    margin-bottom: 20px;
+    padding-top: 20px;
+    border-top: $var-separator-border;
+
+    &:first-child,
+    &:nth-child(2) {
+      border-top: none;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    .Product:nth-child(2) {
+      border-top: $var-separator-border;
+    }
+  }
+}
+
+.EditProduct {
+  .tab-content {
+    .form-control {
+      height: auto;
+      padding: 0;
+    }
+
+    .form-group {
+      display: none;
+    }
+
+    @each $self-class in desc, shppng {
+      &.#{$self-class} {
+        .#{$self-class} {
+          display: block;
+        }
+      }
+    }
   }
 }

@@ -2,7 +2,7 @@
 import axios from 'axios';
 import tools from './tools';
 
-const Users = {
+const users = Object.freeze({
   get(query: any): Promise<Object> {
     const pureQuery = {
       limit: 100,
@@ -39,6 +39,6 @@ const Users = {
 
     return promise;
   },
-};
+});
 
-export default Users;
+export default users;

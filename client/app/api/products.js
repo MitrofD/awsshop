@@ -34,7 +34,7 @@ const getPromiseWithUrlAndQuery = (url: string, query: any): Promise<Object> => 
   return getPromise;
 };
 
-const Products = {
+const products = Object.freeze({
   add(id: string): Promise<Object> {
     const promise = new Promise((resolve, reject) => {
       axios.post(`${proxyPath}/products/${id}`).then(({ data }) => {
@@ -83,6 +83,6 @@ const Products = {
 
     return promise;
   },
-};
+});
 
-export default Products;
+export default products;

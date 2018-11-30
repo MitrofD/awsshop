@@ -19,6 +19,7 @@ const EmailVerificationPage = LoadableWithParams('EmailVerification');
 const ForgotPasswordPage = LoadableIfUserNeeded('ForgotPassword', false);
 const FindPasswordTipPage = Loadable('FindPasswordTip');
 const ResetPasswordPage = LoadableWithParams('ResetPassword');
+const SettingsPage = LoadableIfUserNeeded('Settings', true);
 const ShippingAndPaymentPage = Loadable('ShippingAndPayment');
 const WarrantyPage = Loadable('Warranty');
 
@@ -68,6 +69,10 @@ const Routes = () => (
     <Route
       component={ResetPasswordPage}
       path="/reset-password/:verificationCode"
+    />
+    <Route
+      component={SettingsPage}
+      path={Config.settingsPath}
     />
     <Route
       component={ShippingAndPaymentPage}

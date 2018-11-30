@@ -159,6 +159,12 @@ module.exports = function usersRoute() {
     }).catch(next);
   });
 
+  this.put('/safe-users', Middleware.userId_Sess, Middleware.jsonBodyParser, Middleware.checkPassword, (req, res, next) => {
+    users.update(req.userId, req.body).then((result) => {
+      res.json(result);
+    }).catch(next);
+  });
+
   this.get('/users', Middleware.admin_Sess, (req, res, next) => {
     users.get(req.query).then((data) => {
       res.json(data);

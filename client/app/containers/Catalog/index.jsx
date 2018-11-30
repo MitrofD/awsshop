@@ -9,24 +9,17 @@ type Props = {
   category: ?string,
 };
 
-const Catalog = (props: Props) => {
-  let pureCategory: ?string = null;
-
-  if (props.category) {
-    pureCategory = decodeURI(props.category);
-  }
-
-  return (
-    <Page className="Catalog">
-      <div className="sd lft">
-        <PluginButton />
-        <Categories category={pureCategory} />
-      </div>
-      <div className="sd rght">
-        <Products category={pureCategory} />
-      </div>
-    </Page>
-  );
-};
+const Catalog = (props: Props) => (
+  <Page className="Catalog">
+    <div className="sprtr" />
+    <div className="sd lft">
+      <PluginButton />
+      <Categories category={props.category} />
+    </div>
+    <div className="sd rght">
+      <Products category={props.category} />
+    </div>
+  </Page>
+);
 
 export default asHOT(module)(Catalog);

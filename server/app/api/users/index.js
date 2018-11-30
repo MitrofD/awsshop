@@ -250,6 +250,7 @@ const users = {
   getSafeUser(userData: User): Object {
     const safeData = {
       email: userData.email,
+      ethAddress: userData.ethAddress,
       blocked: tools.has.call(userData, 'blockedTime'),
       isAdmin: userData.isAdmin,
       isVerified: !tools.has.call(userData, 'verification'),

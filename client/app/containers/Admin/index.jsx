@@ -15,6 +15,7 @@ const productsLink = `${Config.adminPath}/products`;
 
 const Admin = () => (
   <Page className="Admin">
+    <div className="sprtr" />
     <div className="lft sdbr">
       <div className="ttl">
         {tt('Admin panel')}

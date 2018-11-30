@@ -1,7 +1,7 @@
 // @flow
 import tools from '../api/tools';
 
-window.Tools = (tools: { [string]: any });
+window.Tools = Object.assign({}, tools);
 
 // eslint-disable-next-line no-console
 Tools.emptyRejectExeption = isDevMode ? error => console.log(error.message) : () => {};

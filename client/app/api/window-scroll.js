@@ -21,7 +21,7 @@ const isFuncType = (mayBeFunc: any) => {
   }
 };
 
-const windowScroll = {
+const windowScroll = Object.freeze({
   bind(func: (ScrollData) => void) {
     isFuncType(func);
 
@@ -40,6 +40,6 @@ const windowScroll = {
     isFuncType(func);
     window.removeEventListener(event, func);
   },
-};
+});
 
 export default windowScroll;

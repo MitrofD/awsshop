@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { Link } from 'react-router-dom';
 import AddEditCategory from './AddEditCategory';
 import { tt } from '../../../components/TranslateElement';
 import categories from '../../../api/categories';
@@ -100,7 +101,11 @@ class Category extends React.PureComponent<Props, State> {
     return (
       <tr>
         <td>
-          {category.name}
+          <Link
+            to={Config.categoryPath + encodeURIComponent(category.name)}
+          >
+            {category.name}
+          </Link>
           {this.state.modal}
         </td>
         <td>{category.productsCount}</td>

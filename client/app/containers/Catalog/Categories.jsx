@@ -99,7 +99,13 @@ class Categories extends React.Component<Props, State> {
     };
 
     categories.get(query).then(({ items, loadMore }) => {
-      this.items = this.items.concat(items);
+      items.forEach((item) => {
+        const pureItem = Object.assign({
+          encodedName: encodeURIComponent(item.name),
+        }, item);
+
+        this.items.push(pureItem);
+      });
 
       this.setStateAfterRequest({
         showLoadMore: loadMore,
@@ -133,10 +139,12 @@ class Categories extends React.Component<Props, State> {
       let getItemCN: Function = () => ITEM_CLASS_NAME;
 
       if (this.props.category) {
+        const decodedName = decodeURIComponent(this.props.category);
+
         getItemCN = (name: string) => {
           let itemCN = ITEM_CLASS_NAME;
 
-          if (name === this.props.category) {
+          if (name === decodedName) {
             itemCN += ACTIVE_ITEM_CLASS_NAME;
           }
 
@@ -164,9 +172,9 @@ class Categories extends React.Component<Props, State> {
               <li key={item._id}>
                 <Link
                   className={getItemCN(item.name)}
-                  to={Config.categoryPath + item.name}
+                  to={Config.categoryPath + item.encodedName}
                 >
-                  {tt(item.name)}
+                  {tt(item.name)}&nbsp;({item.productsCount})
                 </Link>
               </li>
             ))}

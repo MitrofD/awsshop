@@ -5,6 +5,7 @@ import products from '../../../api/products';
 
 type Props = {
   data: Object,
+  onClickPushButton: (data: Object) => void,
 };
 
 type State = {
@@ -25,19 +26,8 @@ class Product extends React.PureComponent<Props, State> {
     self.onClickPushToShop = this.onClickPushToShop.bind(this);
   }
 
-  onClickPushToShop(event: SyntheticEvent<HTMLButtonElement>) {
-    const button = event.currentTarget;
-
-    showConfirmModal('Are you sure?', () => {
-      button.disabled = true;
-
-      products.add(this.props.data._id).then(() => {
-        button.disabled = false;
-      }).catch((error) => {
-        NotificationBox.danger(error.message);
-        button.disabled = false;
-      });
-    });
+  onClickPushToShop() {
+    this.props.onClickPushButton(this.state.data);
   }
 
   render() {

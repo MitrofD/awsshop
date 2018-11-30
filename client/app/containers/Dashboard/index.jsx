@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { Switch, Route, NavLink } from 'react-router-dom';
+import { NavLink, Switch, Route } from 'react-router-dom';
 import Page from '../includes/Page';
 import { tt } from '../../components/TranslateElement';
 
@@ -10,11 +10,12 @@ const ImportedProductsPage = Loadable('ImportedProducts');
 const ProductsPage = Loadable('Products');
 const OrdersPage = Loadable('Orders');
 
-const productsLink = `${Config.dashboardPath}/products`;
 const ordersLink = `${Config.dashboardPath}/orders`;
+const productsLink = `${Config.dashboardPath}/products`;
 
 const Dashboard = () => (
   <Page className="Dashboard">
+    <div className="sprtr" />
     <div className="lft sdbr">
       <div className="ttl">
         {tt('Dashboard')}

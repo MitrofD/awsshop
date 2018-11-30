@@ -34,7 +34,7 @@ const applyUserId = (req: Object, res: Object, next: Function) => {
 Middleware = {};
 
 Middleware.checkPassword = (req, res, next) => {
-  users.checkPassword(req.userId, req.body.password).then(() => {
+  users.checkPassword(req.userId, req.body.currPassword).then(() => {
     next();
   }).catch(next);
 };

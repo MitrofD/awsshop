@@ -161,13 +161,7 @@ class Registration extends React.Component<Props, State> {
       const pureErrors = Tools.getErrorsObj(data.errors);
       finishWithState(pureErrors);
     }).catch((error) => {
-      const setStateSetted = finishWithState({});
-
-      if (setStateSetted) {
-        const itemsStack = ItemsStack.get(Enums.GLOB_ITEMS_STACK_NAME);
-        const toast = <ToastDanger>{error.response.data}</ToastDanger>;
-        itemsStack.add(toast);
-      }
+      NotificationBox.danger(error.response.data);
     });
   }
 

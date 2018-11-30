@@ -7,6 +7,7 @@ const applyClientConfig = (data: Object): Object => {
     categoryPath: '/category/',
     dashboardPath: '/dashboard',
     inputTimeout: 150,
+    settingsPath: '/settings',
   };
 
   return Object.assign(advancedData, data);
