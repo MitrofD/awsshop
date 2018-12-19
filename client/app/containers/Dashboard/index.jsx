@@ -11,7 +11,7 @@ const ProductsPage = Loadable('Products');
 const OrdersPage = Loadable('Orders');
 
 const ordersLink = `${Config.dashboardPath}/orders`;
-const productsLink = `${Config.dashboardPath}/products`;
+const myProductsLink = `${Config.dashboardPath}/my-products`;
 
 const Dashboard = () => (
   <Page className="Dashboard">
@@ -31,13 +31,15 @@ const Dashboard = () => (
         </li>
         <li>
           <NavLink
-            to={productsLink}
+            to={myProductsLink}
           >
-            {tt('Products')}
+            {tt('My products')}
           </NavLink>
         </li>
         <li>
-          <NavLink to={ordersLink}>
+          <NavLink
+            to={ordersLink}
+          >
             {tt('Orders')}
           </NavLink>
         </li>
@@ -52,7 +54,7 @@ const Dashboard = () => (
         />
         <Route
           component={ProductsPage}
-          path={productsLink}
+          path={myProductsLink}
         />
         <Route
           component={OrdersPage}

@@ -1,0 +1,52 @@
+.ProductPage {
+  .ttl {
+    margin-bottom: $var-page-padding-y;
+  }
+
+  .tab-content {
+    .itm {
+      display: none;
+    }
+
+    @each $self-class in desc, shppng {
+      &.#{$self-class} {
+        .#{$self-class} {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .ttl {
+    margin-bottom: 1rem;
+  }
+
+  .prc {
+    margin-bottom: 1rem;
+    font-size: 25px;
+  }
+
+  .thmbs {
+    margin-top: 1rem;
+
+    .itm {
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 95%;
+      display: inline-block;
+      width: 20%;
+      height: 60px;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .tabs {
+    margin-top: 1.5rem;
+  }
+
+  @include media-breakpoint-down(sm) {
+    .tabs {
+      margin-top: 1rem;
+    }
+  }
+}

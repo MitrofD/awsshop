@@ -13,7 +13,7 @@ const app = express();
 
 // Proxy settings ...
 (function configProxy() {
-  const proxyPath = '/prx';
+  const proxyPath = '/dev';
 
   app.use(proxyPath, proxy({
     logLevel,

@@ -19,7 +19,9 @@ const EmailVerificationPage = LoadableWithParams('EmailVerification');
 const ForgotPasswordPage = LoadableIfUserNeeded('ForgotPassword', false);
 const FindPasswordTipPage = Loadable('FindPasswordTip');
 const ResetPasswordPage = LoadableWithParams('ResetPassword');
+const ProductPage = LoadableWithParams('Product');
 const SettingsPage = LoadableIfUserNeeded('Settings', true);
+const ShoppingCartPage = LoadableIfUserNeeded('ShoppingCart', true);
 const ShippingAndPaymentPage = Loadable('ShippingAndPayment');
 const WarrantyPage = Loadable('Warranty');
 
@@ -73,6 +75,14 @@ const Routes = () => (
     <Route
       component={SettingsPage}
       path={Config.settingsPath}
+    />
+    <Route
+      component={ProductPage}
+      path="/product/:id"
+    />
+    <Route
+      component={ShoppingCartPage}
+      path="/shopping-cart"
     />
     <Route
       component={ShippingAndPaymentPage}

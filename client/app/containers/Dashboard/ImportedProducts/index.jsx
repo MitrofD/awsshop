@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import EditOrPush from './EditOrPush';
+import PushToShop from './PushToShop';
 import Product from './Product';
 import NoHaveLabel from '../../includes/NoHaveLabel';
 import LoadMore from '../../includes/LoadMore';
@@ -16,7 +16,7 @@ type Props = {
 };
 
 type State = {
-  editOrPush: ?React$Element<typeof EditOrPush>,
+  pushItem: ?React$Element<typeof PushToShop>,
   showLoadMore: boolean,
   xhrRequest: boolean,
 };
@@ -32,15 +32,17 @@ class ImportedProducts extends React.Component<Props, State> {
     super(props, context);
 
     this.state = {
-      editOrPush: null,
+      pushItem: null,
       showLoadMore: false,
       xhrRequest: true,
     };
 
     const self: any = this;
+    self.onCancelPushToShop = this.onCancelPushToShop.bind(this);
     self.onChangeSearchInput = this.onChangeSearchInput.bind(this);
-    self.onClickProductPushButton = this.onClickProductPushButton.bind(this);
-    self.onClickEditOrPushCancelButton = this.onClickEditOrPushCancelButton.bind(this);
+    self.onDeleteProduct = this.onDeleteProduct.bind(this);
+    self.onPushedProduct = this.onPushedProduct.bind(this);
+    self.onPushProduct = this.onPushProduct.bind(this);
     self.onSetRootNode = this.onSetRootNode.bind(this);
     self.onScrollWindow = this.onScrollWindow.bind(this);
     self.onSubmitSearchForm = this.onSubmitSearchForm.bind(this);
@@ -62,20 +64,50 @@ class ImportedProducts extends React.Component<Props, State> {
     this.findTitle = pureValue.length > 0 ? pureValue : null;
   }
 
-  onClickProductPushButton(data: Object) {
-    this.setState({
-      editOrPush: (
-        <EditOrPush
-          {...data}
-          onClickCancelButton={this.onClickEditOrPushCancelButton}
-        />
-      ),
+  onDeleteProduct(data: Object) {
+    const rawProductID = data._id;
+
+    showConfirmModal('Are you sure?', () => {
+      products.rawDelete(rawProductID).then(() => {
+        const idx = this.itemIds.indexOf(rawProductID);
+
+        if (idx !== -1) {
+          this.items.splice(idx, 1);
+          this.itemIds.splice(idx, 1);
+          this.forceUpdate();
+        }
+      }).catch((error) => {
+        NotificationBox.danger(error.message);
+      });
     });
   }
 
-  onClickEditOrPushCancelButton() {
+  onCancelPushToShop() {
     this.setState({
-      editOrPush: null,
+      pushItem: null,
+    });
+  }
+
+  onPushedProduct(data: Object) {
+    const idx = this.itemIds.indexOf(data.rawId);
+
+    if (idx !== -1) {
+      this.items.splice(idx, 1);
+      this.itemIds.splice(idx, 1);
+    }
+
+    this.onCancelPushToShop();
+  }
+
+  onPushProduct(data: Object) {
+    this.setState({
+      pushItem: (
+        <PushToShop
+          {...data}
+          onCancel={this.onCancelPushToShop}
+          onPush={this.onPushedProduct}
+        />
+      ),
     });
   }
 
@@ -150,7 +182,8 @@ class ImportedProducts extends React.Component<Props, State> {
           <Product
             data={item}
             key={itemId}
-            onClickPushButton={this.onClickProductPushButton}
+            onDelete={this.onDeleteProduct}
+            onPush={this.onPushProduct}
           />
         ));
         this.itemIds.push(itemId);
@@ -194,7 +227,7 @@ class ImportedProducts extends React.Component<Props, State> {
 
   render() {
     const {
-      editOrPush,
+      pushItem,
       showLoadMore,
       xhrRequest,
     } = this.state;
@@ -244,13 +277,13 @@ class ImportedProducts extends React.Component<Props, State> {
 
     let className = 'ImportedProducts';
 
-    if (editOrPush) {
+    if (pushItem) {
       className += ' edt-md';
     }
 
     return (
       <div className={className}>
-        {editOrPush}
+        {pushItem}
         <div className="dt">
           <div className="ttl">{tt('Imported products')}</div>
           <div className="dt">

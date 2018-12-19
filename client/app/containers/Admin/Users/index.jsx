@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import User from './User';
-import NoHaveLabel from '../../includes/NoHaveLabel';
 import LoadMore from '../../includes/LoadMore';
 import XHRSpin from '../../includes/XHRSpin';
 import { tt } from '../../../components/TranslateElement';

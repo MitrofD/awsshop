@@ -96,7 +96,7 @@ const user = (function genUserObj() {
     safeUpdate: (newData: Object) => updateWithPath('safe-users', newData),
 
     subscribe(handle: Function, fireNow: boolean = false): SubscribeHandler {
-      const uKey = tools.generateUKey('usrSbscrb');
+      const uKey = tools.generateUKey('sbscrb_usr');
       subs[uKey] = handle;
 
       if (fireNow) {

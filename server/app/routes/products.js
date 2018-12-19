@@ -2,11 +2,31 @@
 const bodyParser = require('body-parser');
 const querystring = require('querystring');
 const request = require('request');
+const cartProducts = require('../api/cart-products');
 const products = require('../api/products');
 
 const bodyUrlencodedMiddleware = bodyParser.urlencoded({
   extended: false,
 });
+
+const getPureArrObj = (obj: Object) => {
+  const pureObj = {};
+
+  const arrayFields = [
+    'images',
+    'tags',
+  ];
+
+  arrayFields.forEach((field) => {
+    const needField = `${field}[]`;
+
+    if (Tools.isArray(obj[needField])) {
+      pureObj[field] = obj[needField];
+    }
+  });
+
+  return pureObj;
+};
 
 module.exports = function productsRoute() {
   this.get('/products/:categoryId?', (req, res, next) => {
@@ -14,7 +34,22 @@ module.exports = function productsRoute() {
       req.query.categoryId = req.params.categoryId;
     }
 
+    req.query.isPaused = false;
+
     products.get(req.query).then((data) => {
+      res.json(data);
+    }).catch(next);
+  });
+
+  this.get('/my-products/:categoryId?', Middleware.userId_Sess, (req, res, next) => {
+    const getQuery: { [string]: any } = req.query;
+    getQuery.userId = req.userId;
+
+    if (req.params.categoryId) {
+      getQuery.categoryId = req.params.categoryId;
+    }
+
+    products.get(getQuery).then((data) => {
       res.json(data);
     }).catch(next);
   });
@@ -32,8 +67,10 @@ module.exports = function productsRoute() {
     }).catch(next);
   });
 
-  this.get('/products/:id', (req, res, next) => {
-    products.withId(req.params.id).then((product) => {
+  this.get('/products/id/:id', (req, res, next) => {
+    products.withId(req.params.id, {
+      isPaused: false,
+    }).then((product) => {
       res.json(product);
     }).catch(next);
   });
@@ -41,37 +78,52 @@ module.exports = function productsRoute() {
   this.get('/products/url/:url', (req, res, next) => {
     const pureURL = querystring.unescape(req.params.url);
 
-    products.withUrl(pureURL).then((product) => {
+    products.withUrl(pureURL, {
+      isPaused: false,
+    }).then((product) => {
       res.json(product);
     }).catch(next);
   });
 
-  this.delete('/products/:id', Middleware.userId_Sess, (req, res, next) => {
-    products.remove(req.params.id).then((data) => {
+  this.get('/shopping-cart-products', Middleware.userId_Sess, (req, res, next) => {
+    cartProducts.getForUser(req.userId).then((items) => {
+      res.json(items);
+    }).catch(next);
+  });
+
+  this.delete('/my-products/:id', Middleware.userId_Sess, (req, res, next) => {
+    products.remove(req.userId, req.params.id).then((data) => {
       res.json(data);
     }).catch(next);
   });
 
-  this.post('/products/:id', Middleware.userId_Sess, (req, res, next) => {
-    products.add(req.userId, req.params.id).then((data) => {
+  this.delete('/raw-products/:id', Middleware.userId_Sess, (req, res, next) => {
+    products.rawRemove(req.userId, req.params.id).then((data) => {
+      res.json(data);
+    }).catch(next);
+  });
+
+  this.delete('/products/from-cart/:id', Middleware.userId_Sess, (req, res, next) => {
+    cartProducts.remove(req.userId, req.params.id).then((product) => {
+      res.json(product);
+    }).catch(next);
+  });
+
+  this.post('/products/:rawId', Middleware.userId_Sess, Middleware.jsonBodyParser, (req, res, next) => {
+    const pureArrsObj = getPureArrObj(req.body);
+    Object.assign(req.body, pureArrsObj);
+
+    products.push(req.userId, req.params.rawId, req.body).then((data) => {
       res.json(data);
     }).catch(next);
   });
 
   this.post('/products', Middleware.userId_Sess, bodyUrlencodedMiddleware, (req, res, next) => {
     const finishFunc = () => {
-      const arrayFields = [
-        'images',
-        'tags',
-      ];
+      const pureArrsObj = getPureArrObj(req.body);
+      Object.assign(req.body, pureArrsObj);
 
-      arrayFields.forEach((field) => {
-        const needField = `${field}[]`;
-        req.body[field] = req.body[needField];
-        delete req.body[needField];
-      });
-
-      products.addRow(req.userId, req.body).then((product) => {
+      products.add(req.userId, req.body).then((product) => {
         res.json(product);
       }).catch(next);
     };
@@ -91,17 +143,18 @@ module.exports = function productsRoute() {
     }
   });
 
-  /*
-  this.post('/categories', Middleware.admin_Sess, Middleware.jsonBodyParser, (req, res, next) => {
-    categories.add(req.body.name).then((data) => {
+  this.put('/products/:id', Middleware.userId_Sess, Middleware.jsonBodyParser, (req, res, next) => {
+    const pureArrsObj = getPureArrObj(req.body);
+    Object.assign(req.body, pureArrsObj);
+
+    products.update(req.userId, req.params.id, req.body).then((data) => {
       res.json(data);
     }).catch(next);
   });
 
-  this.put('/categories/:id', Middleware.admin_Sess, Middleware.jsonBodyParser, (req, res, next) => {
-    categories.update(req.params.id, req.body).then((data) => {
+  this.put('/product/to-cart/:id', Middleware.userId_Sess, (req, res, next) => {
+    cartProducts.add(req.userId, req.params.id).then((data) => {
       res.json(data);
     }).catch(next);
   });
-  */
 };

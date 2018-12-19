@@ -155,6 +155,18 @@ const categories = {
     return value;
   },
 
+  async withId(id: MongoID): Promise<Object> {
+    const category = await collection.findOne({
+      _id: tools.getMongoID(id),
+    });
+
+    if (!category) {
+      throw new Error(NOT_FOUND_TEXT);
+    }
+
+    return category;
+  },
+
   async withName(name: string): Promise<Object> {
     const category = await collection.findOne({
       name,

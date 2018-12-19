@@ -116,7 +116,7 @@ function createLoadableComponent(loadFn, options) {
         update();
       }).catch((error) => {
         // eslint-disable-next-line no-console
-        console.log(error.message);
+        console.log(error);
         update();
       });
     }

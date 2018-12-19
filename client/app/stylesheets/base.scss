@@ -39,6 +39,21 @@ a.active {
   letter-spacing: normal;
 }
 
+.btns-grp {
+  .btn {
+    margin-left: 0.5rem;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+  button[type="submit"] {
+    float: none !important;
+    margin-top: 0 !important;
+  }
+}
+
 .btn {
   @extend .text-truncate;
   font-family: 'Futura PT Heavy';
@@ -67,8 +82,14 @@ a.active {
 
 .container {
   button[type="submit"] {
-    @extend .float-right;
+    float: right;
     margin-top: 1rem;
+  }
+
+  .actns {
+    button[type="submit"] {
+      margin-top: 0;
+    }
   }
 }
 
@@ -116,6 +137,12 @@ main {
     position: absolute;
     font-size: 13px;
     letter-spacing: $var-letter-spacing / 2;
+  }
+}
+
+.ldr-md {
+  .ldr-hddn {
+    display: none;
   }
 }
 
@@ -200,18 +227,24 @@ main {
 .ntfctns {
   .ItemsStack {
     position: fixed;
-    top: 0;
+    bottom: 15px;
     right: 0;
-    padding: $var-notifications-padding;
     z-index: 999;
     max-width: 350px;
+
+    .item {
+      margin-right: 15px;
+    }
 
     @include media-breakpoint-down(xs) {
       max-width: none;
       min-width: 100%;
-      padding: $spacer;
-      top: auto;
-      bottom: 0;
+      padding-left: $spacer;
+      padding-right: $spacer;
+
+      .item {
+        margin-right: 0;
+      }
     }
   }
 }
@@ -252,6 +285,11 @@ main {
   .mce-branding {
     display: none !important;
   }
+}
+
+.NumberInput {
+  @extend .form-control;
+  text-align: center;
 }
 
 .tabs {
@@ -403,6 +441,10 @@ main {
   .ttl {
     margin-bottom: 20px;
   }
+
+  .XHRSpin {
+    height: 450px;
+  }
 }
 
 .sdbr {
@@ -467,6 +509,13 @@ $var-left-side-width: 23% !default;
       border-top: none;
     }
   }
+}
+
+.prc {
+  @extend .text-truncate;
+  color: $primary;
+  font-family: 'Futura PT Heavy';
+  font-size: 18px;
 }
 
 // Includes

@@ -36,4 +36,5 @@ type User = {
   isBlocked?: Date,
   verification?: string,
   verificationResetPassword?: VerificationData,
+  pCount?: number,
 };

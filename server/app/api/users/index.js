@@ -122,6 +122,8 @@ const users = {
   CONFIRM_TTL_SEC,
   CONFIRM_TTL_MIN,
 
+  collection,
+
   async checkPassword(userId: string, password: string): Promise<boolean> {
     const user = await this.getById(userId);
 
@@ -249,11 +251,12 @@ const users = {
 
   getSafeUser(userData: User): Object {
     const safeData = {
+      blocked: tools.has.call(userData, 'blockedTime'),
       email: userData.email,
       ethAddress: userData.ethAddress,
-      blocked: tools.has.call(userData, 'blockedTime'),
       isAdmin: userData.isAdmin,
       isVerified: !tools.has.call(userData, 'verification'),
+      productsCount: userData.pCount || 0,
     };
 
     return safeData;

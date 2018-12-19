@@ -4,6 +4,7 @@ const collection = MongoStore.collection('products');
 [
   'categoryId',
   'createdAt',
+  'isPaused',
   'title',
   'price',
   'userId',

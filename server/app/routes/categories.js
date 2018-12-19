@@ -8,10 +8,28 @@ module.exports = function categoriesRoute() {
     }).catch(next);
   });
 
-  this.get('/categories/:name', (req, res, next) => {
-    categories.withName(req.params.name).then((data) => {
-      res.json(data);
-    }).catch(next);
+  this.get('/category', (req, res, next) => {
+    const {
+      id,
+      name,
+    } = req.query;
+
+    if (id) {
+      categories.withId(id).then((data) => {
+        res.json(data);
+      }).catch(next);
+      return;
+    }
+
+    if (name) {
+      categories.withName(name).then((data) => {
+        res.json(data);
+      }).catch(next);
+      return;
+    }
+
+    const getError = new Error('Incorrect request');
+    next(getError);
   });
 
   this.delete('/categories/:id', Middleware.admin_Sess, (req, res, next) => {
@@ -26,7 +44,7 @@ module.exports = function categoriesRoute() {
     }).catch(next);
   });
 
-  this.put('/categories/:id', Middleware.admin_Sess, Middleware.jsonBodyParser, (req, res, next) => {
+  this.put('/category/:id', Middleware.admin_Sess, Middleware.jsonBodyParser, (req, res, next) => {
     categories.update(req.params.id, req.body).then((data) => {
       res.json(data);
     }).catch(next);

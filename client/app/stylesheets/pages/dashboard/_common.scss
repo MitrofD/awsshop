@@ -17,7 +17,68 @@
   }
 }
 
+.ImportedProducts,
+.Products {
+  &.edt-md {
+    .dt {
+      display: none;
+    }
+  }
+}
+
 .EditProduct {
+  .thmbs {
+    margin-bottom: 1rem;
+  }
+
+  .attr-inf {
+    margin-bottom: 0.3rem;
+  }
+
+  .btns-grp {
+    margin-top: 1rem;
+  };
+
+  .tabs {
+    margin-top: 1rem;
+  }
+
+  .thmb {
+    text-align: center;
+    margin-bottom: 1rem;
+    position: relative;
+    height: 65px;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    .cls {
+      @extend .text-truncate;
+      @extend .animated;
+      @extend .flipInX;
+      color: $white;
+      cursor: pointer;
+      display: none;
+      line-height: 65px;
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      background-color: $primary;
+      border: none;
+      font-size: 22px;
+      opacity: 0.9;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    &:hover {
+      .cls {
+        display: block;
+      }
+    }
+  }
+
   .tab-content {
     .form-control {
       height: auto;
@@ -34,6 +95,24 @@
           display: block;
         }
       }
+    }
+  }
+
+  .modal-body {
+    .lst {
+      max-height: 400px;
+
+      table tr {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .EditProduct {
+    .thmbs {
+      display: none;
     }
   }
 }

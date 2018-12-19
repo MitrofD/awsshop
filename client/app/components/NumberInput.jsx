@@ -10,7 +10,6 @@ const getDefName = (function genDefName() {
 }());
 
 type Props = {
-  className: ?string,
   disableDecimal?: boolean,
   min: ?number,
   max: ?number,
@@ -19,7 +18,6 @@ type Props = {
 };
 
 const defaultProps = {
-  className: null,
   disableDecimal: false,
   min: null,
   max: null,
@@ -183,10 +181,10 @@ class NumberInput extends React.PureComponent<Props> {
     return (
       <input
         {...propsCopy}
+        className="NumberInput"
         type="text"
         onKeyUp={this.onKeyUpInput}
         onKeyDown={this.onKeyDownInput}
-        className="NumberInput"
         autoComplete="off"
         ref={
           (el) => {

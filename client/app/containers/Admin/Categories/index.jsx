@@ -198,7 +198,7 @@ class Categories extends React.Component<Props, State> {
         this.scrollFunc = windowScroll.bind(this.onScrollWindow);
       }
     }).catch((error) => {
-      NotificationBox.dangerMessage(error.message);
+      NotificationBox.danger(error.message);
       this.setStateAfterRequest({});
     });
   }

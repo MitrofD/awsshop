@@ -2,6 +2,19 @@
 import axios from 'axios';
 import tools from './tools';
 
+const getWithAttr = (attr: string, val: string): Promise<Object> => {
+  const getPromise = new Promise((resolve, reject) => {
+    axios.get(`${proxyPath}/category?${attr}=${val}`).then(({ data }) => {
+      resolve(data);
+    }).catch((error) => {
+      const errorObj = new Error(error.response.data);
+      reject(errorObj);
+    });
+  });
+
+  return getPromise;
+};
+
 const categories = Object.freeze({
   add(category?: Object): Promise<Object> {
     const promise = new Promise((resolve, reject) => {
@@ -57,7 +70,7 @@ const categories = Object.freeze({
 
   update(id: string, newData: Object): Promise<Object> {
     const promise = new Promise((resolve, reject) => {
-      axios.put(`${proxyPath}/categories/${id}`, newData).then(({ data }) => {
+      axios.put(`${proxyPath}/category/${id}`, newData).then(({ data }) => {
         resolve(data);
       }).catch((error) => {
         const editError = new Error(error.response.data);
@@ -68,18 +81,9 @@ const categories = Object.freeze({
     return promise;
   },
 
-  withName(name: string): Promise<Object> {
-    const promise = new Promise((resolve, reject) => {
-      axios.get(`${proxyPath}/categories/${name}`).then(({ data }) => {
-        resolve(data);
-      }).catch((error) => {
-        const errorObj = new Error(error.response.data);
-        reject(errorObj);
-      });
-    });
+  withId: (id: string) => getWithAttr('id', id),
 
-    return promise;
-  },
+  withName: (name: string) => getWithAttr('name', name),
 });
 
 export default categories;

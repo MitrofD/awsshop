@@ -61,6 +61,9 @@ const config = {
     ],
   },
   resolve: {
+    alias: {
+      warning: path.resolve(__dirname, 'node_modules/warning'),
+    },
     extensions: [
       '.js',
       '.jsx',
@@ -135,7 +138,9 @@ if (isDevMode) {
   config.entry.push('webpack-hot-middleware/client?path=/__hmr&reload=true');
 
   Array.prototype.push.apply(config.plugins, [
-    new DuplicatePackageCheckerPlugin(),
+    new DuplicatePackageCheckerPlugin({
+      emitError: true,
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
   ]);

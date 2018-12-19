@@ -1,12 +1,18 @@
 // @flow
 const {
+  COIN_PAYMENTS_ID,
   URL,
   SUPPORT_EMAIL,
 } = process.env;
 
-let urlAddress = URL;
-
 const inConfigText = 'in config file';
+const coinPaymentsId = typeof COIN_PAYMENTS_ID === 'string' ? COIN_PAYMENTS_ID.trim() : '';
+
+if (coinPaymentsId.length === 0) {
+  throw new Error(`Coinpaymants id option is required. (COIN_PAYMENTS_ID ${inConfigText})`);
+}
+
+let urlAddress = URL;
 
 if (!urlAddress && isDevMode) {
   urlAddress = `localhost:${Port - 1}`;
@@ -62,9 +68,10 @@ if (Tools.domainRegExp.test(domain)) {
 }
 
 Config = {
+  coinPaymentsId,
   protocol,
-  supportEmail,
   port,
+  supportEmail,
   wssProtocol,
   domain: pureDomain,
   isSecure: secure,

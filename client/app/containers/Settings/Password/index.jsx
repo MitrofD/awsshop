@@ -38,6 +38,7 @@ class Password extends React.PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
+    this.stopInputChangeTimer();
     this.unmounted = true;
   }
 
@@ -249,7 +250,7 @@ class Password extends React.PureComponent<Props, State> {
               {errorLabels.confirmPassword}
             </div>
             <button
-              className="btn btn-primary float-right"
+              className="btn btn-primary"
               disabled={disabledSubmit}
               type="submit"
             >

@@ -11,15 +11,13 @@ const ProductsPage = Loadable('Products');
 const UsersPage = Loadable('Users');
 
 const categoriesLink = `${Config.adminPath}/categories`;
-const productsLink = `${Config.adminPath}/products`;
+// const productsLink = `${Config.adminPath}/products`;
 
 const Admin = () => (
   <Page className="Admin">
     <div className="sprtr" />
     <div className="lft sdbr">
-      <div className="ttl">
-        {tt('Admin panel')}
-      </div>
+      <div className="ttl">{tt('Admin panel')}</div>
       <ul className="lst">
         <li>
           <NavLink
@@ -34,11 +32,6 @@ const Admin = () => (
             {tt('Categories')}
           </NavLink>
         </li>
-        <li>
-          <NavLink to={productsLink}>
-            {tt('Products')}
-          </NavLink>
-        </li>
       </ul>
     </div>
     <div className="rght">
@@ -51,10 +44,6 @@ const Admin = () => (
         <Route
           component={CategoriesPage}
           path={categoriesLink}
-        />
-        <Route
-          component={ProductsPage}
-          path={productsLink}
         />
       </Switch>
     </div>

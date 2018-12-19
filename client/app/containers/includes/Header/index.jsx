@@ -1,10 +1,10 @@
 // @flow
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import ShoppingCart from './ShoppingCart';
 import UserMenu from './UserMenu';
 import NavLogo from '../NavLogo';
 import NavLoginOrRegister from '../NavLoginOrRegister';
-import { PrimaryBadge } from '../../../components/Badge';
 import { tt } from '../../../components/TranslateElement';
 
 type Props = {
@@ -112,17 +112,7 @@ class Header extends React.PureComponent<Props, State> {
                     </Link>
                   </li>
                 )}
-                <li className="nav-item">
-                  <Link
-                    className="nav-link brdrd"
-                    to="/shopping-cart"
-                  >
-                    <div className="icn-wrppr">
-                      <i className="icn icn-shppng-crt" /> {tt('Shopping cart')}
-                      <PrimaryBadge>0</PrimaryBadge>
-                    </div>
-                  </Link>
-                </li>
+                <ShoppingCart user={user} />
               </ul>
             </div>
           </div>

@@ -3,12 +3,10 @@ import React from 'react';
 import { tt } from '../../../components/TranslateElement';
 import products from '../../../api/products';
 
-type ItemManipulation = (data: Object) => void;
-
 type Props = {
   data: Object,
-  onDelete: ItemManipulation,
-  onPush: ItemManipulation,
+  onEdit: (data: Object) => void,
+  onDelete: (data: Object) => void,
 };
 
 type State = Object;
@@ -19,23 +17,44 @@ class Product extends React.PureComponent<Props, State> {
     this.state = props.data;
 
     const self: any = this;
+    self.onClickEditButton = this.onClickEditButton.bind(this);
     self.onClickDeleteButton = this.onClickDeleteButton.bind(this);
-    self.onClickPushButton = this.onClickPushButton.bind(this);
+    self.onClickPauseButton = this.onClickPauseButton.bind(this);
+  }
+
+  onClickEditButton() {
+    this.props.onEdit(this.state);
   }
 
   onClickDeleteButton() {
     this.props.onDelete(this.state);
   }
 
-  onClickPushButton() {
-    this.props.onPush(this.state);
+  onClickPauseButton(event: SyntheticEvent<HTMLButtonElement>) {
+    const button = event.currentTarget;
+    button.disabled = true;
+    const newIsPausedValue = !this.state.isPaused;
+
+    products.setPause(this.state._id, newIsPausedValue).then(() => {
+      button.disabled = false;
+
+      this.setState({
+        isPaused: newIsPausedValue,
+      });
+    }).catch((error) => {
+      button.disabled = false;
+      NotificationBox.danger(error.message);
+    });
   }
 
   render() {
     const {
       title,
       image,
+      isPaused,
     } = this.state;
+
+    const pauseButtonTitle = isPaused ? 'Unpause' : 'Pause';
 
     return (
       <div className="Product col-sm-12 col-md-6">
@@ -52,10 +71,17 @@ class Product extends React.PureComponent<Props, State> {
             <div className="btns-grp float-right">
               <button
                 className="btn btn-primary btn-sm"
-                onClick={this.onClickPushButton}
+                onClick={this.onClickEditButton}
                 type="button"
               >
-                {tt('Push to Shop')}
+                {tt('Edit')}
+              </button>
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={this.onClickPauseButton}
+                type="button"
+              >
+                {tt(pauseButtonTitle)}
               </button>
               <button
                 className="btn btn-danger btn-sm"

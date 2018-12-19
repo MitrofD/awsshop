@@ -35,6 +35,7 @@ class ETHAddress extends React.PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
+    this.stopInputChangeTimer();
     this.unmounted = true;
   }
 
