@@ -1,32 +1,6 @@
 // @flow
 import axios from 'axios';
 import tools from './tools';
-import user from './user';
-
-const DEF_PRODUCTS_COUNT = 0;
-const PRODUCTS_COUNT_SUBS = {};
-
-let productsCount = DEF_PRODUCTS_COUNT;
-
-const applyNewProductsCount = (newProductsCount: number) => {
-  productsCount = newProductsCount;
-
-  const subKeys = Object.keys(PRODUCTS_COUNT_SUBS);
-  subKeys.forEach((subKey) => {
-    const subHandle = PRODUCTS_COUNT_SUBS[subKey];
-    subHandle(newProductsCount);
-  });
-};
-
-user.subscribe((userData) => {
-  if (userData) {
-    const userProductsCount = parseInt(userData.productsCount) || DEF_PRODUCTS_COUNT;
-    applyNewProductsCount(userProductsCount);
-    return;
-  }
-
-  applyNewProductsCount(DEF_PRODUCTS_COUNT);
-}, true);
 
 const getPromiseWithPathAndQuery = (path: string, query: any): Promise<Object> => {
   const pureQuery: { [string]: any } = {
@@ -76,20 +50,6 @@ const deletePromiseWithPath = (path: string): Promise<Object> => {
 };
 
 const products = Object.freeze({
-  addToCart(id: string): Promise<Object> {
-    const addPromise = new Promise((resolve, reject) => {
-      axios.put(`${proxyPath}/product/to-cart/${id}`).then(({ data }) => {
-        applyNewProductsCount(data.productsCount);
-        resolve(data);
-      }).catch((error) => {
-        const pureError = new Error(error.response.data);
-        reject(pureError);
-      });
-    });
-
-    return addPromise;
-  },
-
   delete: (id: string) => deletePromiseWithPath(`/my-products/${id}`),
 
   get: (query: any) => getPromiseWithPathAndQuery('/products', query),
@@ -111,36 +71,7 @@ const products = Object.freeze({
 
   getRaw: (query: any) => getPromiseWithPathAndQuery('/raw-products', query),
 
-  getShoppingCartProducts(): Promise<Object[]> {
-    const getPromise = new Promise((resolve, reject) => {
-      axios.get(`${proxyPath}/shopping-cart-products`).then(({ data }) => {
-        resolve(data);
-      }).catch((error) => {
-        const getError = new Error(error.response.data);
-        reject(getError);
-      });
-    });
-
-    return getPromise;
-  },
-
-  getProductsCount: () => productsCount,
-
   rawDelete: (id: string) => deletePromiseWithPath(`/raw-products/${id}`),
-
-  removeFromCart(id: string): Promise<Object> {
-    const removePromise = new Promise((resolve, reject) => {
-      axios.delete(`${proxyPath}/products/from-cart/${id}`).then(({ data }) => {
-        resolve(data);
-        applyNewProductsCount(data.productsCount);
-      }).catch((error) => {
-        const removeError = new Error(error.response.data);
-        reject(removeError);
-      });
-    });
-
-    return removePromise;
-  },
 
   push(id: string, pushData: any): Promise<Object> {
     const pureData = typeof pushData === 'object' && pushData !== null ? pushData : {};
@@ -163,17 +94,6 @@ const products = Object.freeze({
     });
 
     return updatePromise;
-  },
-
-  subscribeToProductsCount(handle: Function) {
-    const uniqueKey = tools.generateUKey('prdcts_cnt');
-    PRODUCTS_COUNT_SUBS[uniqueKey] = handle;
-
-    return {
-      stop() {
-        delete PRODUCTS_COUNT_SUBS[uniqueKey];
-      },
-    };
   },
 
   update(id: string, newData: Object): Promise<Object> {

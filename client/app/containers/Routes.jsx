@@ -11,13 +11,14 @@ const {
 
 const AdminPage = LoadableIfAdmin('Admin');
 const CatalogPage = LoadableWithParams('Catalog');
-const DashboardPage = LoadableIfUserNeeded('Dashboard', true);
-const LoginPage = LoadableIfUserNeeded('Login', false);
-const RegistrationPage = LoadableIfUserNeeded('Registration', false);
 const EmailVerificationSendedPage = LoadableWithParams('EmailVerificationResent');
 const EmailVerificationPage = LoadableWithParams('EmailVerification');
+const DashboardPage = LoadableIfUserNeeded('Dashboard', true);
 const ForgotPasswordPage = LoadableIfUserNeeded('ForgotPassword', false);
 const FindPasswordTipPage = Loadable('FindPasswordTip');
+const LoginPage = LoadableIfUserNeeded('Login', false);
+const OrdersCompletedPage = LoadableWithParams('OrdersCompleted');
+const RegistrationPage = LoadableIfUserNeeded('Registration', false);
 const ResetPasswordPage = LoadableWithParams('ResetPassword');
 const ProductPage = LoadableWithParams('Product');
 const SettingsPage = LoadableIfUserNeeded('Settings', true);
@@ -91,6 +92,10 @@ const Routes = () => (
     <Route
       component={WarrantyPage}
       path="/warranty"
+    />
+    <Route
+      component={OrdersCompletedPage}
+      path="/orders-completed/:code"
     />
   </Switch>
 );

@@ -2,7 +2,6 @@
 const bodyParser = require('body-parser');
 const querystring = require('querystring');
 const request = require('request');
-const cartProducts = require('../api/cart-products');
 const products = require('../api/products');
 
 const bodyUrlencodedMiddleware = bodyParser.urlencoded({
@@ -85,12 +84,6 @@ module.exports = function productsRoute() {
     }).catch(next);
   });
 
-  this.get('/shopping-cart-products', Middleware.userId_Sess, (req, res, next) => {
-    cartProducts.getForUser(req.userId).then((items) => {
-      res.json(items);
-    }).catch(next);
-  });
-
   this.delete('/my-products/:id', Middleware.userId_Sess, (req, res, next) => {
     products.remove(req.userId, req.params.id).then((data) => {
       res.json(data);
@@ -100,12 +93,6 @@ module.exports = function productsRoute() {
   this.delete('/raw-products/:id', Middleware.userId_Sess, (req, res, next) => {
     products.rawRemove(req.userId, req.params.id).then((data) => {
       res.json(data);
-    }).catch(next);
-  });
-
-  this.delete('/products/from-cart/:id', Middleware.userId_Sess, (req, res, next) => {
-    cartProducts.remove(req.userId, req.params.id).then((product) => {
-      res.json(product);
     }).catch(next);
   });
 
@@ -148,12 +135,6 @@ module.exports = function productsRoute() {
     Object.assign(req.body, pureArrsObj);
 
     products.update(req.userId, req.params.id, req.body).then((data) => {
-      res.json(data);
-    }).catch(next);
-  });
-
-  this.put('/product/to-cart/:id', Middleware.userId_Sess, (req, res, next) => {
-    cartProducts.add(req.userId, req.params.id).then((data) => {
       res.json(data);
     }).catch(next);
   });

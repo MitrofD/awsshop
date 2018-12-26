@@ -5,6 +5,7 @@ import Page from './includes/Page';
 import XHRSpin from './includes/XHRSpin';
 import { tt } from '../components/TranslateElement';
 import AlertDanger from '../components/alerts/AlertDanger';
+import orders from '../api/orders';
 import products from '../api/products';
 import user from '../api/user';
 
@@ -99,7 +100,7 @@ class Product extends React.PureComponent<Props, State> {
     const button = event.currentTarget;
     button.disabled = true;
 
-    products.addToCart(id).then(() => {
+    orders.add(id).then(() => {
       NotificationBox.success('Added to Cart successful');
       button.disabled = false;
     }).catch((error) => {

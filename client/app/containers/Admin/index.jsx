@@ -4,14 +4,22 @@ import { Switch, Route, NavLink } from 'react-router-dom';
 import Page from '../includes/Page';
 import { tt } from '../../components/TranslateElement';
 
-const { Loadable } = require('../../components/Loadable')(cN => import(`./${cN}`));
+const {
+  Loadable,
+  LoadableWithParams,
+} = require('../../components/Loadable')(cN => import(`./${cN}`));
+
+const ActiveOrdersPage = LoadableWithParams('Orders', {
+  isActive: true,
+});
 
 const CategoriesPage = Loadable('Categories');
-const ProductsPage = Loadable('Products');
+const OrdersHistoryPage = LoadableWithParams('Orders');
 const UsersPage = Loadable('Users');
 
 const categoriesLink = `${Config.adminPath}/categories`;
-// const productsLink = `${Config.adminPath}/products`;
+const ordersHistoryLink = `${Config.adminPath}/orders-history`;
+const usersLink = `${Config.adminPath}/users`;
 
 const Admin = () => (
   <Page className="Admin">
@@ -24,6 +32,16 @@ const Admin = () => (
             exact
             to={Config.adminPath}
           >
+            {tt('Active orders')}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to={ordersHistoryLink}>
+            {tt('Orders history')}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to={usersLink}>
             {tt('Users')}
           </NavLink>
         </li>
@@ -37,9 +55,17 @@ const Admin = () => (
     <div className="rght">
       <Switch>
         <Route
-          component={UsersPage}
+          component={ActiveOrdersPage}
           exact
           path={Config.adminPath}
+        />
+        <Route
+          component={OrdersHistoryPage}
+          path={ordersHistoryLink}
+        />
+        <Route
+          component={UsersPage}
+          path={usersLink}
         />
         <Route
           component={CategoriesPage}

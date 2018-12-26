@@ -7,7 +7,7 @@ import Page from '../includes/Page';
 import { tt } from '../../components/TranslateElement';
 import XHRSpin from '../includes/XHRSpin';
 import NoHaveLabel from '../includes/NoHaveLabel';
-import products from '../../api/products';
+import orders from '../../api/orders';
 
 type Props = {};
 
@@ -49,7 +49,7 @@ class ShoppingCart extends React.PureComponent<Props, State> {
 
     let totalPrice = 0;
 
-    products.getShoppingCartProducts().then((items) => {
+    orders.getCart().then((items) => {
       this.items = items.map((item) => {
         const itemId = item._id;
         this.itemIds.push(itemId);
@@ -131,7 +131,7 @@ class ShoppingCart extends React.PureComponent<Props, State> {
       className += ' ldr-md';
     }
 
-    const itemsContent = this.items.length > 0 ? this.items : <NoHaveLabel>{tt('No have products')}</NoHaveLabel>;
+    const itemsContent = this.items.length > 0 ? this.items : <NoHaveLabel>{tt('Your shopping cart is empty')}</NoHaveLabel>;
 
     return (
       <Page className={className}>

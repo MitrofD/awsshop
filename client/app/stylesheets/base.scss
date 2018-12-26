@@ -334,6 +334,7 @@ main {
 }
 
 .ttl {
+  @extend .text-truncate;
   color: $dark;
   font-family: 'Futura PT Heavy';
   font-size: 18px;

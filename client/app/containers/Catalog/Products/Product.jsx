@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { tt } from '../../../components/TranslateElement';
-import products from '../../../api/products';
+import orders from '../../../api/orders';
 import user from '../../../api/user';
 
 type Props = {
@@ -33,7 +33,7 @@ const Product = (props: Props) => {
     const button = event.currentTarget;
     button.disabled = true;
 
-    products.addToCart(props._id).then(() => {
+    orders.add(props._id).then(() => {
       NotificationBox.success('Added to Cart successful');
       button.disabled = false;
     }).catch((error) => {

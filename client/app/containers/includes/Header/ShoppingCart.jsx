@@ -3,14 +3,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { tt } from '../../../components/TranslateElement';
 import { PrimaryBadge } from '../../../components/Badge';
-import products from '../../../api/products';
+import orders from '../../../api/orders';
 
 type Props = {
   user: ?Object,
 };
 
 type State = {
-  productsCount: number,
+  ordersCount: number,
 };
 
 class ShoppingCart extends React.PureComponent<Props, State> {
@@ -22,20 +22,20 @@ class ShoppingCart extends React.PureComponent<Props, State> {
     }
 
     this.state = {
-      productsCount: products.getProductsCount(),
+      ordersCount: orders.getProductsCount(),
     };
   }
 
   componentDidMount() {
     this.unmounted = false;
 
-    this.productsCountSubs = products.subscribeToProductsCount((productsCount) => {
+    this.ordersCountSubs = orders.subscribeToCount((ordersCount) => {
       if (this.unmounted) {
         return;
       }
 
       this.setState({
-        productsCount,
+        ordersCount,
       });
     });
   }
@@ -43,14 +43,14 @@ class ShoppingCart extends React.PureComponent<Props, State> {
   componentWillUnmount() {
     this.unmounted = true;
 
-    if (this.productsCountSubs) {
-      this.productsCountSubs.stop();
-      this.productsCountSubs = null;
+    if (this.ordersCountSubs) {
+      this.ordersCountSubs.stop();
+      this.ordersCountSubs = null;
     }
   }
 
   toPath = '/login';
-  productsCountSubs: ?SubscribeHandler = null;
+  ordersCountSubs: ?SubscribeHandler = null;
   unmounted = true;
 
   render() {
@@ -62,7 +62,7 @@ class ShoppingCart extends React.PureComponent<Props, State> {
         >
           <div className="icn-wrppr">
             <i className="icn icn-shppng-crt" /> {tt('Shopping cart')}
-            <PrimaryBadge>{this.state.productsCount}</PrimaryBadge>
+            <PrimaryBadge>{this.state.ordersCount}</PrimaryBadge>
           </div>
         </Link>
       </li>

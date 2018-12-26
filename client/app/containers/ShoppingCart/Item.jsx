@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import NumberInput from '../../components/NumberInput';
 import { tt } from '../../components/TranslateElement';
-import products from '../../api/products';
+import orders from '../../api/orders';
 
 type Props = Object & {
   onChangeTotalDiff: (string, number) => void,
@@ -57,7 +57,7 @@ class Item extends React.PureComponent<Props, State> {
       button.disabled = true;
       const productId = this.props._id;
 
-      products.removeFromCart(productId).then((product) => {
+      orders.remove(productId).then((product) => {
         button.disabled = false;
         const productData = Object.assign({}, this.props, this.state);
         delete productData.onChangeTotalDiff;

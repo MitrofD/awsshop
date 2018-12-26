@@ -57,7 +57,7 @@ class Product extends React.PureComponent<Props, State> {
     const pauseButtonTitle = isPaused ? 'Unpause' : 'Pause';
 
     return (
-      <div className="Product col-sm-12 col-md-6">
+      <div className="Product col-sm-6">
         <div className="row">
           <div className="col-md-5">
             <img

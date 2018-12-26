@@ -12,6 +12,14 @@ Object.keys(uniqueKey).forEach((key) => {
   });
 });
 
+collection.createIndex({
+  ownerId: 1,
+});
+
+collection.createIndex({
+  orderId: 1,
+});
+
 collection.createIndex(uniqueKey, {
   unique: 1,
 });

@@ -1,6 +1,18 @@
 .ShoppingCart {
   .CoinPayments {
     margin-top: 1rem;
+
+    button {
+      cursor: pointer;
+      width: 198px;
+      height: 39px;
+      border: none;
+      background-image: url('https://www.coinpayments.net/images/pub/buynow-wide-yellow.png');
+
+      &:disabled {
+        opacity: 0.7;
+      }
+    }
   }
 
   .Item {

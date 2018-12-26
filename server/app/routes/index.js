@@ -2,6 +2,7 @@
 const router = require('express').Router();
 require('./categories').call(router);
 require('./data').call(router);
+require('./orders').call(router);
 require('./products').call(router);
 require('./translations').call(router);
 require('./users').call(router);

@@ -8,9 +8,11 @@ const { Loadable } = require('../../components/Loadable')(cN => import(`./${cN}`
 
 const ImportedProductsPage = Loadable('ImportedProducts');
 const ProductsPage = Loadable('Products');
-const OrdersPage = Loadable('Orders');
+const CustomerOrdersPage = Loadable('CustomerOrders');
+const MyOrdersPage = Loadable('MyOrders');
 
-const ordersLink = `${Config.dashboardPath}/orders`;
+const customerOrdersLink = `${Config.dashboardPath}/customer-orders`;
+const myOrdersLink = `${Config.dashboardPath}/my-orders`;
 const myProductsLink = `${Config.dashboardPath}/my-products`;
 
 const Dashboard = () => (
@@ -30,17 +32,18 @@ const Dashboard = () => (
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to={myProductsLink}
-          >
+          <NavLink to={myProductsLink}>
             {tt('My products')}
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to={ordersLink}
-          >
-            {tt('Orders')}
+          <NavLink to={customerOrdersLink}>
+            {tt('Customer orders')}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to={myOrdersLink}>
+            {tt('My orders')}
           </NavLink>
         </li>
       </ul>
@@ -57,8 +60,12 @@ const Dashboard = () => (
           path={myProductsLink}
         />
         <Route
-          component={OrdersPage}
-          path={ordersLink}
+          component={CustomerOrdersPage}
+          path={customerOrdersLink}
+        />
+        <Route
+          component={MyOrdersPage}
+          path={myOrdersLink}
         />
       </Switch>
     </div>

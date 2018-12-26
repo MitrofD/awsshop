@@ -1,6 +1,6 @@
 node_modules
-bundle/
-bundle.tar
+bundle
+bundle.tar.gz
 .conf
 yarn-error.log
 yarn.lock

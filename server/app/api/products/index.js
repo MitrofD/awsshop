@@ -226,13 +226,6 @@ const products = {
     return findPromise;
   },
 
-  rawRemove: (userId: string, id: MongoID) => deleteWithCollection(rawCollection, userId, id),
-
-  async remove(userId: string, id: MongoID): Promise<Object> {
-    const deletedItm = await deleteWithCollection(collection, userId, id);
-    return deletedItm;
-  },
-
   async getRaw(query: any): Promise<Object> {
     const rQuery = typeof query === 'object' && query !== null ? query : {};
     const pureData = getDataFromQuery(rQuery);
@@ -274,6 +267,8 @@ const products = {
     return findPromise;
   },
 
+  rawRemove: (userId: string, id: MongoID) => deleteWithCollection(rawCollection, userId, id),
+
   async rawWithId(id: MongoID): Promise<Object> {
     const pureId = tools.getMongoID(id);
     const product = await rawCollection.findOne({
@@ -285,6 +280,11 @@ const products = {
     }
 
     return product;
+  },
+
+  async remove(userId: string, id: MongoID): Promise<Object> {
+    const deletedItm = await deleteWithCollection(collection, userId, id);
+    return deletedItm;
   },
 
   async push(userId: string, rawId: string, data: any): Promise<Object> {

@@ -1,0 +1,39 @@
+.Orders {
+  .Order {
+    .cnt {
+      color: $primary;
+      font-weight: bold;
+      font-family: 'Futura PT Heavy';
+      font-size: 23px;
+    }
+
+    .ttl {
+      color: $primary;
+      font-size: 17px;
+      padding-bottom: 0.8rem;
+    }
+
+    .inf {
+      margin-top: 0.7rem;
+      padding-top: 0.5rem;
+      border-top: dashed 1px $gray-600;
+
+      a {
+        color: $primary;
+      }
+
+      .itm {
+        margin-bottom: 5px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .sts-swtchr {
+          position: relative;
+          display: inline-block;
+        }
+      }
+    }
+  }
+}
