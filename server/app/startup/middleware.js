@@ -1,5 +1,6 @@
 // @flow
 const users = require('../api/users');
+const csrf = require('../api/csrf');
 
 const bodyParser = (req, callback) => {
   let body = '';
@@ -37,6 +38,11 @@ Middleware.checkPassword = (req, res, next) => {
   users.checkPassword(req.userId, req.body.currPassword).then(() => {
     next();
   }).catch(next);
+};
+
+Middleware.clientIp = (req, res, next) => {
+  req.clientIp = req.ip.replace(/^.*:/, '');
+  next();
 };
 
 Middleware.jsonBodyParser = (req, res, next) => {
@@ -78,6 +84,21 @@ Middleware.admin_Sess = (req, res, next) => {
     if (!isAdmin) {
       const error = new Error('Only for administrator');
       next(error);
+      return;
+    }
+
+    next();
+  });
+};
+
+Middleware.csrf_Sess = (req, res, next) => {
+  GSession.forRequest(req, res).then(() => {
+    const csrfToken = req.headers[csrf.cookieName];
+    const csrfSecret = req.session.get(csrf.secretKey);
+
+    if (!csrf.compare(csrfSecret, csrfToken)) {
+      const csrfError = new Error('CSRF token is incorrect');
+      next(csrfError);
       return;
     }
 

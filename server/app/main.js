@@ -11,8 +11,8 @@ app.set('trust proxy', true);
 
 const appError = (error) => {
   // eslint-disable-next-line no-console
-  console.log(`🐞 \x1b[31m[App error] ${error.message}\x1b[37m`);
-  process.exit(0);
+  console.log(`🐛 \x1b[31m[App error] ${error.message}\x1b[37m`);
+  process.exit(1);
 };
 
 if (!Config.isDevMode) {
@@ -54,6 +54,7 @@ require('./startup').then(() => {
 
     app.use(express.static(publicPath));
     app.get('*', (req, res) => {
+      res.set('Content-type', 'text/html');
       res.sendFile(indexPath);
     });
   }

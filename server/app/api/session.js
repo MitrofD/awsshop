@@ -3,6 +3,7 @@ const cron = require('node-cron');
 const crypto = require('crypto');
 const cookies = require('./cookies');
 const uuid = require('./uuid');
+const { random, alphabet } = require('./random');
 
 type SessionStore = {
   add(string, Object): Promise<boolean>;
@@ -12,18 +13,25 @@ type SessionStore = {
   set(string, Object): Promise<boolean>;
 };
 
-const COOKIE_NAME = 'sessid';
-const SALT = process.env.SESSION_SALT || '';
+const COOKIE_DEF_NAME = 'sessid';
+let SESS_ID_SALT = typeof process.env.SESSION_SALT === 'string' ? process.env.SESSION_SALT.trim() : '';
 
-const newSessId = (): string => {
+if (SESS_ID_SALT.length === 0) {
+  SESS_ID_SALT = random(alphabet.all, 5);
+}
+
+const newSessId = () => {
   const hash = crypto.createHash('sha1');
-  return hash.update(uuid.v4() + SALT).digest('hex');
+  return hash.update(uuid.v4() + SESS_ID_SALT).digest('hex');
 };
 
 class SessionItem {
   id: string;
+
   isEdited: boolean;
+
   lData: Object;
+
   store: SessionStore;
 
   constructor(id: string, store: SessionStore, initData: Object) {
@@ -88,19 +96,23 @@ class SessionItem {
   }
 }
 
-class Session {
+class SessionClass {
   cookieOptions: Object;
+
   cookieName: string;
+
   cleanTask: ?Object;
+
   store: SessionStore;
 
   constructor(store: SessionStore, cookieOptions?: Object) {
     const pureCookieOptions = cookieOptions || {};
     const tmpCookieName = typeof pureCookieOptions.name === 'string' ? pureCookieOptions.name.trim() : '';
-    const cookieName = tmpCookieName.length > 0 ? tmpCookieName : COOKIE_NAME;
+    const cookieName = tmpCookieName.length > 0 ? tmpCookieName : COOKIE_DEF_NAME;
 
     this.cookieName = cookieName;
     this.cookieOptions = pureCookieOptions;
+    this.cookieOptions.httpOnly = true;
     this.store = store;
 
     const tmpExpireDays = parseInt(pureCookieOptions.expireDays);
@@ -130,12 +142,12 @@ class Session {
 
     if (storeData) {
       req.session = new SessionItem(existsSessId, this.store, storeData);
-    } else if (res.setHeader) {
+    } else if (typeof res.setHeader === 'function') {
       const sessId = newSessId();
       const cookiesStr = cookies.get(this.cookieName, sessId, this.cookieOptions);
+      res.setHeader('Set-Cookie', cookiesStr);
 
       const initData = {};
-      res.setHeader('Set-Cookie', cookiesStr);
       this.store.add(sessId, initData);
       req.session = new SessionItem(sessId, this.store, initData);
     }
@@ -146,4 +158,4 @@ class Session {
   }
 }
 
-module.exports = Session;
+module.exports = SessionClass;

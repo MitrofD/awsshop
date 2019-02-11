@@ -5,7 +5,7 @@ const tools = {
   capitalize: (val: string): string => val.charAt(0).toUpperCase() + val.slice(1),
   domainRegExp: /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$/i,
   emailRegExp: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-  ethAdressRegExp: /^0x[a-fA-F0-9]{40}$/,
+  USDPMWalletRegExp: /^U\d{8}$/,
   escapedString: (str: string) => str.replace(/[$[+*|()^?.\\/]/g, '\\$&'),
   getMongoID: (id: MongoID): ObjectID => {
     if (id instanceof ObjectID) {

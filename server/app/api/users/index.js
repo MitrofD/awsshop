@@ -2,7 +2,9 @@
 const bcrypt = require('bcrypt');
 const { ObjectID } = require('mongodb');
 const collection = require('./collections/users');
+const loginsCollection = require('./collections/logins');
 const tools = require('../tools');
+const { random, alphabet } = require('../random');
 const uuid = require('../uuid');
 
 const MS_IN_SEC = 1000;
@@ -18,11 +20,26 @@ const LINK_EXPIRE_TEXT = 'The link has expired';
 const PASS_SALT_LENGTH = 5;
 
 const IS_ADMIN_ATTR = 'isAdmin';
-const ETH_ADDRESS_ATTR = 'ethAddress';
 const PASSWORD_ATTR = 'password';
+const PM_WALLET_ATTR = 'pMWallet';
+const REF_CODE_ATTR = 'refCode';
 
 const CONFIRM_TTL_MIN = 3;
 const CONFIRM_TTL_SEC = SEC_IN_MIN * CONFIRM_TTL_MIN * MS_IN_SEC;
+
+const getRefCode = async (): Promise<string> => {
+  const code = random(alphabet.numbers, 8);
+
+  const user = await collection.findOne({
+    [REF_CODE_ATTR]: code,
+  });
+
+  if (user) {
+    return getRefCode();
+  }
+
+  return code;
+};
 
 const getPurePasswordOrThrowError = (password: any): string => {
   if (typeof password === 'string') {
@@ -40,20 +57,16 @@ const getPurePasswordOrThrowError = (password: any): string => {
   throw new Error('Password has to be "string" type');
 };
 
-const getPureEthAddressOrThrowError = (ethAddress: any): string => {
-  if (typeof ethAddress === 'string') {
-    const pureEthAddress = ethAddress.trim();
+const getPureUSDPMWalletOrThrowError = (pMWallet: any): string => {
+  const purePMWallet = typeof pMWallet === 'string' ? pMWallet.trim().toUpperCase() : '';
 
-    if (pureEthAddress.length === 0) {
-      throw new Error('ETH address is required');
-    } else if (!Tools.ethAdressRegExp.test(pureEthAddress)) {
-      throw new Error('ETH address is incorrect');
-    }
-
-    return pureEthAddress;
+  if (purePMWallet.length === 0) {
+    throw new Error('USD wallet is required');
+  } else if (!Tools.USDPMWalletRegExp.test(purePMWallet)) {
+    throw new Error('USD wallet is incorrect');
   }
 
-  throw new Error('ETH address has to be "string" type');
+  return purePMWallet;
 };
 
 const getHashedPasswordFromPlainText = async (plainText: string): Promise<string> => {
@@ -123,6 +136,7 @@ const users = {
   CONFIRM_TTL_MIN,
 
   collection,
+  loginsCollection,
 
   async checkPassword(userId: string, password: string): Promise<boolean> {
     const user = await this.getById(userId);
@@ -253,10 +267,14 @@ const users = {
     const safeData = {
       blocked: tools.has.call(userData, 'blockedTime'),
       email: userData.email,
-      ethAddress: userData.ethAddress,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
       isAdmin: userData.isAdmin,
       isVerified: !tools.has.call(userData, 'verification'),
       productsCount: userData.pCount || 0,
+      phone: userData.phone,
+      [REF_CODE_ATTR]: userData[REF_CODE_ATTR],
+      [PM_WALLET_ATTR]: userData[PM_WALLET_ATTR],
     };
 
     return safeData;
@@ -272,7 +290,7 @@ const users = {
     return !user.verification;
   },
 
-  async login(email: string, password: string): Promise<User> {
+  async login(email: string, password: string, geoData?: GeoData): Promise<User> {
     const user = await this.getByEmail(email);
 
     if (!user) {
@@ -285,18 +303,48 @@ const users = {
       throw new Error(NOT_EXISTS_TEXT);
     }
 
+    if (geoData) {
+      const loginData = {
+        ...geoData,
+        description: `${user.firstName} ${user.lastName}`,
+        userEmail: user.email,
+        time: new Date(),
+      };
+
+      await loginsCollection.insertOne(loginData);
+    }
+
     return user;
   },
 
-  async registration(email: string, password: string, ethAddress: string, asAdmin?: boolean): ErrorsPromise<User> {
+  async registration(data: Object, asAdmin?: boolean): ErrorsPromise<User> {
+    const pureData = typeof data === 'object' && data !== null ? data : {};
+
     let errors = {};
     const newUser = {};
-    newUser.email = email.trim();
 
-    if (newUser.email.length === 0) {
-      errors.email = 'Email is required';
-    } else if (!Tools.emailRegExp.test(newUser.email)) {
-      errors.email = 'Email is ncorrect';
+    const requiredFields = [
+      'email',
+      'firstName',
+      'lastName',
+      PASSWORD_ATTR,
+    ];
+
+    const reqFieldsLength = requiredFields.length;
+    let i = 0;
+
+    for (; i < reqFieldsLength; i += 1) {
+      const field = requiredFields[i];
+      const val = typeof pureData[field] === 'string' ? pureData[field].trim() : '';
+      newUser[field] = val;
+
+      if (val.length === 0) {
+        errors[field] = `${tools.capitalize(field)} is required`;
+      }
+    }
+
+    if (newUser.email.length > 0 && !Tools.emailRegExp.test(newUser.email)) {
+      errors.email = 'Email is incorrect';
     }
 
     const existsUser = await this.getByEmail(newUser.email);
@@ -305,16 +353,23 @@ const users = {
       errors.email = 'Email is already registered';
     }
 
-    try {
-      newUser[ETH_ADDRESS_ATTR] = getPureEthAddressOrThrowError(ethAddress);
-    } catch (error) {
-      errors[ETH_ADDRESS_ATTR] = error.message;
+    let phone = typeof pureData.phone === 'string' ? pureData.phone.trim() : '';
+    let purePhone: ?string = null;
+
+    if (phone.length > 0) {
+      purePhone = phone;
+
+      if (!/^\d+$/.test(phone)) {
+        errors.phone = 'Phone number is incorrect';
+      }
     }
+
+    newUser.phone = purePhone;
 
     let purePassword = '';
 
     try {
-      purePassword = getPurePasswordOrThrowError(password);
+      purePassword = getPurePasswordOrThrowError(newUser.password);
     } catch (error) {
       errors[PASSWORD_ATTR] = error.message;
     }
@@ -329,6 +384,8 @@ const users = {
     newUser[PASSWORD_ATTR] = await getHashedPasswordFromPlainText(purePassword);
     newUser.verification = genVerificationCode();
     newUser.createdAt = new Date();
+    newUser[REF_CODE_ATTR] = await getRefCode();
+    newUser[PM_WALLET_ATTR] = null;
 
     const insertRes = await collection.insertOne(newUser);
     newUser._id = insertRes.insertedId;
@@ -374,19 +431,21 @@ const users = {
     return user;
   },
 
-  async update(id: MongoID, updateData: Object): ErrorsPromise<User> {
+  async update(id: MongoID, updateData: Object, asAdmin: boolean = false): ErrorsPromise<User> {
     let errors = {};
     const setObject = {};
 
-    if (tools.has.call(updateData, IS_ADMIN_ATTR)) {
-      setObject[IS_ADMIN_ATTR] = !!updateData[IS_ADMIN_ATTR];
+    if (asAdmin) {
+      if (tools.has.call(updateData, IS_ADMIN_ATTR)) {
+        setObject[IS_ADMIN_ATTR] = !!updateData[IS_ADMIN_ATTR];
+      }
     }
 
-    if (tools.has.call(updateData, ETH_ADDRESS_ATTR)) {
+    if (tools.has.call(updateData, PM_WALLET_ATTR)) {
       try {
-        setObject[ETH_ADDRESS_ATTR] = getPureEthAddressOrThrowError(updateData[ETH_ADDRESS_ATTR]);
+        setObject[PM_WALLET_ATTR] = getPureUSDPMWalletOrThrowError(updateData[PM_WALLET_ATTR]);
       } catch (error) {
-        errors[ETH_ADDRESS_ATTR] = error.message;
+        errors[PM_WALLET_ATTR] = error.message;
       }
     }
 

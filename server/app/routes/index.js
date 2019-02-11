@@ -1,5 +1,9 @@
 // @flow
-const router = require('express').Router();
+const express = require('express');
+const csrf = require('../api/csrf');
+
+const router = express.Router();
+
 require('./categories').call(router);
 require('./data').call(router);
 require('./orders').call(router);
@@ -7,8 +11,12 @@ require('./products').call(router);
 require('./translations').call(router);
 require('./users').call(router);
 
+const configData = Object.assign({
+  csrfCookieName: csrf.cookieName.toLowerCase(),
+}, Config);
+
 router.get('/config', (req, res) => {
-  res.json(Config);
+  res.json(configData);
 });
 
 module.exports = router;

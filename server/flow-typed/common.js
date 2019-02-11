@@ -28,13 +28,22 @@ type VerificationData = {|
   code: string,
 |};
 
+declare type GeoData = {|
+  ip: string,
+  location: string,
+|};
+
 type User = {
   _id: string,
   email: string,
-  ethAddress: string,
+  firstName: string,
+  lastName: string,
   isAdmin: boolean,
   isBlocked?: Date,
+  pCount?: number,
+  phone: ?string,
+  refCode: string,
   verification?: string,
   verificationResetPassword?: VerificationData,
-  pCount?: number,
+  pMWallet: ?string,
 };

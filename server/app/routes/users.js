@@ -1,7 +1,20 @@
 // @flow
 const users = require('../api/users');
+const getLocation = require('../api/get-location');
+const cookies = require('../api/cookies');
+const csrf = require('../api/csrf');
 
 const PERMISSION_DENIED_TEXT = 'Permission denied';
+
+const setCSRFToken = (req: Object, res: Object) => {
+  if (typeof res.setHeader === 'function') {
+    const csrfVal = csrf.forRequest(req, true);
+    const sessionOptions = Object.assign({}, GSession.cookieOptions);
+    sessionOptions.httpOnly = false;
+    const cookiesStr = cookies.get(csrf.cookieName, csrfVal, sessionOptions);
+    res.setHeader('Set-Cookie', cookiesStr);
+  }
+};
 
 const verificationMiddleware = (req, res, next) => {
   const parts = req.body.verificationCode.split(':');
@@ -62,7 +75,7 @@ module.exports = function usersRoute() {
     }).catch(next);
   });
 
-  this.post('/login', Middleware.onlyNotAuth_Sess, Middleware.jsonBodyParser, (req, res, next) => {
+  this.post('/login', Middleware.session, Middleware.jsonBodyParser, Middleware.clientIp, (req, res, next) => {
     const nowTime = Date.now();
     const retryHours = 2;
     const retryLoginTimeoutMs = HOUR_IN_MS * retryHours;
@@ -83,7 +96,13 @@ module.exports = function usersRoute() {
 
     req.session.set(SESS_LOGIN_TIME, nowTime);
 
-    users.login(req.body.email, req.body.password).then((user) => {
+    const geoData = {
+      ip: req.clientIp,
+      location: getLocation(req.clientIp),
+    };
+
+    users.login(req.body.email, req.body.password, geoData).then((user) => {
+      setCSRFToken(req, res);
       const userId = user._id.toString();
       const safeUser = users.getSafeUser(user);
 
@@ -120,11 +139,12 @@ module.exports = function usersRoute() {
   this.post('/resetPassword', Middleware.jsonBodyParser, verificationMiddleware, (req, res, next) => {
     users.resetPassword(req.verification.id, req.verification.code, req.body.password).then((user) => {
       if (user) {
+        const mailData = Object.assign({
+          confirmTTLMin: users.CONFIRM_TTL_MIN,
+        }, user);
+
         Mailer.sendTo(user.email, {
-          data: {
-            ...user,
-            confirmTTLMin: users.CONFIRM_TTL_MIN,
-          },
+          data: mailData,
           subject: 'Password changed',
           template: 'password-changed',
         }).then(() => {
@@ -143,7 +163,7 @@ module.exports = function usersRoute() {
     users.has().then((hasUser) => {
       const asAdmin = !hasUser;
 
-      users.registration(req.body.email, req.body.password, req.body.ethAddress, asAdmin).then((answer) => {
+      users.registration(req.body, asAdmin).then((answer) => {
         if (answer.data) {
           sendVerificationMessageToEmail(answer.data.email).catch(Tools.emptyRejectExeption);
         }
@@ -160,7 +180,9 @@ module.exports = function usersRoute() {
   });
 
   this.put('/safe-users', Middleware.userId_Sess, Middleware.jsonBodyParser, Middleware.checkPassword, (req, res, next) => {
-    users.update(req.userId, req.body).then((result) => {
+    const isAdmin = req.session.get(Enums.SESS_USER_IS_ADMIN);
+
+    users.update(req.userId, req.body, isAdmin).then((result) => {
       res.json(result);
     }).catch(next);
   });
@@ -181,7 +203,7 @@ module.exports = function usersRoute() {
       return;
     }
 
-    users.update(pureUserId, req.body).then((result) => {
+    users.update(pureUserId, req.body, isAdmin).then((result) => {
       res.json(result);
     }).catch(next);
   });
