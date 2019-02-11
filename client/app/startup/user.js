@@ -14,8 +14,16 @@ const applyUser = (userData: ?Object) => {
     }
 
     RootNode.addClass(className, classNameKey);
+    const cookieRegExp = new RegExp(`${Config.csrfCookieName}=(\\w+)`);
+    const cookieMatches = document.cookie.match(cookieRegExp);
+
+    if (cookieMatches) {
+      const csrfToken = cookieMatches[1];
+      axios.defaults.headers.common[Config.csrfCookieName] = csrfToken;
+    }
   } else {
     RootNode.removeClass(classNameKey);
+    delete axios.defaults.headers.common[Config.csrfCookieName];
   }
 };
 

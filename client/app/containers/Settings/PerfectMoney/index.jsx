@@ -7,26 +7,26 @@ import user from '../../../api/user';
 type Props = {};
 
 type State = {
-  ethAddressError: ?string,
+  pMWalletError: ?string,
   xhrRequest: boolean,
 };
 
 const isChangedVal = (val: any) => val !== null;
 
-class ETHAddress extends React.PureComponent<Props, State> {
+class PerfectMoney extends React.Component<Props, State> {
   constructor(props: Props, context: null) {
     super(props, context);
 
     this.state = {
-      ethAddressError: null,
+      pMWalletError: null,
       xhrRequest: false,
     };
 
     const currUser = user.get();
-    this.currAddress = currUser ? currUser.ethAddress : '';
+    this.currPWWallet = currUser ? currUser.pMWallet : '';
 
     const self: any = this;
-    self.onChangeAddressInput = this.onChangeAddressInput.bind(this);
+    self.onChangePMWalletInput = this.onChangePMWalletInput.bind(this);
     self.onSubmitForm = this.onSubmitForm.bind(this);
   }
 
@@ -39,20 +39,20 @@ class ETHAddress extends React.PureComponent<Props, State> {
     this.unmounted = true;
   }
 
-  onChangeAddressInput(event: SyntheticEvent<HTMLInputElement>) {
+  onChangePMWalletInput(event: SyntheticEvent<HTMLInputElement>) {
     const input = event.currentTarget;
     const pureVal = input.value.trim();
     let error: ?string = null;
 
     if (pureVal.length === 0) {
-      error = 'ETH address is required';
-    } else if (!Tools.ethAdressRegExp.test(pureVal)) {
-      error = 'ETH address is incorrect';
+      error = 'USD wallet is required';
+    } else if (!Tools.perfMoneyUSDWalletRegExp.test(pureVal)) {
+      error = 'USD wallet is incorrect';
     }
 
-    this.address = pureVal;
+    this.wallet = pureVal;
     this.setStateAfterInputChange({
-      ethAddressError: error,
+      pMWalletError: error,
     });
   }
 
@@ -65,7 +65,7 @@ class ETHAddress extends React.PureComponent<Props, State> {
     });
 
     user.update({
-      ethAddress: this.address,
+      pMWallet: this.wallet,
     }).then((data) => {
       if (this.unmounted) {
         return;
@@ -79,7 +79,7 @@ class ETHAddress extends React.PureComponent<Props, State> {
         const pureErrors = Tools.getErrorsObj(data.errors);
         Object.assign(setObj, pureErrors);
       } else {
-        NotificationBox.success('ETH address has been changed');
+        NotificationBox.success('USD wallet has been changed');
       }
 
       this.setStateAfterRequest(setObj);
@@ -117,14 +117,14 @@ class ETHAddress extends React.PureComponent<Props, State> {
     this.inputChangeTimer = null;
   }
 
-  address: ?string = null;
-  currAddress: string;
+  wallet: ?string = null;
+  currPWWallet: string;
   inputChangeTimer: ?TimeoutID = null;
   unmounted = true;
 
   render() {
     const {
-      ethAddressError,
+      pMWalletError,
       xhrRequest,
     } = this.state;
 
@@ -133,15 +133,15 @@ class ETHAddress extends React.PureComponent<Props, State> {
     const inputCN = 'form-control';
 
     const inputCNs = {
-      address: inputCN,
+      wallet: inputCN,
     };
 
     let allInputsChanged = true;
 
-    if (isChangedVal(this.address)) {
-      if (ethAddressError) {
-        errorLabels.address = <InvalidLabel>{ethAddressError}</InvalidLabel>;
-        inputCNs.address += errorCNPrefix;
+    if (isChangedVal(this.wallet)) {
+      if (pMWalletError) {
+        errorLabels.wallet = <InvalidLabel>{pMWalletError}</InvalidLabel>;
+        inputCNs.wallet += errorCNPrefix;
       }
     } else {
       allInputsChanged = false;
@@ -151,8 +151,8 @@ class ETHAddress extends React.PureComponent<Props, State> {
     const disabledSubmit = xhrRequest || !allInputsChanged || errorsCount > 0;
 
     return (
-      <div className="ETHAddress">
-        <div className="ttl">{tt('Change ETH address')}</div>
+      <div className="PerfectMoney">
+        <div className="ttl">{tt('Set "Perfect money" wallet')}</div>
         <div className="dt row">
           <form
             className="col-sm-12 col-md-6"
@@ -160,15 +160,15 @@ class ETHAddress extends React.PureComponent<Props, State> {
             onSubmit={this.onSubmitForm}
           >
             <div className="form-group">
-              <label>{tt('Public address')}</label>
+              <label>USD {tt('wallet')} (Ex: U12345678)</label>
               <input
                 autoComplete="new-password"
-                className={inputCNs.address}
-                defaultValue={this.currAddress}
-                onChange={this.onChangeAddressInput}
+                className={inputCNs.wallet}
+                defaultValue={this.currPWWallet}
+                onChange={this.onChangePMWalletInput}
                 type="text"
               />
-              {errorLabels.address}
+              {errorLabels.wallet}
             </div>
             <button
               className="btn btn-primary"
@@ -184,4 +184,4 @@ class ETHAddress extends React.PureComponent<Props, State> {
   }
 }
 
-export default ETHAddress;
+export default PerfectMoney;

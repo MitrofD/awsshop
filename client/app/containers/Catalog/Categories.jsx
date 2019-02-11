@@ -12,8 +12,8 @@ const ACTIVE_ITEM_CLASS_NAME = ' active';
 const SCROLL_FAULT = 40;
 
 type Props = {
-  category: ?string,
-  limit: number,
+  category?: ?string,
+  limit?: number,
 };
 
 type State = {

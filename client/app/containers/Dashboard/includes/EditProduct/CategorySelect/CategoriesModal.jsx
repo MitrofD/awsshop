@@ -7,14 +7,13 @@ import XHRSpin from '../../../../includes/XHRSpin';
 import categories from '../../../../../api/categories';
 import { tt } from '../../../../../components/TranslateElement';
 
-const SCROLL_FAULT = 40;
 const ITEM_CLASS_NAME = 'itm';
 
 type GetClassNameFunc = (any) => string;
 
 type Props = {
-  id: ?string,
-  limit: number,
+  id?: ?string,
+  limit?: number,
   onClose: Function,
   onSet: Function,
 };

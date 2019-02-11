@@ -248,7 +248,6 @@ class EditProduct extends React.Component<Props, State> {
 
   onSubmitForm(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = event.currentTarget;
     const methodName = this.isRaw ? 'push' : 'update';
 
     const sendData = {

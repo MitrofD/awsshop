@@ -23,19 +23,19 @@ const getDefName = (function genDefName() {
 }());
 
 type Props = {
-  children: React.DOM,
-  className: ?string,
-  closeButtonText: string,
-  disableClose: boolean,
+  children?: React.DOM,
+  className?: ?string,
+  closeButtonText?: string,
+  disableClose?: boolean,
   closeButtonHidden?: boolean,
-  footer: React$Node,
-  isOpened: boolean,
+  footer?: React$Node,
+  isOpened?: boolean,
   isFixedFooter?: boolean,
-  name: string,
-  onOpen: ?Function,
-  onClose: ?Function,
-  title: React.DOM,
-  size: $Values<typeof SIZE>,
+  name?: string,
+  onOpen?: ?Function,
+  onClose?: ?Function,
+  title?: React.DOM,
+  size?: $Values<typeof SIZE>,
 };
 
 type State = {
@@ -78,19 +78,20 @@ class Modal extends React.PureComponent<Props, State> {
       isShown: !!props.isOpened,
     };
 
-    // binds...
     const self: any = this;
+    const pureName = typeof props.name === 'string' ? props.name.trim() : '';
+    self.name = pureName.length > 1 ? pureName : getDefName();
     self.onClickSelf = this.onClickSelf.bind(this);
     self.onClickToCloseElement = this.onClickToCloseElement.bind(this);
   }
 
   componentDidMount() {
     const self: any = this;
-    Modal.allItems[this.props.name] = self;
+    Modal.allItems[this.name] = self;
   }
 
   componentWillUnmount() {
-    delete Modal.allItems[this.props.name];
+    delete Modal.allItems[this.name];
   }
 
   onClickToCloseElement(event: SyntheticEvent<HTMLElement>) {
@@ -203,6 +204,8 @@ class Modal extends React.PureComponent<Props, State> {
       this.open();
     }
   }
+
+  name: string;
 
   render() {
     let content = null;

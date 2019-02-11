@@ -10,18 +10,20 @@ const getDefName = (function genDefName() {
 }());
 
 type Props = {
+  className?: ?string,
   disableDecimal?: boolean,
-  min: ?number,
-  max: ?number,
-  name: string,
+  min?: ?number,
+  max?: ?number,
+  name?: ?string,
   onChange: ?Function,
 };
 
 const defaultProps = {
+  className: null,
   disableDecimal: false,
   min: null,
   max: null,
-  name: getDefName(),
+  name: null,
 };
 
 class NumberInput extends React.PureComponent<Props> {
@@ -33,6 +35,8 @@ class NumberInput extends React.PureComponent<Props> {
 
     // binds ...
     const self: any = this;
+    const pureName = typeof props.name === 'string' ? props.name.trim() : '';
+    self.name = pureName.length > 0 ? pureName : getDefName();
     self.onKeyDownInput = this.onKeyDownInput.bind(this);
     self.onKeyUpInput = this.onKeyUpInput.bind(this);
   }
@@ -170,6 +174,7 @@ class NumberInput extends React.PureComponent<Props> {
 
   availableKeyCodes: number[];
   input: ?HTMLInputElement;
+  name: string;
   rValue: string;
   unmounted: boolean;
 
@@ -178,13 +183,16 @@ class NumberInput extends React.PureComponent<Props> {
     delete propsCopy.disableDecimal;
     delete propsCopy.onChange;
 
+    const pureClassName = typeof propsCopy.className === 'string' ? propsCopy.className : 'NumberInput';
+
     return (
       <input
         {...propsCopy}
-        className="NumberInput"
+        className={pureClassName}
         type="text"
         onKeyUp={this.onKeyUpInput}
         onKeyDown={this.onKeyDownInput}
+        name={this.name}
         autoComplete="off"
         ref={
           (el) => {

@@ -17,8 +17,7 @@ type State = {
 class UserMenu extends React.PureComponent<Props, State> {
   constructor(props: Props, context: null) {
     super(props, context);
-    const [userName] = props.user.email.split('@');
-    this.userName = userName;
+    this.userName = props.user.firstName;
 
     this.state = {
       dropdownShown: false,

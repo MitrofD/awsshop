@@ -9,10 +9,10 @@ DropdownDivider.displayName = dropdownItemName;
 
 type ItemProps = {
   children: React$Node,
-  className: ?string,
-  data: any,
-  onClick: ?Function,
-  wrapped: boolean,
+  className?: ?string,
+  data?: any,
+  onClick?: Function,
+  wrapped?: boolean,
 };
 
 const itemDefaultProps = {
@@ -65,18 +65,18 @@ const dropdownUniqueName = (function genDDUniqNameFunc() {
 
 type Props = {
   children: React.DOM,
-  className: ?string,
-  onLeave: ?Function,
-  topSticky: boolean,
-  rightSticky: boolean,
-  bottomSticky: boolean,
-  leftSticky: boolean,
-  isFullWidth: boolean,
+  className?: ?string,
+  onLeave?: Function,
+  topSticky?: boolean,
+  rightSticky?: boolean,
+  bottomSticky?: boolean,
+  leftSticky?: boolean,
+  isFullWidth?: boolean,
 };
 
 const defaultProps = {
-  className: undefined,
-  onLeave: undefined,
+  className: null,
+  onLeave: null,
   topSticky: false,
   rightSticky: false,
   bottomSticky: false,

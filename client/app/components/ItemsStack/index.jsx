@@ -3,7 +3,7 @@ import React from 'react';
 import './style.scss';
 
 type Props = {
-  name: string,
+  name?: string,
 };
 
 type Options = {
@@ -54,12 +54,14 @@ class ItemsStack extends React.PureComponent<Props> {
 
   constructor(props: Props, context: null) {
     super(props, context);
-    ItemsStack.allStacks[this.props.name] = this;
+    const pureName = typeof props.name === 'string' ? props.name.trim() : '';
+    this.name = pureName.length > 0 ? pureName : genUniqueName('stck');
+    ItemsStack.allStacks[this.name] = this;
   }
 
   componentWillUnmount() {
     this.stopItemTimers();
-    delete ItemsStack.allStacks[this.props.name];
+    delete ItemsStack.allStacks[this.name];
   }
 
   add(rNode: React$Node, options?: Options) {
@@ -153,6 +155,7 @@ class ItemsStack extends React.PureComponent<Props> {
     this.itemTimers = {};
   }
 
+  name: string;
   items: { [string]: React$Node } = {};
   itemTimers: { [string]: TimeoutID } = {};
 

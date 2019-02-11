@@ -11,8 +11,8 @@ import windowScroll from '../../../api/window-scroll';
 const SCROLL_FAULT = 40;
 
 type Props = {
-  isActive: boolean,
-  limit: number,
+  isActive?: boolean,
+  limit?: number,
 };
 
 type State = {

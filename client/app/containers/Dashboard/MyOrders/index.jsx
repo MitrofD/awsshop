@@ -11,7 +11,7 @@ import windowScroll from '../../../api/window-scroll';
 const SCROLL_FAULT = 40;
 
 type Props = {
-  limit: number,
+  limit?: number,
 };
 
 type State = {

@@ -5,6 +5,7 @@ import axios from 'axios';
 import ItemsStack from '../components/ItemsStack';
 import ToastDanger from '../components/toasts/ToastDanger';
 import Checkbox from '../components/Checkbox';
+import NumberInput from '../components/NumberInput';
 import { InvalidLabel } from '../components/Label';
 import { tt, TTInput } from '../components/TranslateElement';
 
@@ -15,8 +16,11 @@ type Props = {
 type State = {
   confirmPasswordError: ?string,
   emailError: ?string,
-  ethAddressError: ?string,
+  firstNameError: ?string,
+  lastNameError: ?string,
   passwordError: ?string,
+  phoneError: ?string,
+  referralCodeError: ?string,
   IAgree: boolean,
   xhrRequest: boolean,
 };
@@ -32,26 +36,33 @@ class Registration extends React.Component<Props, State> {
     this.state = {
       confirmPasswordError: null,
       emailError: null,
-      ethAddressError: null,
+      firstNameError: null,
+      lastNameError: null,
       passwordError: null,
+      phoneError: null,
+      referralCodeError: null,
       IAgree: false,
       xhrRequest: false,
     };
 
     const self: any = this;
-    self.onChangeEmailInput = this.onChangeEmailInput.bind(this);
-    self.onChangePasswordInput = this.onChangePasswordInput.bind(this);
     self.onChangeConfirmPasswordInput = this.onChangeConfirmPasswordInput.bind(this);
-    self.onChangeETHAddressInput = this.onChangeETHAddressInput.bind(this);
+    self.onChangeEmailInput = this.onChangeEmailInput.bind(this);
+    self.onChangeFirstNameInput = this.onChangeFirstNameInput.bind(this);
+    self.onChangeLastNameInput = self.onChangeLastNameInput.bind(this);
+    self.onChangePasswordInput = this.onChangePasswordInput.bind(this);
+    self.onChangePhoneInput = this.onChangePhoneInput.bind(this);
+    self.onChangeReferralCodeInput = this.onChangeReferralCodeInput.bind(this);
     self.onChangeIAgreeCheckbox = this.onChangeIAgreeCheckbox.bind(this);
+    self.onSetFirstInput = self.onSetFirstInput.bind(this);
     self.onSubmitForm = this.onSubmitForm.bind(this);
   }
 
   componentDidMount() {
     this.unmounted = false;
 
-    if (this.emailInput) {
-      this.emailInput.focus();
+    if (this.firstInput) {
+      this.firstInput.focus();
     }
   }
 
@@ -74,6 +85,36 @@ class Registration extends React.Component<Props, State> {
     this.email = pureVal;
     this.setStateAfterInputChange({
       emailError: error,
+    });
+  }
+
+  onChangeFirstNameInput(event: SyntheticEvent<HTMLInputElement>) {
+    const input = event.currentTarget;
+    const pureVal = input.value.trim();
+    let error: ?string = null;
+
+    if (pureVal.length === 0) {
+      error = 'First name is required';
+    }
+
+    this.firstName = pureVal;
+    this.setStateAfterInputChange({
+      firstNameError: error,
+    });
+  }
+
+  onChangeLastNameInput(event: SyntheticEvent<HTMLInputElement>) {
+    const input = event.currentTarget;
+    const pureVal = input.value.trim();
+    let error: ?string = null;
+
+    if (pureVal.length === 0) {
+      error = 'Last name is required';
+    }
+
+    this.lastName = pureVal;
+    this.setStateAfterInputChange({
+      lastNameError: error,
     });
   }
 
@@ -111,21 +152,19 @@ class Registration extends React.Component<Props, State> {
     });
   }
 
-  onChangeETHAddressInput(event: SyntheticEvent<HTMLInputElement>) {
+  onChangePhoneInput(input: HTMLInputElement) {
+    const pureVal = input.value.trim();
+    this.phone = pureVal;
+  }
+
+  onChangeReferralCodeInput(event: SyntheticEvent<HTMLInputElement>) {
     const input = event.currentTarget;
     const pureVal = input.value.trim();
-    let error: ?string = null;
+    this.phone = pureVal;
+  }
 
-    if (pureVal.length === 0) {
-      error = 'ETH address is required';
-    } else if (!Tools.ethAdressRegExp.test(pureVal)) {
-      error = 'ETH address is incorrect';
-    }
-
-    this.ethAddress = pureVal;
-    this.setStateAfterInputChange({
-      ethAddressError: error,
-    });
+  onSetFirstInput(el: ?HTMLInputElement) {
+    this.firstInput = el;
   }
 
   onSubmitForm(event: SyntheticEvent<HTMLFormElement>) {
@@ -149,8 +188,11 @@ class Registration extends React.Component<Props, State> {
 
     axios.post(`${proxyPath}/registration`, {
       email: this.email,
-      ethAddress: this.ethAddress,
+      firstName: this.firstName,
+      lastName: this.lastName,
       password: this.password,
+      phone: this.phone,
+      referralCode: this.referralCode,
     }).then(({ data }) => {
       if (data.data) {
         const user = data.data;
@@ -191,18 +233,24 @@ class Registration extends React.Component<Props, State> {
 
   confirmPassword: ?string = null;
   email: ?string = null;
-  emailInput: ?HTMLInputElement;
-  ethAddress: ?string;
+  firstInput: ?HTMLInputElement;
+  firstName: ?string = null;
+  lastName: ?string = null;
   inputChangeTimer: ?TimeoutID;
   password: ?string = null;
+  phone: ?string = null;
+  referralCode: ?string = null;
   unmounted: boolean;
 
   render() {
     const {
       confirmPasswordError,
       emailError,
-      ethAddressError,
+      firstNameError,
+      lastNameError,
       passwordError,
+      phoneError,
+      referralCodeError,
       IAgree,
       xhrRequest,
     } = this.state;
@@ -213,9 +261,12 @@ class Registration extends React.Component<Props, State> {
 
     const inputCNs = {
       confirmPassword: inputCN,
-      ethAddress: inputCN,
       email: inputCN,
+      firstName: inputCN,
+      lastName: inputCN,
       password: inputCN,
+      phone: inputCN,
+      referralCode: inputCN,
     };
 
     let allInputsChanged = true;
@@ -224,6 +275,24 @@ class Registration extends React.Component<Props, State> {
       if (emailError) {
         errorLabels.email = <InvalidLabel>{emailError}</InvalidLabel>;
         inputCNs.email += errorCNPrefix;
+      }
+    } else {
+      allInputsChanged = false;
+    }
+
+    if (isChangedInputVal(this.firstName)) {
+      if (firstNameError) {
+        errorLabels.firstName = <InvalidLabel>{firstNameError}</InvalidLabel>;
+        inputCNs.firstName += errorCNPrefix;
+      }
+    } else {
+      allInputsChanged = false;
+    }
+
+    if (isChangedInputVal(this.lastName)) {
+      if (lastNameError) {
+        errorLabels.lastName = <InvalidLabel>{lastNameError}</InvalidLabel>;
+        inputCNs.lastName += errorCNPrefix;
       }
     } else {
       allInputsChanged = false;
@@ -247,17 +316,19 @@ class Registration extends React.Component<Props, State> {
       allInputsChanged = false;
     }
 
-    if (isChangedInputVal(this.ethAddress)) {
-      if (ethAddressError) {
-        errorLabels.ethAddress = <InvalidLabel>{ethAddressError}</InvalidLabel>;
-        inputCNs.ethAddress += errorCNPrefix;
-      }
-    } else {
-      allInputsChanged = false;
+    if (phoneError) {
+      errorLabels.phone = <InvalidLabel>{phoneError}</InvalidLabel>;
+      inputCNs.phone += errorCNPrefix;
+    }
+
+    if (referralCodeError) {
+      errorLabels.referralCode = <InvalidLabel>{referralCodeError}</InvalidLabel>;
+      inputCNs.referralCode += errorCNPrefix;
     }
 
     const errorsCount = Object.keys(errorLabels).length;
     const disabledSubmit = xhrRequest || !allInputsChanged || errorsCount > 0 || !IAgree;
+    const optional = tt('Optional');
 
     return (
       <div className="Registration frm-cntnr">
@@ -268,6 +339,41 @@ class Registration extends React.Component<Props, State> {
               noValidate
               onSubmit={this.onSubmitForm}
             >
+              <div className="row">
+                <div className="col-sm-6">
+                  <div className="form-group">
+                    <label>
+                      {tt('First name')}
+                      <sup className="text-danger">*</sup>
+                    </label>
+                    <input
+                      autoComplete="first-name"
+                      className={inputCNs.firstName}
+                      onChange={this.onChangeFirstNameInput}
+                      name="firstName"
+                      type="text"
+                      ref={this.onSetFirstInput}
+                    />
+                    {errorLabels.firstName}
+                  </div>
+                </div>
+                <div className="col-sm-6">
+                  <div className="form-group">
+                    <label>
+                      {tt('Last name')}
+                      <sup className="text-danger">*</sup>
+                    </label>
+                    <input
+                      autoComplete="last-name"
+                      className={inputCNs.lastName}
+                      onChange={this.onChangeLastNameInput}
+                      name="lastName"
+                      type="text"
+                    />
+                    {errorLabels.lastName}
+                  </div>
+                </div>
+              </div>
               <div className="form-group">
                 <label>
                   {tt('Email')}
@@ -279,11 +385,6 @@ class Registration extends React.Component<Props, State> {
                   onChange={this.onChangeEmailInput}
                   name="email"
                   type="text"
-                  ref={
-                    (el) => {
-                      this.emailInput = el;
-                    }
-                  }
                 />
                 {errorLabels.email}
               </div>
@@ -316,18 +417,24 @@ class Registration extends React.Component<Props, State> {
                 {errorLabels.confirmPassword}
               </div>
               <div className="form-group">
-                <label>
-                  {tt('Etherium public address')}
-                  <sup className="text-danger">*</sup>
-                </label>
-                <input
-                  className={inputCNs.ethAddress}
-                  onChange={this.onChangeETHAddressInput}
-                  name="ethAddress"
-                  type="password"
-                  placeholder="Ex: 0x8324D36942f25b881607B087c87233F6Be226854"
+                <label>{tt('Phone number')} ({optional})</label>
+                <NumberInput
+                  disableDecimal
+                  className={inputCNs.phone}
+                  onChange={this.onChangePhoneInput}
+                  name="phone"
                 />
-                {errorLabels.ethAddress}
+                {errorLabels.phone}
+              </div>
+              <div className="form-group">
+                <label>{tt('Referral code')} ({optional})</label>
+                <input
+                  className={inputCNs.referralCode}
+                  onChange={this.onChangeReferralCodeInput}
+                  name="referralCode"
+                  type="text"
+                />
+                {errorLabels.referralCode}
               </div>
               <label className="chckkbx">
                 <Checkbox onChange={this.onChangeIAgreeCheckbox} />

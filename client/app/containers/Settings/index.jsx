@@ -6,10 +6,10 @@ import { tt } from '../../components/TranslateElement';
 
 const { Loadable } = require('../../components/Loadable')(cN => import(`./${cN}`));
 
-const ETHAddressPath = Loadable('ETHAddress');
 const PasswordPage = Loadable('Password');
+const PerfectMoneyPage = Loadable('PerfectMoney');
 
-const ethAddressLink = `${Config.settingsPath}/eth-address`;
+const perfectMoneyLink = `${Config.settingsPath}/perfect-money`;
 
 const Settings = () => (
   <Page className="Settings">
@@ -28,8 +28,8 @@ const Settings = () => (
           </NavLink>
         </li>
         <li>
-          <NavLink to={ethAddressLink}>
-            {tt('ETH address')}
+          <NavLink to={perfectMoneyLink}>
+            {tt('Perfect money')}
           </NavLink>
         </li>
       </ul>
@@ -42,8 +42,8 @@ const Settings = () => (
           path={Config.settingsPath}
         />
         <Route
-          component={ETHAddressPath}
-          path={ethAddressLink}
+          component={PerfectMoneyPage}
+          path={perfectMoneyLink}
         />
       </Switch>
     </div>

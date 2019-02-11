@@ -4,14 +4,13 @@ import User from './User';
 import LoadMore from '../../includes/LoadMore';
 import XHRSpin from '../../includes/XHRSpin';
 import { tt } from '../../../components/TranslateElement';
-import categories from '../../../api/categories';
 import users from '../../../api/users';
 import windowScroll from '../../../api/window-scroll';
 
 const SCROLL_FAULT = 40;
 
 type Props = {
-  limit: number,
+  limit?: number,
 };
 
 type State = {

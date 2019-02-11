@@ -5,7 +5,7 @@ window.Tools = Object.assign({}, tools);
 
 // eslint-disable-next-line no-console
 Tools.emptyRejectExeption = isDevMode ? error => console.log(error.message) : () => {};
-Tools.ethAdressRegExp = /^0x[a-fA-F0-9]{40}$/;
+Tools.perfMoneyUSDWalletRegExp = /^U\d{8}$/;
 
 Tools.passwordRegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 

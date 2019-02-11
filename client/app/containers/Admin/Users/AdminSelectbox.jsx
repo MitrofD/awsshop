@@ -5,7 +5,6 @@ import { tt } from '../../../components/TranslateElement';
 
 type Props = {
   isAdmin: boolean,
-  userId: string,
 };
 
 type State = {

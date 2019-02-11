@@ -4,7 +4,7 @@ import CategoriesModal from './CategoriesModal';
 import categories from '../../../../../api/categories';
 
 type Props = {
-  className: string,
+  className?: ?string,
   id: ?string,
   onChange: (?string) => void,
 };

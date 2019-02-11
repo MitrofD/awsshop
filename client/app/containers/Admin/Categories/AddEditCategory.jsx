@@ -1,12 +1,12 @@
 // @flow
 import React from 'react';
-import Modal, { SIZE as MODAL_SIZE } from '../../../components/Modal';
+import Modal from '../../../components/Modal';
 import { InvalidLabel } from '../../../components/Label';
 import { tt } from '../../../components/TranslateElement';
 import categories from '../../../api/categories';
 
 type Props = {
-  item: ?Object,
+  item?: ?Object,
   onApply: (Object) => void,
 };
 

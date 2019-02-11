@@ -57,7 +57,7 @@ class Item extends React.PureComponent<Props, State> {
       button.disabled = true;
       const productId = this.props._id;
 
-      orders.remove(productId).then((product) => {
+      orders.remove(productId).then(() => {
         button.disabled = false;
         const productData = Object.assign({}, this.props, this.state);
         delete productData.onChangeTotalDiff;

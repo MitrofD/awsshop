@@ -4,7 +4,7 @@ import orders from '../../api/orders';
 import user from '../../api/user';
 
 type Props = {
-  amount: number,
+  amount?: number,
 };
 
 type State = {
@@ -20,9 +20,10 @@ class CoinPayments extends React.PureComponent<Props, State> {
 
   constructor(props: Props, context: null) {
     super(props, context);
+    const pureAmount = parseFloat(props.amount) || 0;
 
     this.state = {
-      amount: props.amount,
+      amount: pureAmount,
     };
 
     const currUser = user.get();

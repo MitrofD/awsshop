@@ -187,14 +187,6 @@ main {
     }
   }
 
-  .nav-profile-item {
-    .nav-link {
-      font-family: 'Open Sans Regular';
-      text-transform: capitalize;
-      letter-spacing: $var-letter-spacing;
-    }
-  }
-
   .nav-link {
     color: $gray-600;
     height: 100%;
@@ -386,15 +378,6 @@ main {
       border-radius: $border-radius;
       box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.05);
     }
-
-    @include media-breakpoint-down(xs) {
-      @include transform(none);
-      top: 0;
-
-      .innr {
-        padding: 28px;
-      }
-    }
   }
 
   .ttl {
@@ -431,8 +414,32 @@ main {
     color: $primary;
   }
 
+  &.Registration {
+    .frm {
+      @include transform(none);
+      position: static;
+      margin: 10% 0;
+    }
+
+    .NumberInput {
+      text-align: left;
+    }
+  }
+
   @include media-breakpoint-down(sm) {
     width: 100%;
+  }
+
+  @include media-breakpoint-down(xs) {
+    .frm {
+      @include transform(none);
+      top: 0;
+      margin: 0 !important;
+
+      .innr {
+        padding: 28px;
+      }
+    }
   }
 }
 

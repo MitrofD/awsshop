@@ -1,6 +1,7 @@
 // @flow
 import React, { Fragment } from 'react';
 import Header from './Header';
+import UserAlerts from './UserAlerts';
 import user from '../../api/user';
 
 type Props = {
@@ -24,6 +25,7 @@ const Page = (props: Props) => {
     <Fragment>
       <Header user={currUser} />
       <main className="container">
+        <UserAlerts user={currUser} />
         <div className={className}>
           {props.children}
         </div>

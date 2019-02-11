@@ -9,7 +9,9 @@ const logLevel = 'info';
 const localhost = 'http://localhost';
 const port = parseInt(process.env.PORT) || 3000;
 const webpackCompiler = webpack(webpackConfig);
+
 const app = express();
+app.disable('x-powered-by');
 
 // Proxy settings ...
 (function configProxy() {

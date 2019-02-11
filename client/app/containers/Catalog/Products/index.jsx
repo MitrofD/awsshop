@@ -7,7 +7,7 @@ import categories from '../../../api/categories';
 const ALL_TEXT = 'All products';
 
 type Props = {
-  category: ?string,
+  category?: ?string,
 };
 
 type State = {
