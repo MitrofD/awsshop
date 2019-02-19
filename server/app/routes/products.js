@@ -34,6 +34,19 @@ module.exports = function productsRoute() {
     }
 
     req.query.isPaused = false;
+    req.query.isApproved = true;
+
+    products.get(req.query).then((data) => {
+      res.json(data);
+    }).catch(next);
+  });
+
+  this.get('/admin-products/:categoryId?', Middleware.admin_Sess, (req, res, next) => {
+    const getQuery: { [string]: any } = req.query;
+
+    if (req.params.categoryId) {
+      getQuery.categoryId = req.params.categoryId;
+    }
 
     products.get(req.query).then((data) => {
       res.json(data);
@@ -131,10 +144,11 @@ module.exports = function productsRoute() {
   });
 
   this.put('/products/:id', Middleware.userId_Sess, Middleware.jsonBodyParser, (req, res, next) => {
+    const isAdmin = req.session.get(Enums.SESS_USER_IS_ADMIN);
     const pureArrsObj = getPureArrObj(req.body);
     Object.assign(req.body, pureArrsObj);
 
-    products.update(req.userId, req.params.id, req.body).then((data) => {
+    products.update(req.userId, req.params.id, req.body, isAdmin).then((data) => {
       res.json(data);
     }).catch(next);
   });

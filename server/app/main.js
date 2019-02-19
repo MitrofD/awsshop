@@ -10,8 +10,9 @@ app.disable('x-powered-by');
 app.set('trust proxy', true);
 
 const appError = (error) => {
+  const pathText = error.path ? `\n(Path: ${error.path})` : '';
   // eslint-disable-next-line no-console
-  console.log(`🐛 \x1b[31m[App error] ${error.message}\x1b[37m`);
+  console.log(`🐛 \x1b[31m${error.message} ${pathText}\x1b[37m`);
   process.exit(1);
 };
 
@@ -41,7 +42,8 @@ if (!Config.isDevMode) {
 
 require('./startup').then(() => {
   // eslint-disable-next-line global-require
-  app.use(require('./routes'));
+  const appRoutes = require('./routes');
+  app.use(appRoutes);
 
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {

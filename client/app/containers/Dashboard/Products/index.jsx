@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import Edit from './Edit';
 import Product from './Product';
 import NoHaveLabel from '../../includes/NoHaveLabel';
 import LoadMore from '../../includes/LoadMore';
@@ -16,7 +15,6 @@ type Props = {
 };
 
 type State = {
-  editItem: ?React$Element<typeof Edit>,
   showLoadMore: boolean,
   xhrRequest: boolean,
 };
@@ -32,20 +30,16 @@ class Products extends React.Component<Props, State> {
     super(props, context);
 
     this.state = {
-      editItem: null,
       showLoadMore: false,
       xhrRequest: true,
     };
 
     const self: any = this;
     self.onChangeSearchInput = this.onChangeSearchInput.bind(this);
-    self.onCancelEdit = this.onCancelEdit.bind(this);
-    self.onEditProduct = this.onEditProduct.bind(this);
     self.onDeleteProduct = this.onDeleteProduct.bind(this);
     self.onSetRootNode = this.onSetRootNode.bind(this);
     self.onScrollWindow = this.onScrollWindow.bind(this);
     self.onSubmitSearchForm = this.onSubmitSearchForm.bind(this);
-    self.onUpdateEdit = this.onUpdateEdit.bind(this);
   }
 
   componentDidMount() {
@@ -64,18 +58,6 @@ class Products extends React.Component<Props, State> {
     this.findTitle = pureValue.length > 0 ? pureValue : null;
   }
 
-  onEditProduct(data: Object) {
-    this.setState({
-      editItem: (
-        <Edit
-          {...data}
-          onCancel={this.onCancelEdit}
-          onUpdate={this.onUpdateEdit}
-        />
-      ),
-    });
-  }
-
   onDeleteProduct(data: Object) {
     const productID = data._id;
 
@@ -92,30 +74,6 @@ class Products extends React.Component<Props, State> {
         NotificationBox.danger(error.message);
       });
     });
-  }
-
-  onCancelEdit() {
-    this.setState({
-      editItem: null,
-    });
-  }
-
-  onUpdateEdit(product: Object) {
-    const idx = this.itemIds.indexOf(product._id);
-
-    if (idx !== -1) {
-      this.items.splice(idx, 1);
-      this.items[idx] = (
-        <Product
-          data={product}
-          key={product._id}
-          onDelete={this.onDeleteProduct}
-          onEdit={this.onEditProduct}
-        />
-      );
-    }
-
-    this.onCancelEdit();
   }
 
   onSetRootNode(el: ?HTMLElement) {
@@ -190,7 +148,6 @@ class Products extends React.Component<Props, State> {
             data={item}
             key={itemId}
             onDelete={this.onDeleteProduct}
-            onEdit={this.onEditProduct}
           />
         ));
         this.itemIds.push(itemId);
@@ -234,7 +191,6 @@ class Products extends React.Component<Props, State> {
 
   render() {
     const {
-      editItem,
       showLoadMore,
       xhrRequest,
     } = this.state;
@@ -257,12 +213,12 @@ class Products extends React.Component<Props, State> {
               defaultValue={this.findTitle}
               onChange={this.onChangeSearchInput}
               type="text"
-              placeholder="Enter product title"
+              placeholder="Product title"
             />
           </div>
           <div className="col-sm-2">
             <button
-              className="btn btn-outline-primary btn-sm btn-block"
+              className="btn btn-primary btn-sm btn-block"
               type="submit"
             >
               {tt('Search')}
@@ -276,7 +232,7 @@ class Products extends React.Component<Props, State> {
       } else {
         itemsContent = (
           <NoHaveLabel>
-            {tt('No have imported products')}
+            {tt('No have products')}
           </NoHaveLabel>
         );
       }
@@ -284,13 +240,8 @@ class Products extends React.Component<Props, State> {
 
     let className = 'Products';
 
-    if (editItem) {
-      className += ' edt-md';
-    }
-
     return (
       <div className={className}>
-        {editItem}
         <div className="dt">
           <div className="ttl">{tt('My products')}</div>
           <div className="dt">

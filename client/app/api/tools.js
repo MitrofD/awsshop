@@ -1,10 +1,36 @@
 // @flow
+import axios from 'axios';
+
 const tools = Object.freeze({
   capitalize: (val: string): string => val.charAt(0).toUpperCase() + val.slice(1),
   emailRegExp: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   escapedString: (str: string) => str.replace(/[$[+*|()^?.\\/]/g, '\\$&'),
   has: Object.prototype.hasOwnProperty,
+  anyAsObj(maData: any): Object {
+    if (typeof maData === 'object' && maData !== null) {
+      return maData;
+    }
+
+    return {};
+  },
+
   generateUKey: (prefix: string): string => `${prefix}_${Date.now()}_${Math.random()}`,
+  getRequestWithURL(url: string, query: any): Promise<Object> {
+    const pureQuery = this.anyAsObj(query);
+    const queryStr = `${url}?${this.objToQuery(pureQuery)}`;
+
+    const promise = new Promise((resolve, reject) => {
+      axios.get(queryStr).then(({ data }) => {
+        resolve(data);
+      }).catch((error) => {
+        const getError = new Error(error.response.data);
+        reject(getError);
+      });
+    });
+
+    return promise;
+  },
+
   queryToObj: (query: string): Object => {
     const rObj: { [string]: string } = {};
     const decodeQuery = decodeURIComponent(query);
@@ -32,6 +58,15 @@ const tools = Object.freeze({
   isFunction: (maybyObj: any) => Object.prototype.toString.call(maybyObj) === '[object Function]',
   isUndefined: (maybyObj: any) => typeof maybyObj === 'undefined',
   isError: (maybyObj: any) => maybyObj instanceof Error,
+  isValidDate: (mbDate: any) => {
+    if (mbDate instanceof Date) {
+      const time = mbDate.getTime();
+      return !Number.isNaN(time);
+    }
+
+    return false;
+  },
+
   objToQuery: (obj: Object): string => {
     let rStr = '';
     let sep = '';

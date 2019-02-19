@@ -9,8 +9,6 @@ import ToastSuccess from './components/toasts/ToastSuccess';
 import Modal from './components/Modal';
 import ConfirmModal from './components/ConfirmModal';
 import './config';
-import translations from './api/translations';
-import user from './api/user';
 import './images/favicon.ico';
 import './main.scss';
 
@@ -88,14 +86,18 @@ if (rBody) {
     render(<ItemsStack ref={setItemsStackRef} />, notificationBoxEl);
 
     return {
-      danger(message: string) {
+      danger(message: string, replace: boolean = false) {
         const toast = <ToastDanger>{message}</ToastDanger>;
-        itemsStackRef.add(toast);
+        itemsStackRef.add(toast, {
+          replace,
+        });
       },
 
-      success(message: string) {
+      success(message: string, replace: boolean = false) {
         const toast = <ToastSuccess>{message}</ToastSuccess>;
-        itemsStackRef.add(toast);
+        itemsStackRef.add(toast, {
+          replace,
+        });
       },
     };
   }());

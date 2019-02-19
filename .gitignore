@@ -4,3 +4,4 @@ bundle.tar.gz
 .conf
 yarn-error.log
 yarn.lock
+app/api/settings/data.json

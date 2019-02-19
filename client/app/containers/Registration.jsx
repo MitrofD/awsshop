@@ -160,7 +160,10 @@ class Registration extends React.Component<Props, State> {
   onChangeReferralCodeInput(event: SyntheticEvent<HTMLInputElement>) {
     const input = event.currentTarget;
     const pureVal = input.value.trim();
-    this.phone = pureVal;
+    this.referralCode = pureVal;
+    this.setStateAfterInputChange({
+      referralCodeError: null,
+    });
   }
 
   onSetFirstInput(el: ?HTMLInputElement) {

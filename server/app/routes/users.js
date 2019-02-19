@@ -114,6 +114,7 @@ module.exports = function usersRoute() {
       req.session.set(Enums.SESS_USER_EMAIL, user.email);
       req.session.set(Enums.SESS_USER_IS_ADMIN, user.isAdmin);
       req.session.set(Enums.SESS_USER_ID, userId);
+
       res.json(safeUser);
     }).catch((error) => {
       req.session.set(SESS_LOGIN_ATTEMPTS_NUM, loginAttemtsNum + 1);
@@ -181,9 +182,26 @@ module.exports = function usersRoute() {
 
   this.put('/safe-users', Middleware.userId_Sess, Middleware.jsonBodyParser, Middleware.checkPassword, (req, res, next) => {
     const isAdmin = req.session.get(Enums.SESS_USER_IS_ADMIN);
+    users.update(req.userId, req.body, isAdmin).then((data) => {
+      res.json(data);
+    }).catch(next);
+  });
 
-    users.update(req.userId, req.body, isAdmin).then((result) => {
-      res.json(result);
+  this.put('/users/payment/:id', Middleware.admin_Sess, (req, res, next) => {
+    users.payment(req.params.id).then((user) => {
+      res.json(user);
+    }).catch(next);
+  });
+
+  this.get('/users/invited-users', Middleware.userId_Sess, (req, res, next) => {
+    users.getInvitedUsers(req.userId, req.query).then((data) => {
+      res.json(data);
+    }).catch(next);
+  });
+
+  this.get('/users/logins-history', Middleware.admin_Sess, (req, res, next) => {
+    users.getLoginsHistory(req.query).then((data) => {
+      res.json(data);
     }).catch(next);
   });
 

@@ -31,7 +31,7 @@
     "geoip-lite": "^1.3.6",
     "https": "^1.0.0",
     "mongodb": "^3.0.4",
-    "node-cron": "^1.2.1",
+    "node-cron": "^2.0.3",
     "nodemailer": "^4.6.8",
     "pug": "^2.0.3",
     "redis": "^2.8.0",

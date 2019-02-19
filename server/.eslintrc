@@ -3,21 +3,6 @@
     "airbnb-base/legacy",
     "plugin:flowtype/recommended"
   ],
-  "globals": {
-    "Config": true,
-    "Enums": true,
-    "GSession": true,
-    "isDevMode": true,
-    "Mailer": true,
-    "MongoStore": true,
-    "Middleware": true,
-    "RedisStore": true,
-    "RootPath": true,
-    "Port": true,
-    "Server": true,
-    "Tools": true,
-    "Translations": true
-  },
   "plugins": [
     "import",
     "flowtype",

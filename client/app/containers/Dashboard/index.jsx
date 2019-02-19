@@ -2,6 +2,7 @@
 import React from 'react';
 import { NavLink, Switch, Route } from 'react-router-dom';
 import Page from '../includes/Page';
+import InvitedUsers from './InvitedUsers';
 import { tt } from '../../components/TranslateElement';
 
 const { Loadable } = require('../../components/Loadable')(cN => import(`./${cN}`));
@@ -11,8 +12,9 @@ const ProductsPage = Loadable('Products');
 const CustomerOrdersPage = Loadable('CustomerOrders');
 const MyOrdersPage = Loadable('MyOrders');
 
-const customerOrdersLink = `${Config.dashboardPath}/customer-orders`;
-const myOrdersLink = `${Config.dashboardPath}/my-orders`;
+const importedProductsLink = `${Config.dashboardPath}/imported-products`;
+const invitedUsersLink = `${Config.dashboardPath}/invited-users`;
+// const myOrdersLink = `${Config.dashboardPath}/my-orders`;
 const myProductsLink = `${Config.dashboardPath}/my-products`;
 
 const Dashboard = () => (
@@ -32,18 +34,13 @@ const Dashboard = () => (
           </NavLink>
         </li>
         <li>
+          <NavLink to={invitedUsersLink}>
+            {tt('Invited users')}
+          </NavLink>
+        </li>
+        <li>
           <NavLink to={myProductsLink}>
             {tt('My products')}
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to={customerOrdersLink}>
-            {tt('Customer orders')}
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to={myOrdersLink}>
-            {tt('My orders')}
           </NavLink>
         </li>
       </ul>
@@ -56,16 +53,12 @@ const Dashboard = () => (
           path={Config.dashboardPath}
         />
         <Route
+          component={InvitedUsers}
+          path={invitedUsersLink}
+        />
+        <Route
           component={ProductsPage}
           path={myProductsLink}
-        />
-        <Route
-          component={CustomerOrdersPage}
-          path={customerOrdersLink}
-        />
-        <Route
-          component={MyOrdersPage}
-          path={myOrdersLink}
         />
       </Switch>
     </div>

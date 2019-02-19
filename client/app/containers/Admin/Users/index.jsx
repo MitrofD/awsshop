@@ -35,8 +35,8 @@ class Users extends React.Component<Props, State> {
 
     const self: any = this;
     self.onChangeSearchInput = this.onChangeSearchInput.bind(this);
-    self.onSetRootNode = this.onSetRootNode.bind(this);
     self.onScrollWindow = this.onScrollWindow.bind(this);
+    self.onSetRootNode = this.onSetRootNode.bind(this);
     self.onSubmitSearchForm = this.onSubmitSearchForm.bind(this);
   }
 
@@ -78,18 +78,13 @@ class Users extends React.Component<Props, State> {
     }
   }
 
-  getFindEmailPattern(): ?string {
+  getSearchPattern(): ?string {
     if (this.findEmail) {
       const escapedStr = Tools.escapedString(this.findEmail);
       return `.*${escapedStr}.*`;
     }
 
     return null;
-  }
-
-  getFindEmailRegExp(): ?RegExp {
-    const findEmailPattern = this.getFindEmailPattern();
-    return findEmailPattern ? new RegExp(findEmailPattern, 'i') : null;
   }
 
   setStateAfterRequest(newState: Object) {
@@ -111,10 +106,10 @@ class Users extends React.Component<Props, State> {
     queryObj.limit = this.props.limit;
     queryObj.skip = this.items.length;
 
-    const findEmailPattern = this.getFindEmailPattern();
+    const searchPattern = this.getSearchPattern();
 
-    if (findEmailPattern) {
-      queryObj.emailPattern = findEmailPattern;
+    if (searchPattern) {
+      queryObj.searchPattern = searchPattern;
     }
 
     users.get(queryObj).then(({ items, loadMore }) => {
@@ -138,7 +133,7 @@ class Users extends React.Component<Props, State> {
         this.scrollFunc = windowScroll.bind(this.onScrollWindow);
       }
     }).catch((error) => {
-      NotificationBox.dangerMessage(error.message);
+      NotificationBox.danger(error.message);
       this.setStateAfterRequest({});
     });
   }
@@ -191,8 +186,9 @@ class Users extends React.Component<Props, State> {
         <table className="table tbl-hd">
           <thead>
             <tr>
+              <th>{tt('Username')}</th>
               <th>{tt('Email')}</th>
-              <th>ETH {tt('address')}</th>
+              <th>{tt('Data')}</th>
               <th />
             </tr>
           </thead>
@@ -216,7 +212,7 @@ class Users extends React.Component<Props, State> {
           </div>
           <div className="col-sm-2">
             <button
-              className="btn btn-outline-primary btn-sm btn-block"
+              className="btn btn-primary btn-sm btn-block"
               type="submit"
             >
               {tt('Search')}

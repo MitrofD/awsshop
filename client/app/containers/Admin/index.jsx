@@ -9,16 +9,26 @@ const {
   LoadableWithParams,
 } = require('../../components/Loadable')(cN => import(`./${cN}`));
 
+/*
 const ActiveOrdersPage = LoadableWithParams('Orders', {
   isActive: true,
 });
+*/
 
 const CategoriesPage = Loadable('Categories');
-const OrdersHistoryPage = LoadableWithParams('Orders');
+const LoginsHistoryPage = Loadable('LoginsHistory');
+const PaymentsPage = LoadableWithParams('Payments');
+const ProductsPage = LoadableWithParams('Products');
+// const OrdersHistoryPage = LoadableWithParams('Orders');
+const SettingsPage = Loadable('Settings');
 const UsersPage = Loadable('Users');
 
-const categoriesLink = `${Config.adminPath}/categories`;
-const ordersHistoryLink = `${Config.adminPath}/orders-history`;
+const loginsHistoryLink = `${Config.adminPath}/logins-history`;
+// const ordersHistoryLink = `${Config.adminPath}/orders-history`;
+// const ordersLink = `${Config.adminPath}/orders`;
+const paymentsLink = `${Config.adminPath}/payments`;
+const productsLink = `${Config.adminPath}/products`;
+const settingsLink = `${Config.adminPath}/settings`;
 const usersLink = `${Config.adminPath}/users`;
 
 const Admin = () => (
@@ -32,12 +42,27 @@ const Admin = () => (
             exact
             to={Config.adminPath}
           >
-            {tt('Active orders')}
+            {tt('Categories')}
           </NavLink>
         </li>
         <li>
-          <NavLink to={ordersHistoryLink}>
-            {tt('Orders history')}
+          <NavLink to={loginsHistoryLink}>
+            {tt('Logins history')}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to={paymentsLink}>
+            {tt('Payments')}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to={productsLink}>
+            {tt('Products')}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to={settingsLink}>
+            {tt('Settings')}
           </NavLink>
         </li>
         <li>
@@ -45,31 +70,34 @@ const Admin = () => (
             {tt('Users')}
           </NavLink>
         </li>
-        <li>
-          <NavLink to={categoriesLink}>
-            {tt('Categories')}
-          </NavLink>
-        </li>
       </ul>
     </div>
     <div className="rght">
       <Switch>
         <Route
-          component={ActiveOrdersPage}
+          component={CategoriesPage}
           exact
           path={Config.adminPath}
         />
         <Route
-          component={OrdersHistoryPage}
-          path={ordersHistoryLink}
+          component={LoginsHistoryPage}
+          path={loginsHistoryLink}
+        />
+        <Route
+          component={PaymentsPage}
+          path={paymentsLink}
+        />
+        <Route
+          component={ProductsPage}
+          path={productsLink}
+        />
+        <Route
+          component={SettingsPage}
+          path={settingsLink}
         />
         <Route
           component={UsersPage}
           path={usersLink}
-        />
-        <Route
-          component={CategoriesPage}
-          path={categoriesLink}
         />
       </Switch>
     </div>

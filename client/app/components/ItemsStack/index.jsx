@@ -64,7 +64,7 @@ class ItemsStack extends React.PureComponent<Props> {
     delete ItemsStack.allStacks[this.name];
   }
 
-  add(rNode: React$Node, options?: Options) {
+  add(rNode: React$Node, options?: Object) {
     const pureOptions = getPureOptions(options);
     const itemName = pureOptions.name;
 

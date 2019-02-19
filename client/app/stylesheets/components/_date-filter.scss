@@ -1,0 +1,16 @@
+.DateRange {
+  .from,
+  .to {
+    @extend .col-sm-6;
+    @extend .form-group;
+
+    input {
+      @extend .form-control;
+      background-color: #fff !important;
+    }
+  }
+
+  .itm {
+    position: relative;
+  }
+}

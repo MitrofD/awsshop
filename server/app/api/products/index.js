@@ -1,9 +1,9 @@
 // @flow
 const collection = require('./collections/products');
 const rawCollection = require('./collections/raw-products');
-const tools = require('../tools');
 const categories = require('../categories');
-const cartProducts = require('../cart-products');
+const tools = require('../tools');
+const users = require('../users');
 
 const SHOP_TYPE = {
   ALIEXPRESS: 'ALIEXPRESS',
@@ -19,6 +19,18 @@ const NOT_FOUND_TEXT = 'Product not found';
 type GetData = {
   query: Object,
   sort: Object,
+};
+
+const getEarningsForPrice = (price: number) => {
+  const pPurchasePrice = Settings.getFloatOption('PURCHASE_PRICE');
+  const pPurchasePricePerc = Settings.getFloatOption('PURCHASE_PRICE_PERC');
+  let earnings = (price / 100) * pPurchasePricePerc;
+
+  if (earnings > pPurchasePrice) {
+    earnings = pPurchasePrice;
+  }
+
+  return earnings;
 };
 
 const pureProductOrThrowError = (data: Object, asRaw: boolean = false): Object => {
@@ -98,6 +110,14 @@ const pureProductOrThrowError = (data: Object, asRaw: boolean = false): Object =
       throw new Error('Price is required');
     }
 
+    insertData.earnings = getEarningsForPrice(insertData.price);
+
+    if (insertData.earnings === 0) {
+      throw new Error('Earnings is required');
+    }
+
+    insertData.isApproved = false;
+
     const pureCategoryId = typeof data.categoryId === 'string' ? data.categoryId.trim() : EMPTY_STR;
 
     if (pureCategoryId.length === 0) {
@@ -144,6 +164,10 @@ const getDataFromQuery = (query: Object): GetData => {
     pureQuery.isPaused = !!query.isPaused;
   }
 
+  if (tools.has.call(query, 'isApproved')) {
+    pureQuery.isApproved = !!query.isApproved;
+  }
+
   const pureSort = {};
 
   if (typeof query.sortBy === 'string') {
@@ -178,7 +202,6 @@ const products = {
     const rData = typeof data === 'object' && data !== null ? data : {};
     const pureProduct = pureProductOrThrowError(rData, true);
     pureProduct.userId = userId;
-
     const insertRes = await rawCollection.insertOne(pureProduct);
     pureProduct._id = insertRes.insertedId;
 
@@ -288,6 +311,12 @@ const products = {
   },
 
   async push(userId: string, rawId: string, data: any): Promise<Object> {
+    const user = await users.getById(userId);
+
+    if (!user) {
+      throw new Error(NOT_FOUND_TEXT);
+    }
+
     const rawProduct = await this.rawWithId(rawId);
 
     if (rawProduct.userId !== userId) {
@@ -304,6 +333,11 @@ const products = {
     rawProduct.origPrice = rawProduct.price;
     const pureProduct = pureProductOrThrowError(rawProduct);
     pureProduct.userId = userId;
+    pureProduct.advData = {
+      userEmail: user.email,
+      userFullName: `${user.firstName} ${user.lastName}`,
+    };
+
     pureProduct.isPaused = false;
 
     const insertRes = await collection.insertOne(pureProduct);
@@ -311,15 +345,58 @@ const products = {
 
     await Promise.all([
       categories.addProduct(pureProduct.categoryId),
+      /*
       rawCollection.deleteOne({
         _id: rawProductId,
       }),
+      */
     ]);
 
     pureProduct.rawId = rawProductId;
     return pureProduct;
   },
 
+  async update(userId: string, id: MongoID, updateData: any, asAdmin: boolean = false): Promise<Object> {
+    const product = await this.withId(id);
+    const pData = tools.anyAsObj(updateData);
+    const setObj = {};
+    const checkAsBoolProps = ['isPaused'];
+    let needUpdate = false;
+
+    if (asAdmin) {
+      checkAsBoolProps.push('isApproved');
+    } else if (product.userId !== userId) {
+      throw new Error(NOT_FOUND_TEXT);
+    }
+
+    const checkAsBoolPropsLength = checkAsBoolProps.length;
+    let pI = 0;
+
+    for (; pI < checkAsBoolPropsLength; pI += 1) {
+      const prop = checkAsBoolProps[pI];
+
+      if (tools.has.call(pData, prop)) {
+        needUpdate = true;
+        setObj[prop] = !!pData[prop];
+      }
+    }
+
+    if (!needUpdate) {
+      return product;
+    }
+
+    const { value } = await collection.findOneAndUpdate({
+      _id: product._id,
+    }, {
+      $set: setObj,
+    }, {
+      returnOriginal: false,
+    });
+
+    return value;
+  },
+
+  /*
   async update(userId: string, id: MongoID, updateData: Object): Promise<Object> {
     const product = await this.withId(id);
 
@@ -364,6 +441,7 @@ const products = {
     pureProduct._id = oldId;
     return pureProduct;
   },
+  */
 
   async withId(id: MongoID, advQuery: any): Promise<Object> {
     const pureQuery = typeof advQuery === 'object' && advQuery !== null ? advQuery : {};

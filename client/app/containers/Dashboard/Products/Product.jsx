@@ -5,7 +5,6 @@ import products from '../../../api/products';
 
 type Props = {
   data: Object,
-  onEdit: (data: Object) => void,
   onDelete: (data: Object) => void,
 };
 
@@ -17,13 +16,8 @@ class Product extends React.PureComponent<Props, State> {
     this.state = props.data;
 
     const self: any = this;
-    self.onClickEditButton = this.onClickEditButton.bind(this);
     self.onClickDeleteButton = this.onClickDeleteButton.bind(this);
     self.onClickPauseButton = this.onClickPauseButton.bind(this);
-  }
-
-  onClickEditButton() {
-    this.props.onEdit(this.state);
   }
 
   onClickDeleteButton() {
@@ -49,15 +43,25 @@ class Product extends React.PureComponent<Props, State> {
 
   render() {
     const {
+      earnings,
       title,
       image,
+      isApproved,
       isPaused,
+      price,
     } = this.state;
 
     const pauseButtonTitle = isPaused ? 'Unpause' : 'Pause';
+    let approveCN = 'apprvd al';
+    let approveText = 'Is approved';
+
+    if (!isApproved) {
+      approveCN = `nt-${approveCN}`;
+      approveText = 'Waiting for approve';
+    }
 
     return (
-      <div className="Product col-sm-6">
+      <div className="Product col-lg-8">
         <div className="row">
           <div className="col-md-5">
             <img
@@ -66,16 +70,15 @@ class Product extends React.PureComponent<Props, State> {
               src={image}
             />
           </div>
-          <div className="col-md-7">
-            <p>{title}</p>
+          <div className="col-md-7 mt-3 mt-sm-0">
+            {title}
+            <div className={approveCN}>{approveText}</div>
+            <p className="prc">
+              {tt('Price')}: {price} $
+              <br />
+              {tt('Earnings')}: {earnings} $
+            </p>
             <div className="btns-grp float-right">
-              <button
-                className="btn btn-primary btn-sm"
-                onClick={this.onClickEditButton}
-                type="button"
-              >
-                {tt('Edit')}
-              </button>
               <button
                 className="btn btn-primary btn-sm"
                 onClick={this.onClickPauseButton}

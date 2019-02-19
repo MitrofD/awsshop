@@ -26,11 +26,11 @@ Tools.getErrorsObj = (data: any): Object => {
 
 Tools.googleTokenRegExp = /^\d{6}$/;
 
-Tools.date = (date: Date): string => {
+Tools.date = (date: Date, sep: string = '/'): string => {
   const month = date.getMonth() + 1;
   const monthStr = `0${month}`;
   const dateStr = `0${date.getDate()}`;
-  return `${date.getFullYear()}/${monthStr.slice(-2)}/${dateStr.slice(-2)}`;
+  return date.getFullYear() + sep + monthStr.slice(-2) + sep + dateStr.slice(-2);
 };
 
 Tools.time = (date: Date): string => {

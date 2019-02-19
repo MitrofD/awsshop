@@ -38,7 +38,7 @@ class Product extends React.PureComponent<Props, State> {
     } = this.state;
 
     return (
-      <div className="Product col-sm-6">
+      <div className="Product col-lg-8">
         <div className="row">
           <div className="col-md-5">
             <img

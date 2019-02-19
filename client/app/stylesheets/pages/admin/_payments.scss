@@ -1,0 +1,28 @@
+.Admin .Payments {
+  table {
+    th:first-child,
+    td:first-child {
+      width: 32%;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+      width: 20%;
+    }
+
+    th:nth-child(3),
+    td:nth-child(3) {
+      width: 18%;
+    }
+
+    th:nth-child(4),
+    td:nth-child(4) {
+      width: 18%;
+    }
+
+    th:last-child,
+    td:last-child {
+      text-align: right;
+    }
+  }
+}

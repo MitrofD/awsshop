@@ -12,4 +12,4 @@ source $currDir/common.sh setOptionFromConfig
 export NODE_ENV=development
 export NODE_DEBUG=true
 
-npx nodemon -e .js,.pug,.json -q --exec "eslint $appDir && babel-node $appEntry"
+npx nodemon -e .js,.pug -q --exec "eslint $appDir && babel-node $appEntry"

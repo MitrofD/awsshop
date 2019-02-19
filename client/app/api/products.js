@@ -67,6 +67,8 @@ const products = Object.freeze({
     return getPromise;
   },
 
+  getAdmin: (query: any) => getPromiseWithPathAndQuery('/admin-products', query),
+
   getMy: (query: any) => getPromiseWithPathAndQuery('/my-products', query),
 
   getRaw: (query: any) => getPromiseWithPathAndQuery('/raw-products', query),
@@ -86,6 +88,14 @@ const products = Object.freeze({
     });
 
     return promise;
+  },
+
+  setApprove(id: string, isApproved: boolean): Promise<Object> {
+    const updatePromise = this.update(id, {
+      isApproved,
+    });
+
+    return updatePromise;
   },
 
   setPause(id: string, isPaused: boolean): Promise<Object> {

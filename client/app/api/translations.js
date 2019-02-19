@@ -83,7 +83,7 @@ const translations = Object.freeze({
   },
 
   subscribe(handle: Function, fireNow: boolean = false): SubscribeHandler {
-    const uKey = tools.generateUKey('trnsltSbscrb');
+    const uKey = tools.generateUKey('trnslt');
     subs[uKey] = handle;
 
     if (fireNow) {

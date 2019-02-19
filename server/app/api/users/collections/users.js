@@ -3,9 +3,13 @@ const usersCollection = MongoStore.collection('users');
 
 [
   'createdAt',
+  'fromUser',
   'firstName',
-  'verification',
   'lastName',
+  'lPayoutTime',
+  'lQSold',
+  'lRefQSold',
+  'verification',
 ].forEach((key) => {
   usersCollection.createIndex({
     [key]: 1,
@@ -14,7 +18,7 @@ const usersCollection = MongoStore.collection('users');
 
 [
   'email',
-  'refCode',
+  'referralCode',
 ].forEach((key) => {
   usersCollection.createIndex({
     [key]: 1,

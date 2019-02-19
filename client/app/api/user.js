@@ -4,6 +4,7 @@ import tools from './tools';
 
 const user = (function genUserObj() {
   const subs: SubscribesStore = {};
+  const basePath = `${proxyPath}/users`;
   let lData: ?Object;
 
   const getCopy = () => (lData ? Object.assign({}, lData) : lData);
@@ -58,6 +59,8 @@ const user = (function genUserObj() {
 
     get: getCopy,
 
+    getInvitedUsers: (query: any) => tools.getRequestWithURL(`${basePath}/invited-users`, query),
+
     login(email: string, password: string): Promise<Object> {
       const loginPromise = new Promise((resolve, reject) => {
         axios.post(`${proxyPath}/login`, {
@@ -96,7 +99,7 @@ const user = (function genUserObj() {
     safeUpdate: (newData: Object) => updateWithPath('safe-users', newData),
 
     subscribe(handle: Function, fireNow: boolean = false): SubscribeHandler {
-      const uKey = tools.generateUKey('sbscrb_usr');
+      const uKey = tools.generateUKey('usr');
       subs[uKey] = handle;
 
       if (fireNow) {

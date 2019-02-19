@@ -9,6 +9,7 @@ declare var Tools: Object;
 declare var Translations: Object;
 declare var RootPath: string;
 declare var Port: number;
+declare var Settings: Object;
 declare var Server: Object;
 declare var GSession: Object;
 
@@ -42,7 +43,7 @@ type User = {
   isBlocked?: Date,
   pCount?: number,
   phone: ?string,
-  refCode: string,
+  referralCode: string,
   verification?: string,
   verificationResetPassword?: VerificationData,
   pMWallet: ?string,

@@ -6,12 +6,17 @@
 
     td:first-child,
     th:first-child {
-      width: 35%;
+      width: 25%;
     }
 
     td:nth-child(2),
     th:nth-child(2) {
-      width: 40%;
+      width: 30%;
+    }
+
+    td:nth-child(3),
+    th:nth-child(3) {
+      width: 25%;
     }
 
     td:last-child,

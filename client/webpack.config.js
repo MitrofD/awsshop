@@ -63,6 +63,7 @@ const config = {
   resolve: {
     alias: {
       warning: path.resolve(__dirname, 'node_modules/warning'),
+      'prop-types': path.resolve(__dirname, 'node_modules/prop-types')
     },
     extensions: [
       '.js',

@@ -35,7 +35,7 @@ connectUrl += ':';
 connectUrl += MONGO_PORT || 27017;
 connectUrl += `/${cDBName}`;
 
-const connectPromise: Promise<void> = new Promise((resolve, reject) => {
+const connectPromise = new Promise((resolve, reject) => {
   MongoClient.connect(connectUrl, {
     useNewUrlParser: true,
   }, (error, client) => {
@@ -45,7 +45,7 @@ const connectPromise: Promise<void> = new Promise((resolve, reject) => {
     }
 
     MongoStore = client.db();
-    resolve();
+    resolve(MongoStore);
   });
 });
 

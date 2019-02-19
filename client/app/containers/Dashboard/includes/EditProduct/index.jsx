@@ -14,7 +14,7 @@ import XHRSpin from '../../../includes/XHRSpin';
 import NumberInput from '../../../../components/NumberInput';
 import { InvalidLabel } from '../../../../components/Label';
 import { tt } from '../../../../components/TranslateElement';
-import data from '../../../../api/data';
+import serverSettings from '../../../../api/server-settings';
 import products from '../../../../api/products';
 
 const getUniqueId = (function makeUniqueIdFunc() {
@@ -159,27 +159,33 @@ class EditProduct extends React.Component<Props, State> {
       },
     });
 
-    const setETHPriceFromRequest = (ethPrice: any) => {
-      if (this.unmounted) {
-        return;
-      }
+    const defVal = 0;
 
-      this.ethPrice = NumberFormat(ethPrice);
+    const makeGetEarnings = (purchPrice: any, purchPricePerc: any) => {
+      const pPurchPrice = parseFloat(purchPrice) || defVal;
+      const pPurchPricePerc = parseFloat(purchPricePerc) || defVal;
 
-      const newState = {};
-      newState.xhrRequest = false;
+      this.getEarnings = () => {
+        let earnings = (this.price / 100) * pPurchPricePerc;
 
-      if (this.isRaw && ethPrice > 0) {
-        this.price /= ethPrice;
-        newState.priceError = this.getRequiredErrorWithPropNum('price');
-        this.priceInputRef.value = this.price;
-      }
+        if (earnings > pPurchPrice) {
+          earnings = pPurchPrice;
+        }
 
-      this.setState(newState);
+        return NumberFormat(earnings);
+      };
+
+      this.earningsPrice = this.getEarnings();
+
+      this.setState({
+        xhrRequest: false,
+      });
     };
 
-    data.getETHPrice().then(setETHPriceFromRequest).catch(() => {
-      setETHPriceFromRequest(EMPTY_NUM);
+    serverSettings.get().then((sSettings) => {
+      makeGetEarnings(sSettings.PURCHASE_PRICE, sSettings.PURCHASE_PRICE_PERC);
+    }).catch(() => {
+      makeGetEarnings(defVal, defVal);
     });
   }
 
@@ -189,6 +195,7 @@ class EditProduct extends React.Component<Props, State> {
 
   onChangePriceInput(event: Event, price: ?number) {
     this.price = price || EMPTY_NUM;
+    this.earningsPrice = this.getEarnings();
 
     this.setStateAfterInputChange({
       priceError: this.getRequiredErrorWithPropNum('price'),
@@ -311,6 +318,8 @@ class EditProduct extends React.Component<Props, State> {
     }, Config.inputTimeout);
   }
 
+  getEarnings: Function = () => null;
+
   stopInputChangeTimer() {
     if (this.inputChangeTimer) {
       clearTimeout(this.inputChangeTimer);
@@ -321,10 +330,10 @@ class EditProduct extends React.Component<Props, State> {
 
   btnTitle: string;
   category: ?string;
-  ethPrice: string;
   description: string;
-  isRaw: boolean;
+  earningsPrice: ?string = null;
   inputChangeTimer: ?TimeoutID = null;
+  isRaw: boolean;
   tabs = {
     desc: 'description',
     shppng: 'shipping',
@@ -399,7 +408,6 @@ class EditProduct extends React.Component<Props, State> {
     const tabKeys = Object.keys(this.tabs);
     const errorsCount = Object.keys(errorLabels).length;
     const disabledSubmit = submitMode || xhrRequest || errorsCount > 0;
-    // const origPriceText = this.origPrice > 0 ? `Original price: $${this.origPrice}` : null;
 
     return (
       <div className={className}>
@@ -465,7 +473,7 @@ class EditProduct extends React.Component<Props, State> {
               )}
               {this.origPrice > 0 && (
                 <div className="attr-inf">
-                  <strong>Original price:</strong> ${this.origPrice}
+                  <strong>Original price:</strong> {this.origPrice} $
                 </div>
               )}
             </div>
@@ -484,7 +492,7 @@ class EditProduct extends React.Component<Props, State> {
             </div>
             <div className="col-sm-6">
               <div className="form-group">
-                <label>ETH {tt('Price')} (1 ETH = ${this.ethPrice})</label>
+                <label>{tt('Price')} ({tt('earnings')}: {this.earningsPrice} $)</label>
                 <NumberInput
                   className={inputCNs.price}
                   defaultValue={this.price}

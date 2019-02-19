@@ -1,4 +1,6 @@
 // @flow
+import tools from './tools';
+
 const storage = window.localStorage || {};
 const keyPrefix = 's_';
 const callbacks: { [string]: Function } = {};
@@ -41,7 +43,7 @@ const settings = Object.freeze({
   },
 
   subscribe(handler: Function, uKey?: string): SubscribeHandler {
-    const rUKey = uKey || `sbrsbr_${(new Date()).getTime()}`;
+    const rUKey = uKey || tools.generateUKey('sttngs');
     callbacks[rUKey] = handler;
 
     return {

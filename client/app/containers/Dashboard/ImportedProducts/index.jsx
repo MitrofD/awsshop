@@ -250,12 +250,12 @@ class ImportedProducts extends React.Component<Props, State> {
               defaultValue={this.findTitle}
               onChange={this.onChangeSearchInput}
               type="text"
-              placeholder="Enter product title"
+              placeholder="Product title"
             />
           </div>
           <div className="col-sm-2">
             <button
-              className="btn btn-outline-primary btn-sm btn-block"
+              className="btn btn-primary btn-sm btn-block"
               type="submit"
             >
               {tt('Search')}

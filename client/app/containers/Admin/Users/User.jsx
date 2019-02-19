@@ -13,7 +13,10 @@ const currUserEmail = (function getCurrUserEmail() {
 type Props = {
   _id: string,
   email: string,
-  ethAddress: string,
+  firstName: string,
+  lastName: string,
+  phone: string,
+  pMWallet: string,
   isAdmin: boolean,
 };
 
@@ -33,6 +36,10 @@ class User extends React.PureComponent<Props> {
         {tt('Is admin')}
       </label>
     ) : tt('You');
+
+    const noHaveText = '- - -';
+    this.phoneText = typeof props.phone === 'string' ? props.phone : noHaveText;
+    this.walletText = typeof props.pMWallet === 'string' ? props.pMWallet : noHaveText;
   }
 
   onChangeIsAdminCheckbox(event: SyntheticEvent<HTMLInputElement>) {
@@ -50,21 +57,28 @@ class User extends React.PureComponent<Props> {
   }
 
   adminNode: React$Node;
+  phoneText: string;
+  walletText: string;
 
   render() {
     const {
       _id,
       email,
-      ethAddress,
+      firstName,
+      lastName,
       isAdmin,
     } = this.props;
 
     return (
       <tr>
+        <td>{firstName} {lastName}</td>
         <td>
           <a href={`mailto:${email}`}>{email}</a>
         </td>
-        <td>{ethAddress}</td>
+        <td>
+          <strong>{tt('Wallet')}:</strong> {this.walletText}<br />
+          <strong>{tt('Phone')}:</strong> {this.phoneText}
+        </td>
         <td>{this.adminNode}</td>
       </tr>
     );

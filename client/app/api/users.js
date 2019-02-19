@@ -2,25 +2,20 @@
 import axios from 'axios';
 import tools from './tools';
 
+const basePath = `${proxyPath}/users`;
+
 const users = Object.freeze({
-  get(query: any): Promise<Object> {
-    const pureQuery = {
-      limit: 100,
-      skip: 0,
-    };
+  get: (query: any) => tools.getRequestWithURL(basePath, query),
 
-    if (typeof query === 'object' && query !== null) {
-      Object.assign(pureQuery, query);
-    }
+  getLoginsHistory: (query: any) => tools.getRequestWithURL(`${basePath}/logins-history`, query),
 
-    const queryStr = `${proxyPath}/users?${tools.objToQuery(pureQuery)}`;
-
+  payment(id: string): Promise<Object> {
     const promise = new Promise((resolve, reject) => {
-      axios.get(queryStr).then(({ data }) => {
+      axios.put(`${basePath}/payment/${id}`).then(({ data }) => {
         resolve(data);
       }).catch((error) => {
-        const getError = new Error(error.response.data);
-        reject(getError);
+        const editError = new Error(error.response.data);
+        reject(editError);
       });
     });
 
@@ -29,7 +24,7 @@ const users = Object.freeze({
 
   update(id: string, newData: Object): Promise<Object> {
     const promise = new Promise((resolve, reject) => {
-      axios.put(`${proxyPath}/users/${id}`, newData).then(({ data }) => {
+      axios.put(`${basePath}/${id}`, newData).then(({ data }) => {
         resolve(data);
       }).catch((error) => {
         const editError = new Error(error.response.data);

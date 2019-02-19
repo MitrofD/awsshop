@@ -39,6 +39,7 @@ class NumberInput extends React.PureComponent<Props> {
     self.name = pureName.length > 0 ? pureName : getDefName();
     self.onKeyDownInput = this.onKeyDownInput.bind(this);
     self.onKeyUpInput = this.onKeyUpInput.bind(this);
+    self.onSetInput = this.onSetInput.bind(this);
   }
 
   componentDidMount() {
@@ -64,6 +65,12 @@ class NumberInput extends React.PureComponent<Props> {
     const input = event.currentTarget;
     const clearInput = input.value.trim();
     this.checkInputFunc(clearInput);
+  }
+
+  onSetInput(input: HTMLInputElement) {
+    if (input) {
+      this.input = input;
+    }
   }
 
   get value(): ?number {
@@ -102,10 +109,7 @@ class NumberInput extends React.PureComponent<Props> {
     const checkExtrems: Array<number> = [];
     const rMin = parseFloat(min);
     const rMax = parseFloat(max);
-
-    if (this.input) {
-      this.rValue = this.input.value;
-    }
+    this.rValue = this.input.value;
 
     let funcBody = 'var self = this;';
     funcBody += `var newValue = parseFloat(${pName});`;
@@ -173,7 +177,7 @@ class NumberInput extends React.PureComponent<Props> {
   checkInputFunc(val: any) {}
 
   availableKeyCodes: number[];
-  input: ?HTMLInputElement;
+  input: HTMLInputElement;
   name: string;
   rValue: string;
   unmounted: boolean;
@@ -183,7 +187,8 @@ class NumberInput extends React.PureComponent<Props> {
     delete propsCopy.disableDecimal;
     delete propsCopy.onChange;
 
-    const pureClassName = typeof propsCopy.className === 'string' ? propsCopy.className : 'NumberInput';
+    let pureClassName = typeof propsCopy.className === 'string' ? `${propsCopy.className} ` : '';
+    pureClassName += 'NumberInput';
 
     return (
       <input
@@ -194,11 +199,7 @@ class NumberInput extends React.PureComponent<Props> {
         onKeyDown={this.onKeyDownInput}
         name={this.name}
         autoComplete="off"
-        ref={
-          (el) => {
-            this.input = el;
-          }
-        }
+        ref={this.onSetInput}
       />
     );
   }

@@ -61,7 +61,7 @@ const Product = (props: Props) => {
         </div>
       </div>
       <div className="nm">{props.title}</div>
-      <div className="prc">ETH {props.price}</div>
+      <div className="prc">{props.price} $</div>
     </Link>
   );
 };

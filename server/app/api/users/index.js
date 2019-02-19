@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const { ObjectID } = require('mongodb');
 const collection = require('./collections/users');
 const loginsCollection = require('./collections/logins');
+const products = require('../products');
 const tools = require('../tools');
 const { random, alphabet } = require('../random');
 const uuid = require('../uuid');
@@ -20,9 +21,16 @@ const LINK_EXPIRE_TEXT = 'The link has expired';
 const PASS_SALT_LENGTH = 5;
 
 const IS_ADMIN_ATTR = 'isAdmin';
+const LAST_EARNINGS_ATTR = 'lEarnings';
+const LAST_SOLD_QUANTITY_ATTR = 'lQSold';
+const LAST_REF_SOLD_QUANTITY_ATTR = 'lRefQSold';
+const LAST_PAYOUT_TIME_ATTR = 'lPayoutTime';
 const PASSWORD_ATTR = 'password';
 const PM_WALLET_ATTR = 'pMWallet';
-const REF_CODE_ATTR = 'refCode';
+const TOTAL_EARNINGS_ATTR = 'tEarnings';
+const TOTAL_REF_EARNINGS_ATTR = 'tRefEarnings';
+const TOTAL_REF_SOLD_ATTR = 'tRefSold';
+const REF_CODE_ATTR = 'referralCode';
 
 const CONFIRM_TTL_MIN = 3;
 const CONFIRM_TTL_SEC = SEC_IN_MIN * CONFIRM_TTL_MIN * MS_IN_SEC;
@@ -130,6 +138,20 @@ const throwErrorIfLinkExpired = (date: Date, tNow?: Date) => {
 
 const hasError = (obj: Object) => Object.keys(obj).length > 0;
 
+const getPureSkip = (mbSkip: any) => parseInt(mbSkip) || 0;
+
+const getPureLimit = (mbLimit: any) => {
+  const pureLimit = parseInt(mbLimit);
+
+  if (Number.isNaN(pureLimit)) {
+    return DEF_LIMIT;
+  } else if (pureLimit > MAX_LIMIT) {
+    return MAX_LIMIT;
+  }
+
+  return pureLimit;
+};
+
 const users = {
   NOT_EXISTS_ACCOUNT_TEXT,
   CONFIRM_TTL_SEC,
@@ -192,20 +214,14 @@ const users = {
   },
 
   async get(query: any): Promise<Object> {
-    const rQuery = typeof query === 'object' && query !== null ? query : {};
+    const rQuery = tools.anyAsObj(query);
     const pureQuery = {};
-    const pureSkip = parseInt(rQuery.skip) || 0;
-    let pureLimit = parseInt(rQuery.limit);
+    const pureSkip = getPureSkip(rQuery.skip);
+    const pureLimit = getPureLimit(rQuery.limit);
 
-    if (Number.isNaN(pureLimit)) {
-      pureLimit = DEF_LIMIT;
-    } else if (pureLimit > MAX_LIMIT) {
-      pureLimit = MAX_LIMIT;
-    }
-
-    if (typeof rQuery.emailPattern === 'string') {
+    if (typeof rQuery.searchPattern === 'string') {
       pureQuery.email = {
-        $regex: new RegExp(rQuery.emailPattern, 'i'),
+        $regex: new RegExp(rQuery.searchPattern, 'i'),
       };
     }
 
@@ -227,8 +243,135 @@ const users = {
         let loadMore = false;
 
         if (items.length > pureLimit) {
-          items.pop();
           loadMore = true;
+          items.pop();
+        }
+
+        resolve({
+          items,
+          loadMore,
+          limit: pureLimit,
+          skip: pureSkip,
+        });
+      });
+    });
+
+    return findPromise;
+  },
+
+  async getInvitedUsers(userId: string, query: any): Promise<Object> {
+    const rQuery = tools.anyAsObj(query);
+    const pureQuery = {};
+    const pureSkip = getPureSkip(rQuery.skip);
+    const pureLimit = getPureLimit(rQuery.limit);
+
+    if (typeof rQuery.searchPattern === 'string') {
+      const searchRegExpArr = [];
+      const needRegExp = new RegExp(rQuery.searchPattern, 'i');
+
+      [
+        'email',
+        'firstName',
+        'lastName',
+      ].forEach((sKey) => {
+        const item = {
+          [sKey]: {
+            $regex: needRegExp,
+          },
+        };
+
+        searchRegExpArr.push(item);
+      });
+
+      pureQuery.$or = searchRegExpArr;
+    }
+
+    pureQuery.fromUser = userId;
+
+    const findPromise = new Promise((resolve, reject) => {
+      collection.find(pureQuery, {
+        limit: pureLimit + 1,
+        skip: pureSkip,
+      }).sort('createdAt', -1).toArray((error, items) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        let loadMore = false;
+
+        if (items.length > pureLimit) {
+          loadMore = true;
+          items.pop();
+        }
+
+        resolve({
+          items,
+          loadMore,
+          limit: pureLimit,
+          skip: pureSkip,
+        });
+      });
+    });
+
+    return findPromise;
+  },
+
+  async getLoginsHistory(query: any): Promise<Object> {
+    const rQuery = tools.anyAsObj(query);
+    const pureQuery = {};
+    const pureSkip = getPureSkip(rQuery.skip);
+    const pureLimit = getPureLimit(rQuery.limit);
+
+    if (typeof rQuery.searchPattern === 'string') {
+      const searchRegExpArr = [];
+      const needRegExp = new RegExp(rQuery.searchPattern, 'i');
+
+      [
+        'description',
+        'userEmail',
+      ].forEach((sKey) => {
+        const item = {
+          [sKey]: {
+            $regex: needRegExp,
+          },
+        };
+
+        searchRegExpArr.push(item);
+      });
+
+      pureQuery.$or = searchRegExpArr;
+    }
+
+    const createdAtObj = {};
+    const fromDate = tools.dateFromData(rQuery.from);
+    const toDate = tools.dateFromData(rQuery.to);
+
+    if (fromDate) {
+      createdAtObj.$gte = fromDate;
+      pureQuery.createdAt = createdAtObj;
+    }
+
+    if (toDate) {
+      createdAtObj.$lte = toDate;
+      pureQuery.createdAt = createdAtObj;
+    }
+
+    const findPromise = new Promise((resolve, reject) => {
+      loginsCollection.find(pureQuery, {
+        limit: pureLimit + 1,
+        skip: pureSkip,
+      }).sort('createdAt', -1).toArray((error, items) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        let loadMore = false;
+
+        if (items.length > pureLimit) {
+          loadMore = true;
+          items.pop();
         }
 
         resolve({
@@ -308,7 +451,7 @@ const users = {
         ...geoData,
         description: `${user.firstName} ${user.lastName}`,
         userEmail: user.email,
-        time: new Date(),
+        createdAt: new Date(),
       };
 
       await loginsCollection.insertOne(loginData);
@@ -320,7 +463,7 @@ const users = {
   async registration(data: Object, asAdmin?: boolean): ErrorsPromise<User> {
     const pureData = typeof data === 'object' && data !== null ? data : {};
 
-    let errors = {};
+    const errors = {};
     const newUser = {};
 
     const requiredFields = [
@@ -366,6 +509,20 @@ const users = {
 
     newUser.phone = purePhone;
 
+    const pureRefCode = typeof pureData.referralCode === 'string' ? pureData.referralCode.trim() : '';
+
+    if (pureRefCode.length > 0) {
+      const user = await collection.findOne({
+        referralCode: pureRefCode,
+      });
+
+      if (user) {
+        newUser.fromUser = user._id.toString();
+      } else {
+        errors.referralCode = 'Referral code is incorrect';
+      }
+    }
+
     let purePassword = '';
 
     try {
@@ -380,11 +537,20 @@ const users = {
       };
     }
 
-    newUser[IS_ADMIN_ATTR] = !!asAdmin;
+    const nowTime = new Date();
+    const skipVal = 0;
     newUser[PASSWORD_ATTR] = await getHashedPasswordFromPlainText(purePassword);
-    newUser.verification = genVerificationCode();
-    newUser.createdAt = new Date();
     newUser[REF_CODE_ATTR] = await getRefCode();
+    newUser[IS_ADMIN_ATTR] = !!asAdmin;
+    newUser.verification = genVerificationCode();
+    newUser.createdAt = nowTime;
+    newUser[LAST_EARNINGS_ATTR] = skipVal;
+    newUser[TOTAL_EARNINGS_ATTR] = skipVal;
+    newUser[TOTAL_REF_EARNINGS_ATTR] = skipVal;
+    newUser[TOTAL_REF_SOLD_ATTR] = skipVal;
+    newUser[LAST_SOLD_QUANTITY_ATTR] = skipVal;
+    newUser[LAST_REF_SOLD_QUANTITY_ATTR] = skipVal;
+    newUser[LAST_PAYOUT_TIME_ATTR] = nowTime;
     newUser[PM_WALLET_ATTR] = null;
 
     const insertRes = await collection.insertOne(newUser);
@@ -431,8 +597,76 @@ const users = {
     return user;
   },
 
+  async soldProductInQuantities(productId: MongoID, quantity?: any): Promise<User> {
+    const pQuantity = parseInt(quantity) || 1;
+    const product = await products.withId(productId);
+
+    if (!product.isApproved) {
+      throw new Error('Product is not approved');
+    }
+
+    const tEarnings = pQuantity * product.earnings;
+    const pUserId = tools.getMongoID(product.userId);
+
+    const { value } = await collection.findOneAndUpdate({
+      _id: pUserId,
+    }, {
+      $inc: {
+        [LAST_EARNINGS_ATTR]: tEarnings,
+        [LAST_SOLD_QUANTITY_ATTR]: pQuantity,
+        [LAST_REF_SOLD_QUANTITY_ATTR]: pQuantity,
+      },
+    }, {
+      returnOriginal: false,
+    });
+
+    if (typeof value.fromUser === 'string') {
+      await collection.updateOne({
+        _id: tools.getMongoID(value.fromUser),
+      }, {
+        $inc: {
+          [TOTAL_REF_SOLD_ATTR]: pQuantity,
+        },
+      });
+    }
+
+    return value;
+  },
+
+  async payment(userId: MongoID): Promise<User> {
+    const user = await this.getById(userId);
+    const skipVal = 0;
+    const now = new Date();
+
+    const setObj = {
+      [LAST_EARNINGS_ATTR]: skipVal,
+      [LAST_SOLD_QUANTITY_ATTR]: skipVal,
+      [LAST_PAYOUT_TIME_ATTR]: now,
+    };
+
+    const lastEarnings = user[LAST_EARNINGS_ATTR];
+
+    const incObj = {
+      [TOTAL_EARNINGS_ATTR]: lastEarnings,
+    };
+
+    await collection.updateOne({
+      _id: user._id,
+    }, {
+      $set: setObj,
+      $inc: incObj,
+    });
+
+    user[LAST_EARNINGS_ATTR] = skipVal;
+    user[LAST_SOLD_QUANTITY_ATTR] = skipVal;
+    user[LAST_PAYOUT_TIME_ATTR] = now;
+    user[TOTAL_EARNINGS_ATTR] += lastEarnings;
+
+    return user;
+  },
+
   async update(id: MongoID, updateData: Object, asAdmin: boolean = false): ErrorsPromise<User> {
-    let errors = {};
+    const errors = {};
     const setObject = {};
 
     if (asAdmin) {

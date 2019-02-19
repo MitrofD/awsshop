@@ -1,51 +1,55 @@
 // @flow
+/* eslint-disable no-console,global-require */
 RedisStore = require('./redis-store');
 GSession = require('./session');
-
 const mailerGenerationPromise = require('../api/mailer')(`${RootPath}/emails`);
+
+const emptyFunc = () => {};
 
 mailerGenerationPromise.then((mailer) => {
   Mailer = mailer;
-  // eslint-disable-next-line no-console
   console.log(`📪 - Mailer ready & verified (${mailer.emailAddress})`);
-}).catch(Tools.emptyRejectExeption);
+}).catch(emptyFunc);
 
-const mongoConnectPromise = require('./mongo-store').then(() => {
-  const mongoStoreAddress = MongoStore.serverConfig.host + ':' + MongoStore.serverConfig.port;
-  // eslint-disable-next-line no-console
-  console.log(`🌿 - Connected to "Mongod DB" (${mongoStoreAddress})`);
-}).catch(Tools.emptyRejectExeption);
+const mongoConnectAndApisPromise = new Promise((resolve, reject) => {
+  require('./mongo-store').then((store) => {
+    const mongoStoreAddress = store.serverConfig.host + ':' + store.serverConfig.port;
+    console.log(`🌿 - Connected to "Mongod DB" (${mongoStoreAddress})`);
 
-const redisConnectPromise: Promise<boolean> = new Promise((resolve, reject) => {
-  RedisStore.on('error', reject);
+    require('../api/settings').then((settings) => {
+      Settings = settings;
+      console.log('⚙️  - Settings is loaded');
+      resolve();
+    }).catch(reject);
+  }).catch(reject);
+});
 
+const redisConnectPromise = new Promise((resolve) => {
   const connectHandler = RedisStore.connectSubscribe(() => {
-    RedisStore.removeListener('error', reject);
-    connectHandler.stop();
-    // eslint-disable-next-line no-console
     console.log(`🏎️  - Connected to "Redis store" (${RedisStore.address})`);
-    resolve(true);
+    connectHandler.stop();
+    resolve();
   });
 });
 
 const configTraslationsPromise = require('../api/translations')();
+
 configTraslationsPromise.then((translations) => {
   Translations = translations;
   const availLangs = Object.keys(Translations.list());
-  // eslint-disable-next-line no-console
   console.log(`🌍 - Translations set up (${availLangs.join(', ')})`);
-}).catch(Tools.emptyRejectExeption);
+}).catch(emptyFunc);
 
-const promiseAll = Promise.all([
+const startupPromise = Promise.all([
   configTraslationsPromise,
   mailerGenerationPromise,
-  mongoConnectPromise,
+  mongoConnectAndApisPromise,
   redisConnectPromise,
 ]);
 
-promiseAll.then(() => {
-  // eslint-disable-next-line global-require
+startupPromise.then(() => {
   require('./middleware');
-}).catch(Tools.emptyRejectExeption);
+}).catch(emptyFunc);
 
-module.exports = promiseAll;
+module.exports = startupPromise;
+/* eslint-enable no-console,global-require */

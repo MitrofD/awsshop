@@ -1,22 +1,28 @@
 .DatePicker {
-  $datepicker-width: 300px;
-  position: relative;
+  $datepicker-width: 350px;
   display: inline-block;
-
   z-index: 1000;
   position: absolute;
   left: 0;
-  bottom: 0;
+  top: 0;
   display: inline-block;
-  width: $datepicker-width;
-  font-size: 12px;
+  // width: $datepicker-width;
+  border: solid 1px $border-color;
+  padding: 8px;
+  background-color: #fff;
+  border-radius: $border-radius;
+  font-size: $font-size-base;
 
-  .control {
-    padding: 5px;
+  .cntrl {
     text-align: right;
+
+    button {
+      @extend .btn;
+      @extend .btn-link;
+    }
   }
 
-  input {
-    width: 130px;
+  .react-calendar {
+    border: none;
   }
 }

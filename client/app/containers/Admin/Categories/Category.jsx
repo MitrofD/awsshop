@@ -71,7 +71,7 @@ class Category extends React.PureComponent<Props, State> {
         this.props.onRemove(category._id);
       }).catch((error) => {
         button.disabled = false;
-        NotificationBox.dangerMessage(error.message);
+        NotificationBox.danger(error.message);
       });
     };
 

@@ -191,7 +191,7 @@ class CustomerOrders extends React.PureComponent<Props, State> {
           </div>
           <div className="col-sm-2">
             <button
-              className="btn btn-outline-primary btn-sm btn-block"
+              className="btn btn-primary btn-sm btn-block"
               type="submit"
             >
               {tt('Search')}
