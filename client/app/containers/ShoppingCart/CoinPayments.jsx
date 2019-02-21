@@ -129,7 +129,7 @@ class CoinPayments extends React.PureComponent<Props, State> {
             <input
               type="hidden"
               name="currency"
-              defaultValue="ETH"
+              defaultValue="USD"
             />
             <input
               type="hidden"

@@ -6,9 +6,9 @@ const usersCollection = MongoStore.collection('users');
   'fromUser',
   'firstName',
   'lastName',
-  'lPayoutTime',
-  'lQSold',
-  'lRefQSold',
+  'lastActionTime',
+  'lastRefActionTime',
+  'currSoldQuantity',
   'verification',
 ].forEach((key) => {
   usersCollection.createIndex({

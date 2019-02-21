@@ -132,8 +132,8 @@ class Item extends React.PureComponent<Props, State> {
               </div>
             </div>
             <div className="col-sm-8">
-              <div className="prc">ETH {price}</div>
-              {count > 0 && <div className="prc">Total: {count * price}</div>}
+              <div className="prc">{NumberFormat(price)} $</div>
+              {count > 0 && <div className="prc">Total: {NumberFormat(count * price)} $</div>}
             </div>
           </div>
           <button

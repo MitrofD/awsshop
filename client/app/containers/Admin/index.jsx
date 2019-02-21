@@ -18,6 +18,7 @@ const ActiveOrdersPage = LoadableWithParams('Orders', {
 const CategoriesPage = Loadable('Categories');
 const LoginsHistoryPage = Loadable('LoginsHistory');
 const PaymentsPage = LoadableWithParams('Payments');
+const ReferralPaymentsPage = LoadableWithParams('ReferralPayments');
 const ProductsPage = LoadableWithParams('Products');
 // const OrdersHistoryPage = LoadableWithParams('Orders');
 const SettingsPage = Loadable('Settings');
@@ -27,6 +28,7 @@ const loginsHistoryLink = `${Config.adminPath}/logins-history`;
 // const ordersHistoryLink = `${Config.adminPath}/orders-history`;
 // const ordersLink = `${Config.adminPath}/orders`;
 const paymentsLink = `${Config.adminPath}/payments`;
+const referralPaymentsLink = `${Config.adminPath}/referral-payments`;
 const productsLink = `${Config.adminPath}/products`;
 const settingsLink = `${Config.adminPath}/settings`;
 const usersLink = `${Config.adminPath}/users`;
@@ -53,6 +55,11 @@ const Admin = () => (
         <li>
           <NavLink to={paymentsLink}>
             {tt('Payments')}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to={referralPaymentsLink}>
+            {tt('Referral payments')}
           </NavLink>
         </li>
         <li>
@@ -86,6 +93,10 @@ const Admin = () => (
         <Route
           component={PaymentsPage}
           path={paymentsLink}
+        />
+        <Route
+          component={ReferralPaymentsPage}
+          path={referralPaymentsLink}
         />
         <Route
           component={ProductsPage}

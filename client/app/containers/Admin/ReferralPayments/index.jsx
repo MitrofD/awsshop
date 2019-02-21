@@ -4,6 +4,7 @@ import NoHaveLabel from '../../includes/NoHaveLabel';
 import LoadMore from '../../includes/LoadMore';
 import XHRSpin from '../../includes/XHRSpin';
 import { tt } from '../../../components/TranslateElement';
+import serverSettings from '../../../api/server-settings';
 import users from '../../../api/users';
 import windowScroll from '../../../api/window-scroll';
 
@@ -22,7 +23,7 @@ const defaultProps = {
   limit: 50,
 };
 
-class Payments extends React.Component<Props, State> {
+class ReferralPayments extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
   constructor(props: Props, context: null) {
@@ -43,7 +44,17 @@ class Payments extends React.Component<Props, State> {
 
   componentDidMount() {
     this.unmounted = false;
-    this.filter();
+
+    serverSettings.get().then((settings) => {
+      if (this.unmounted) {
+        return;
+      }
+
+      this.refPurchasePrice = parseFloat(settings.REF_PURCHASE_PRICE) || 0;
+      this.filter();
+    }).catch((error) => {
+      NotificationBox.danger(error.message);
+    });
   }
 
   componentWillUnmount() {
@@ -63,12 +74,12 @@ class Payments extends React.Component<Props, State> {
     button.disabled = true;
     const userId = button.dataset.id;
 
-    users.payment(userId).then((newData) => {
+    users.referralPayment(userId).then((newData) => {
       const idx = parseInt(button.dataset.idx);
       const item = this.items[idx];
 
       if (typeof item === 'object' && item !== null) {
-        item.currSoldQuantity = newData.currSoldQuantity;
+        item.currRefSoldQuantity = newData.currRefSoldQuantity;
       }
 
       NotificationBox.success('Operation completed successfully', true);
@@ -127,7 +138,7 @@ class Payments extends React.Component<Props, State> {
     const queryObj = {};
     queryObj.limit = this.props.limit;
     queryObj.skip = this.items.length;
-    queryObj.sortBy = 'lastActionTime';
+    queryObj.sortBy = 'lastRefActionTime';
     queryObj.sortDesc = -1;
 
     const searchPattern = this.getSearchPattern();
@@ -168,6 +179,7 @@ class Payments extends React.Component<Props, State> {
 
   items: Object[] = [];
   rootNode: HTMLElement;
+  refPurchasePrice = 0;
   searchText: ?string = null;
   scrollFunc: ?Function = null;
   unmounted = true;
@@ -229,9 +241,10 @@ class Payments extends React.Component<Props, State> {
             <tbody>
               {this.items.map((item, idx) => {
                 const fullName = `${item.firstName} ${item.lastName}`;
-                const disabledBtn = item.currSoldQuantity === 0;
+                const disabledBtn = item.currRefSoldQuantity === 0;
                 const wallet = item.pMWallet || '- - -';
                 const userId = item._id.toString();
+                const refEarnings = item.currRefSoldQuantity * this.refPurchasePrice;
 
                 return (
                   <tr key={userId}>
@@ -239,8 +252,8 @@ class Payments extends React.Component<Props, State> {
                       {fullName}<br />
                       Email: <a href={`mailto:${item.email}`}>{item.email}</a>
                     </td>
-                    <td>{Tools.prettyTime(item.payoutTime)}</td>
-                    <td>{NumberFormat(item.currEarnings)} $</td>
+                    <td>{Tools.prettyTime(item.refPayoutTime)}</td>
+                    <td>{NumberFormat(refEarnings)} $</td>
                     <td>{wallet}</td>
                     <td>
                       <button
@@ -265,9 +278,9 @@ class Payments extends React.Component<Props, State> {
     }
 
     return (
-      <div className="Payments">
+      <div className="ReferralPayments">
         <div className="dt">
-          <div className="ttl">{tt('Payments')}</div>
+          <div className="ttl">{tt('Referral payments')}</div>
           <div className="dt">
             {content}
             <div
@@ -284,4 +297,4 @@ class Payments extends React.Component<Props, State> {
   }
 }
 
-export default Payments;
+export default ReferralPayments;

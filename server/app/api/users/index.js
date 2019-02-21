@@ -21,16 +21,31 @@ const LINK_EXPIRE_TEXT = 'The link has expired';
 const PASS_SALT_LENGTH = 5;
 
 const IS_ADMIN_ATTR = 'isAdmin';
-const LAST_EARNINGS_ATTR = 'lEarnings';
-const LAST_SOLD_QUANTITY_ATTR = 'lQSold';
-const LAST_REF_SOLD_QUANTITY_ATTR = 'lRefQSold';
-const LAST_PAYOUT_TIME_ATTR = 'lPayoutTime';
 const PASSWORD_ATTR = 'password';
 const PM_WALLET_ATTR = 'pMWallet';
-const TOTAL_EARNINGS_ATTR = 'tEarnings';
-const TOTAL_REF_EARNINGS_ATTR = 'tRefEarnings';
-const TOTAL_REF_SOLD_ATTR = 'tRefSold';
-const REF_CODE_ATTR = 'referralCode';
+const REFERRAL_CODE_ATTR = 'referralCode';
+
+const CURR_EARNINGS_ATTR = 'currEarnings';
+const EARNINGS_FOR_REF_ATTR = 'earningsForRef';
+const CURR_EARNINGS_FOR_REF_ATTR = 'currEarningsForRef';
+const EARNINGS_ATTR = 'earnings';
+
+const REF_EARNINGS_ATTR = 'refEarnings';
+
+const CURR_SOLD_QUANTITY_ATTR = 'currSoldQuantity';
+const CURR_SOLD_QUANTITY_FOR_REF_ATTR = 'currSoldForRefQuantity';
+const SOLD_QUANTITY_ATTR = 'soldQuantity';
+
+const CURR_REF_SOLD_QUANTITY_ATTR = 'currRefSoldQuantity';
+const REF_SOLD_QUANTITY_ATTR = 'refSoldQuantity';
+
+const EARNINGS_OF_REFS_ATTR = 'earningsOfRefs';
+
+const LAST_ACTION_TIME = 'lastActionTime';
+const LAST_REF_ACTION_TIME = 'lastRefActionTime';
+
+const PAYOUT_TIME_ATTR = 'payoutTime';
+const REF_PAYOUT_TIME_ATTR = 'refPayoutTime';
 
 const CONFIRM_TTL_MIN = 3;
 const CONFIRM_TTL_SEC = SEC_IN_MIN * CONFIRM_TTL_MIN * MS_IN_SEC;
@@ -39,7 +54,7 @@ const getRefCode = async (): Promise<string> => {
   const code = random(alphabet.numbers, 8);
 
   const user = await collection.findOne({
-    [REF_CODE_ATTR]: code,
+    [REFERRAL_CODE_ATTR]: code,
   });
 
   if (user) {
@@ -225,6 +240,9 @@ const users = {
       };
     }
 
+    const sortField = typeof rQuery.sortBy === 'string' ? rQuery.sortBy : 'createdAt';
+    const sortDesc = parseInt(rQuery.sortDesc) || -1;
+
     const projection = {
       password: 0,
     };
@@ -234,7 +252,7 @@ const users = {
         projection,
         limit: pureLimit + 1,
         skip: pureSkip,
-      }).sort('createdAt', -1).toArray((error, items) => {
+      }).sort(sortField, sortDesc).toArray((error, items) => {
         if (error) {
           reject(error);
           return;
@@ -416,7 +434,7 @@ const users = {
       isVerified: !tools.has.call(userData, 'verification'),
       productsCount: userData.pCount || 0,
       phone: userData.phone,
-      [REF_CODE_ATTR]: userData[REF_CODE_ATTR],
+      [REFERRAL_CODE_ATTR]: userData[REFERRAL_CODE_ATTR],
       [PM_WALLET_ATTR]: userData[PM_WALLET_ATTR],
     };
 
@@ -538,20 +556,32 @@ const users = {
     }
 
     const nowTime = new Date();
-    const skipVal = 0;
     newUser[PASSWORD_ATTR] = await getHashedPasswordFromPlainText(purePassword);
-    newUser[REF_CODE_ATTR] = await getRefCode();
+    newUser[REFERRAL_CODE_ATTR] = await getRefCode();
     newUser[IS_ADMIN_ATTR] = !!asAdmin;
     newUser.verification = genVerificationCode();
     newUser.createdAt = nowTime;
-    newUser[LAST_EARNINGS_ATTR] = skipVal;
-    newUser[TOTAL_EARNINGS_ATTR] = skipVal;
-    newUser[TOTAL_REF_EARNINGS_ATTR] = skipVal;
-    newUser[TOTAL_REF_SOLD_ATTR] = skipVal;
-    newUser[LAST_SOLD_QUANTITY_ATTR] = skipVal;
-    newUser[LAST_REF_SOLD_QUANTITY_ATTR] = skipVal;
-    newUser[LAST_PAYOUT_TIME_ATTR] = nowTime;
     newUser[PM_WALLET_ATTR] = null;
+
+    newUser[CURR_EARNINGS_ATTR] = 0;
+    newUser[EARNINGS_ATTR] = 0;
+    newUser[EARNINGS_FOR_REF_ATTR] = 0;
+    newUser[CURR_EARNINGS_FOR_REF_ATTR] = 0;
+    newUser[REF_EARNINGS_ATTR] = 0;
+
+    newUser[CURR_SOLD_QUANTITY_ATTR] = 0;
+    newUser[CURR_SOLD_QUANTITY_FOR_REF_ATTR] = 0;
+    newUser[SOLD_QUANTITY_ATTR] = 0;
+
+    newUser[CURR_REF_SOLD_QUANTITY_ATTR] = 0;
+    newUser[REF_SOLD_QUANTITY_ATTR] = 0;
+
+    newUser[EARNINGS_OF_REFS_ATTR] = 0;
+
+    newUser[LAST_ACTION_TIME] = nowTime;
+    newUser[LAST_REF_ACTION_TIME] = nowTime;
+    newUser[PAYOUT_TIME_ATTR] = nowTime;
+    newUser[REF_PAYOUT_TIME_ATTR] = nowTime;
 
     const insertRes = await collection.insertOne(newUser);
     newUser._id = insertRes.insertedId;
@@ -598,34 +628,45 @@ const users = {
   },
 
   async soldProductInQuantities(productId: MongoID, quantity?: any): Promise<User> {
-    const pQuantity = parseInt(quantity) || 1;
     const product = await products.withId(productId);
 
     if (!product.isApproved) {
       throw new Error('Product is not approved');
     }
 
-    const tEarnings = pQuantity * product.earnings;
-    const pUserId = tools.getMongoID(product.userId);
+    const userId = tools.getMongoID(product.userId);
+    const pQuantity = parseInt(quantity) || 1;
+    const currEarnings = pQuantity * product.earnings;
+    const nowTime = new Date();
 
     const { value } = await collection.findOneAndUpdate({
-      _id: pUserId,
+      _id: userId,
     }, {
+      $set: {
+        [LAST_ACTION_TIME]: nowTime,
+      },
+
       $inc: {
-        [LAST_EARNINGS_ATTR]: tEarnings,
-        [LAST_SOLD_QUANTITY_ATTR]: pQuantity,
-        [LAST_REF_SOLD_QUANTITY_ATTR]: pQuantity,
+        [CURR_EARNINGS_ATTR]: currEarnings,
+        [CURR_SOLD_QUANTITY_ATTR]: pQuantity,
+        [CURR_SOLD_QUANTITY_FOR_REF_ATTR]: pQuantity,
       },
     }, {
       returnOriginal: false,
     });
 
     if (typeof value.fromUser === 'string') {
+      const refUserId = tools.getMongoID(value.fromUser);
+
       await collection.updateOne({
-        _id: tools.getMongoID(value.fromUser),
+        _id: refUserId,
       }, {
+        $set: {
+          [LAST_REF_ACTION_TIME]: nowTime,
+        },
+
         $inc: {
-          [TOTAL_REF_SOLD_ATTR]: pQuantity,
+          [CURR_REF_SOLD_QUANTITY_ATTR]: pQuantity,
         },
       });
     }
@@ -635,32 +676,89 @@ const users = {
 
   async payment(userId: MongoID): Promise<User> {
     const user = await this.getById(userId);
-    const skipVal = 0;
-    const now = new Date();
-
-    const setObj = {
-      [LAST_EARNINGS_ATTR]: skipVal,
-      [LAST_SOLD_QUANTITY_ATTR]: skipVal,
-      [LAST_PAYOUT_TIME_ATTR]: now,
-    };
-
-    const lastEarnings = user[LAST_EARNINGS_ATTR];
-
-    const incObj = {
-      [TOTAL_EARNINGS_ATTR]: lastEarnings,
-    };
+    const nowTime = new Date();
+    const currEarnings = user[CURR_EARNINGS_ATTR];
+    const currSoldQuantity = user[CURR_SOLD_QUANTITY_ATTR];
+    const currSoldQuantityForRef = user[CURR_SOLD_QUANTITY_FOR_REF_ATTR];
+    const refPurchasePrice = Settings.getFloatOption('REF_PURCHASE_PRICE');
+    const earningsForRef = currSoldQuantity * refPurchasePrice;
+    const currEarningsForRef = currSoldQuantityForRef * refPurchasePrice;
 
     await collection.updateOne({
       _id: user._id,
     }, {
-      $set: setObj,
-      $inc: incObj,
+      $set: {
+        [CURR_EARNINGS_ATTR]: 0,
+        [CURR_SOLD_QUANTITY_ATTR]: 0,
+        [PAYOUT_TIME_ATTR]: nowTime,
+      },
+
+      $inc: {
+        [EARNINGS_ATTR]: currEarnings,
+        [SOLD_QUANTITY_ATTR]: currSoldQuantity,
+        [EARNINGS_FOR_REF_ATTR]: earningsForRef,
+        [CURR_EARNINGS_FOR_REF_ATTR]: currEarningsForRef,
+      },
     });
 
-    user[LAST_EARNINGS_ATTR] = skipVal;
-    user[LAST_SOLD_QUANTITY_ATTR] = skipVal;
-    user[LAST_PAYOUT_TIME_ATTR] = now;
-    user[TOTAL_EARNINGS_ATTR] += lastEarnings;
+    user[CURR_EARNINGS_ATTR] = 0;
+    user[CURR_SOLD_QUANTITY_ATTR] = 0;
+    user[EARNINGS_ATTR] += currEarnings;
+    user[SOLD_QUANTITY_ATTR] += currEarnings;
+    user[EARNINGS_FOR_REF_ATTR] += earningsForRef;
+    user[CURR_EARNINGS_FOR_REF_ATTR] += currEarningsForRef;
+    user[PAYOUT_TIME_ATTR] = nowTime;
+
+    return user;
+  },
+
+  async referralPayment(userId: MongoID): Promise<User> {
+    const user = await this.getById(userId);
+    const fromUser = user._id.toString();
+
+    const refUser = await collection.findOne({
+      fromUser,
+      [CURR_SOLD_QUANTITY_ATTR]: {
+        $gt: 0,
+      },
+    });
+
+    if (refUser) {
+      throw new Error('Pay for the product first');
+    }
+
+    const currRefSoldQuantity = user[CURR_REF_SOLD_QUANTITY_ATTR];
+    const refPurchasePrice = Settings.getFloatOption('REF_PURCHASE_PRICE');
+    const currRefEarnings = currRefSoldQuantity * refPurchasePrice;
+    const nowTime = new Date();
+
+    await collection.updateOne({
+      _id: user._id,
+    }, {
+      $set: {
+        [CURR_REF_SOLD_QUANTITY_ATTR]: 0,
+        [REF_PAYOUT_TIME_ATTR]: nowTime,
+      },
+
+      $inc: {
+        [REF_SOLD_QUANTITY_ATTR]: currRefSoldQuantity,
+        [REF_EARNINGS_ATTR]: currRefEarnings,
+      },
+    });
+
+    await collection.updateMany({
+      fromUser,
+    }, {
+      $set: {
+        [CURR_SOLD_QUANTITY_FOR_REF_ATTR]: 0,
+        [CURR_EARNINGS_FOR_REF_ATTR]: 0,
+      },
+    });
+
+    user[CURR_REF_SOLD_QUANTITY_ATTR] = 0;
+    user[REF_SOLD_QUANTITY_ATTR] += currRefSoldQuantity;
+    user[REF_EARNINGS_ATTR] += currRefEarnings;
+    user[REF_PAYOUT_TIME_ATTR] = nowTime;
 
     return user;
   },

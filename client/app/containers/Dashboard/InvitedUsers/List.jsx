@@ -44,6 +44,10 @@ class List extends React.Component<Props, State> {
     this.unmounted = false;
 
     serverSettings.get().then((settings) => {
+      if (this.unmounted) {
+        return;
+      }
+
       this.refPurchasePrice = parseFloat(settings.REF_PURCHASE_PRICE) || 0;
       this.filter();
     }).catch((error) => {
@@ -195,7 +199,8 @@ class List extends React.Component<Props, State> {
           <tbody>
             {this.items.map((item) => {
               const fullName = `${item.firstName} ${item.lastName}`;
-              const waitingEarnings = item.lRefQSold * this.refPurchasePrice;
+              const waitingEarnings = item.currSoldForRefQuantity * this.refPurchasePrice;
+              const tEarnings = item.earningsForRef - item.currEarningsForRef;
 
               return (
                 <tr key={item._id}>
@@ -203,7 +208,7 @@ class List extends React.Component<Props, State> {
                   <td>
                     <a href={`mailto:${item.email}`}>{item.email}</a>
                   </td>
-                  <td>{NumberFormat(item.tRefEarnings)} $</td>
+                  <td>{NumberFormat(tEarnings)} $</td>
                   <td>{NumberFormat(waitingEarnings)} $</td>
                 </tr>
               );

@@ -99,7 +99,7 @@ class ShoppingCart extends React.PureComponent<Props, State> {
   setTotalPrice(newPrice: number) {
     this.totalPrice = newPrice;
     const purePrice = this.totalPrice > 0 ? this.totalPrice : 0;
-    this.totalPriceRef.innerHTML = purePrice.toFixed(8);
+    this.totalPriceRef.innerHTML = NumberFormat(purePrice);
     this.coinPaymentsRef.setAmount(purePrice);
   }
 

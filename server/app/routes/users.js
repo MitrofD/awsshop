@@ -193,6 +193,12 @@ module.exports = function usersRoute() {
     }).catch(next);
   });
 
+  this.put('/users/referral-payment/:id', Middleware.admin_Sess, (req, res, next) => {
+    users.referralPayment(req.params.id).then((user) => {
+      res.json(user);
+    }).catch(next);
+  });
+
   this.get('/users/invited-users', Middleware.userId_Sess, (req, res, next) => {
     users.getInvitedUsers(req.userId, req.query).then((data) => {
       res.json(data);
