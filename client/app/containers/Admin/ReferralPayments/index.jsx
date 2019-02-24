@@ -148,7 +148,27 @@ class ReferralPayments extends React.Component<Props, State> {
     }
 
     users.get(queryObj).then(({ items, loadMore }) => {
-      this.items = items;
+      const itemsArrLength = items.length;
+      let i = 0;
+
+      for (; i < itemsArrLength; i += 1) {
+        const item = items[i];
+        let earnings = item.refSoldQuantity * this.refPurchasePrice;
+        let disabledPay = true;
+        let earningsText = '- - -';
+
+        if (earnings > 0) {
+          disabledPay = false;
+          earningsText = NumberFormat(earnings);
+        }
+
+        item._id = item._id.toString();
+        item.pMWallet = item.pMWallet || '- - -';
+        item.disabledPay = disabledPay;
+        item.earningsText = earningsText;
+        this.items.push(item);
+      }
+
       this.setStateAfterRequest({
         showLoadMore: loadMore,
       });
@@ -225,7 +245,7 @@ class ReferralPayments extends React.Component<Props, State> {
             <thead>
               <tr>
                 <th>{tt('User')}</th>
-                <th>{tt('Last payment')}</th>
+                <th>{tt('Last payout')}</th>
                 <th>{tt('Earnings')}</th>
                 <th>{tt('Wallet')}</th>
                 <th />
@@ -239,36 +259,28 @@ class ReferralPayments extends React.Component<Props, State> {
         itemsContent = (
           <table className="table">
             <tbody>
-              {this.items.map((item, idx) => {
-                const fullName = `${item.firstName} ${item.lastName}`;
-                const disabledBtn = item.currRefSoldQuantity === 0;
-                const wallet = item.pMWallet || '- - -';
-                const userId = item._id.toString();
-                const refEarnings = item.currRefSoldQuantity * this.refPurchasePrice;
-
-                return (
-                  <tr key={userId}>
-                    <td>
-                      {fullName}<br />
-                      Email: <a href={`mailto:${item.email}`}>{item.email}</a>
-                    </td>
-                    <td>{Tools.prettyTime(item.refPayoutTime)}</td>
-                    <td>{NumberFormat(refEarnings)} $</td>
-                    <td>{wallet}</td>
-                    <td>
-                      <button
-                        className="btn btn-sm btn-primary"
-                        disabled={disabledBtn}
-                        data-idx={idx}
-                        data-id={userId}
-                        onClick={this.onClickPaidButton}
-                      >
-                        paid
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {this.items.map((item, idx) => (
+                <tr key={item._id}>
+                  <td>
+                    {item.firstName} {item.lastName}<br />
+                    Email: <a href={`mailto:${item.email}`}>{item.email}</a>
+                  </td>
+                  <td>{Tools.prettyTime(item.refPayoutTime)}</td>
+                  <td>{item.earningsText}</td>
+                  <td>{item.pMWallet}</td>
+                  <td>
+                    <button
+                      className="btn btn-sm btn-primary"
+                      disabled={item.disabledPay}
+                      data-idx={idx}
+                      data-id={item._id}
+                      onClick={this.onClickPaidButton}
+                    >
+                      paid
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         );

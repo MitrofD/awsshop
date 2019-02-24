@@ -6,5 +6,9 @@ if (!IntlR) {
   IntlR = require('intl');
 }
 
-const numFormat = new IntlR.NumberFormat();
+const numFormat = new IntlR.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
+
 window.NumberFormat = numFormat.format;

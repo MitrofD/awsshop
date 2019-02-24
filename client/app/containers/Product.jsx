@@ -139,7 +139,7 @@ class Product extends React.PureComponent<Props, State> {
           <div className="col-md-8">
             <div className="ttl">{pData.title}</div>
             <div className="row">
-              <div className="prc col-sm-9">{pData.price} $</div>
+              <div className="prc col-sm-9">{NumberFormat(pData.price)}</div>
               <div className="col-sm-3">
                 <button
                   className="btn btn-primary btn-block animated pulse"

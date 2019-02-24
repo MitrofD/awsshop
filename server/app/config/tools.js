@@ -17,6 +17,14 @@ Tools.genUnknownError = (action: string): Error => (new Error(`Unknown error [${
 // eslint-disable-next-line no-console
 Tools.emptyRejectExeption = isDevMode ? (error) => console.log(error.message) : () => {};
 
+Tools.startOfMonthDate = (): Date => {
+  const now = new Date();
+  now.setDate(1);
+  now.setHours(0, 0, 0);
+
+  return now;
+};
+
 Tools.okObj = {
   ok: true,
 };

@@ -1,0 +1,22 @@
+.Dashboard .SoldProducts {
+  table {
+    th:first-child,
+    td:first-child {
+      width: 15%;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+      width: 50%;
+    }
+
+    th:last-child,
+    td:last-child {
+      text-align: right;
+    }
+  }
+
+  .All .dt {
+    min-height: 300px;
+  }
+}

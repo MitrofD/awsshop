@@ -3,6 +3,9 @@ const bcrypt = require('bcrypt');
 const { ObjectID } = require('mongodb');
 const collection = require('./collections/users');
 const loginsCollection = require('./collections/logins');
+const monthPaymentsCollection = require('./collections/month-payments');
+const ordersCollection = require('./collections/orders');
+const paymentsCollection = require('./collections/payments');
 const products = require('../products');
 const tools = require('../tools');
 const { random, alphabet } = require('../random');
@@ -25,22 +28,9 @@ const PASSWORD_ATTR = 'password';
 const PM_WALLET_ATTR = 'pMWallet';
 const REFERRAL_CODE_ATTR = 'referralCode';
 
-const CURR_EARNINGS_ATTR = 'currEarnings';
-const EARNINGS_FOR_REF_ATTR = 'earningsForRef';
-const CURR_EARNINGS_FOR_REF_ATTR = 'currEarningsForRef';
-const EARNINGS_ATTR = 'earnings';
-
-const REF_EARNINGS_ATTR = 'refEarnings';
-
-const CURR_SOLD_QUANTITY_ATTR = 'currSoldQuantity';
-const CURR_SOLD_QUANTITY_FOR_REF_ATTR = 'currSoldForRefQuantity';
-const SOLD_QUANTITY_ATTR = 'soldQuantity';
-
-const CURR_REF_SOLD_QUANTITY_ATTR = 'currRefSoldQuantity';
-const REF_SOLD_QUANTITY_ATTR = 'refSoldQuantity';
-
-const EARNINGS_OF_REFS_ATTR = 'earningsOfRefs';
-
+const REF_SOLD_QUANTITY = 'refSoldQuantity';
+const REF_WAITING_PAYMENTS_ATTR = 'refWaitingPayments';
+const WAITING_PAYMENTS_ATTR = 'waitingPayments';
 const LAST_ACTION_TIME = 'lastActionTime';
 const LAST_REF_ACTION_TIME = 'lastRefActionTime';
 
@@ -167,6 +157,42 @@ const getPureLimit = (mbLimit: any) => {
   return pureLimit;
 };
 
+function getPaymentsFromAttr(attr: string): Object[] {
+  const pVal = this[attr];
+
+  if (Array.isArray(pVal)) {
+    return pVal;
+  }
+
+  return [];
+}
+
+function getPaymentDataBefore(date: Date, attr: string): Object {
+  const time = date.getTime();
+  const arr = getPaymentsFromAttr.call(this, attr);
+  const arrLength = arr.length;
+  let earnings = 0;
+  let quantity = 0;
+  let i = 0;
+
+  for (; i < arrLength; i += 1) {
+    const val = arr[i];
+
+    if (val.t < time) {
+      earnings += val.e;
+      quantity += val.q;
+    } else {
+      break;
+    }
+  }
+
+  return {
+    earnings,
+    quantity,
+    remaining: arr.slice(i),
+  };
+}
+
 const users = {
   NOT_EXISTS_ACCOUNT_TEXT,
   CONFIRM_TTL_SEC,
@@ -235,9 +261,24 @@ const users = {
     const pureLimit = getPureLimit(rQuery.limit);
 
     if (typeof rQuery.searchPattern === 'string') {
-      pureQuery.email = {
-        $regex: new RegExp(rQuery.searchPattern, 'i'),
-      };
+      const searchRegExpArr = [];
+      const needRegExp = new RegExp(rQuery.searchPattern, 'i');
+
+      [
+        'firstName',
+        'lastName',
+        'email',
+      ].forEach((sKey) => {
+        const item = {
+          [sKey]: {
+            $regex: needRegExp,
+          },
+        };
+
+        searchRegExpArr.push(item);
+      });
+
+      pureQuery.$or = searchRegExpArr;
     }
 
     const sortField = typeof rQuery.sortBy === 'string' ? rQuery.sortBy : 'createdAt';
@@ -562,22 +603,7 @@ const users = {
     newUser.verification = genVerificationCode();
     newUser.createdAt = nowTime;
     newUser[PM_WALLET_ATTR] = null;
-
-    newUser[CURR_EARNINGS_ATTR] = 0;
-    newUser[EARNINGS_ATTR] = 0;
-    newUser[EARNINGS_FOR_REF_ATTR] = 0;
-    newUser[CURR_EARNINGS_FOR_REF_ATTR] = 0;
-    newUser[REF_EARNINGS_ATTR] = 0;
-
-    newUser[CURR_SOLD_QUANTITY_ATTR] = 0;
-    newUser[CURR_SOLD_QUANTITY_FOR_REF_ATTR] = 0;
-    newUser[SOLD_QUANTITY_ATTR] = 0;
-
-    newUser[CURR_REF_SOLD_QUANTITY_ATTR] = 0;
-    newUser[REF_SOLD_QUANTITY_ATTR] = 0;
-
-    newUser[EARNINGS_OF_REFS_ATTR] = 0;
-
+    newUser[REF_SOLD_QUANTITY] = 0;
     newUser[LAST_ACTION_TIME] = nowTime;
     newUser[LAST_REF_ACTION_TIME] = nowTime;
     newUser[PAYOUT_TIME_ATTR] = nowTime;
@@ -634,132 +660,337 @@ const users = {
       throw new Error('Product is not approved');
     }
 
-    const userId = tools.getMongoID(product.userId);
+    const nowTime = new Date();
+    const nowTimeMS = nowTime.getTime();
+    const user = await this.getById(product.userId);
+    const userId = user._id.toString();
     const pQuantity = parseInt(quantity) || 1;
     const currEarnings = pQuantity * product.earnings;
-    const nowTime = new Date();
 
-    const { value } = await collection.findOneAndUpdate({
-      _id: userId,
+    const currPaymentsArr = getPaymentsFromAttr.call(user, WAITING_PAYMENTS_ATTR);
+    currPaymentsArr.push({
+      t: nowTimeMS,
+      e: currEarnings,
+      q: pQuantity,
+    });
+
+    const setObj = {
+      [LAST_ACTION_TIME]: nowTime,
+      [WAITING_PAYMENTS_ATTR]: currPaymentsArr,
+    };
+
+    const promisesArr = [];
+
+    if (typeof user.fromUser === 'string') {
+      let refUser = null;
+
+      try {
+        refUser = await this.getById(user.fromUser);
+        // eslint-disable-next-line no-empty
+      } catch (getRefError) {}
+
+      if (refUser) {
+        const refCurrPaymentsArr = getPaymentsFromAttr.call(refUser, REF_WAITING_PAYMENTS_ATTR);
+        refCurrPaymentsArr.push({
+          t: nowTimeMS,
+          q: pQuantity,
+          u: `${user.firstName} ${user.lastName}`,
+        });
+
+        const refUpdatePromise = collection.updateOne({
+          _id: refUser._id,
+        }, {
+          $set: {
+            [LAST_REF_ACTION_TIME]: nowTime,
+            [REF_WAITING_PAYMENTS_ATTR]: refCurrPaymentsArr,
+          },
+
+          $inc: {
+            [REF_SOLD_QUANTITY]: pQuantity,
+          },
+        });
+
+        promisesArr.push(refUpdatePromise);
+      }
+    }
+
+    const addToOrdersPromise = ordersCollection.insertOne({
+      userId,
+      createdAt: nowTime,
+      earnings: currEarnings,
+      image: product.image,
+      productId: product._id.toString(),
+      price: product.price,
+      title: product.title,
+      quantity: pQuantity,
+    });
+
+    promisesArr.push(addToOrdersPromise);
+
+    const genPromise = collection.updateOne({
+      _id: user._id,
     }, {
-      $set: {
-        [LAST_ACTION_TIME]: nowTime,
-      },
-
-      $inc: {
-        [CURR_EARNINGS_ATTR]: currEarnings,
-        [CURR_SOLD_QUANTITY_ATTR]: pQuantity,
-        [CURR_SOLD_QUANTITY_FOR_REF_ATTR]: pQuantity,
-      },
+      $set: setObj,
     }, {
       returnOriginal: false,
     });
 
-    if (typeof value.fromUser === 'string') {
-      const refUserId = tools.getMongoID(value.fromUser);
+    promisesArr.push(genPromise);
 
-      await collection.updateOne({
-        _id: refUserId,
-      }, {
-        $set: {
-          [LAST_REF_ACTION_TIME]: nowTime,
-        },
+    await Promise.all(promisesArr);
+    Object.assign(user, setObj);
 
-        $inc: {
-          [CURR_REF_SOLD_QUANTITY_ATTR]: pQuantity,
-        },
-      });
-    }
-
-    return value;
+    return user;
   },
 
-  async payment(userId: MongoID): Promise<User> {
-    const user = await this.getById(userId);
-    const nowTime = new Date();
-    const currEarnings = user[CURR_EARNINGS_ATTR];
-    const currSoldQuantity = user[CURR_SOLD_QUANTITY_ATTR];
-    const currSoldQuantityForRef = user[CURR_SOLD_QUANTITY_FOR_REF_ATTR];
-    const refPurchasePrice = Settings.getFloatOption('REF_PURCHASE_PRICE');
-    const earningsForRef = currSoldQuantity * refPurchasePrice;
-    const currEarningsForRef = currSoldQuantityForRef * refPurchasePrice;
+  async getSoldProducts(userId: string, query: any): Promise<Object> {
+    const rQuery = tools.anyAsObj(query);
+    const pureQuery = {};
+    const pureSkip = getPureSkip(rQuery.skip);
+    const pureLimit = getPureLimit(rQuery.limit);
 
-    await collection.updateOne({
+    pureQuery.userId = userId;
+
+    const createdAtObj = {};
+    const fromDate = tools.dateFromData(rQuery.from);
+    const toDate = tools.dateFromData(rQuery.to);
+
+    if (fromDate) {
+      createdAtObj.$gte = fromDate;
+      pureQuery.createdAt = createdAtObj;
+    }
+
+    if (toDate) {
+      createdAtObj.$lte = toDate;
+      pureQuery.createdAt = createdAtObj;
+    }
+
+    if (typeof rQuery.searchPattern === 'string') {
+      const needRegExp = new RegExp(rQuery.searchPattern, 'i');
+
+      pureQuery.title = {
+        $regex: needRegExp,
+      };
+    }
+
+    const findPromise = new Promise((resolve, reject) => {
+      ordersCollection.find(pureQuery, {
+        limit: pureLimit + 1,
+        skip: pureSkip,
+      }).sort('createdAt', -1).toArray((error, items) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        let loadMore = false;
+
+        if (items.length > pureLimit) {
+          loadMore = true;
+          items.pop();
+        }
+
+        resolve({
+          items,
+          loadMore,
+          limit: pureLimit,
+          skip: pureSkip,
+        });
+      });
+    });
+
+    return findPromise;
+  },
+
+  async getPayments(userId: string, query: any): Promise<Object> {
+    const rQuery = tools.anyAsObj(query);
+    const pureQuery = {};
+    const pureSkip = getPureSkip(rQuery.skip);
+    const pureLimit = getPureLimit(rQuery.limit);
+
+    pureQuery.userId = userId;
+
+    const createdAtObj = {};
+    const fromDate = tools.dateFromData(rQuery.from);
+    const toDate = tools.dateFromData(rQuery.to);
+
+    if (fromDate) {
+      createdAtObj.$gte = fromDate;
+      pureQuery.createdAt = createdAtObj;
+    }
+
+    if (toDate) {
+      createdAtObj.$lte = toDate;
+      pureQuery.createdAt = createdAtObj;
+    }
+
+    const findPromise = new Promise((resolve, reject) => {
+      paymentsCollection.find(pureQuery, {
+        limit: pureLimit + 1,
+        skip: pureSkip,
+      }).sort('createdAt', -1).toArray((error, items) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        let loadMore = false;
+
+        if (items.length > pureLimit) {
+          loadMore = true;
+          items.pop();
+        }
+
+        resolve({
+          items,
+          loadMore,
+          limit: pureLimit,
+          skip: pureSkip,
+        });
+      });
+    });
+
+    return findPromise;
+  },
+
+  async getPaymentsByMonth(userId: string, query: any): Promise<Object> {
+    const rQuery = tools.anyAsObj(query);
+    const pureQuery = {};
+    const pureSkip = getPureSkip(rQuery.skip);
+    const pureLimit = getPureLimit(rQuery.limit);
+
+    pureQuery.userId = userId;
+
+    const createdAtObj = {};
+    const fromDate = tools.dateFromData(rQuery.from);
+    const toDate = tools.dateFromData(rQuery.to);
+
+    if (fromDate) {
+      createdAtObj.$gte = fromDate;
+      pureQuery.updatedAt = createdAtObj;
+    }
+
+    if (toDate) {
+      createdAtObj.$lte = toDate;
+      pureQuery.updatedAt = createdAtObj;
+    }
+
+    const findPromise = new Promise((resolve, reject) => {
+      monthPaymentsCollection.find(pureQuery, {
+        limit: pureLimit + 1,
+        skip: pureSkip,
+      }).sort('updatedAt', -1).toArray((error, items) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        let loadMore = false;
+
+        if (items.length > pureLimit) {
+          loadMore = true;
+          items.pop();
+        }
+
+        resolve({
+          items,
+          loadMore,
+          limit: pureLimit,
+          skip: pureSkip,
+        });
+      });
+    });
+
+    return findPromise;
+  },
+
+  async waitingForPayment(userId: MongoID): Promise<number> {
+    const user = await this.getById(userId);
+    const startOfMonthDate = Tools.startOfMonthDate();
+    const paymentData = getPaymentDataBefore.call(user, startOfMonthDate, WAITING_PAYMENTS_ATTR);
+    return paymentData.earnings;
+  },
+
+  async payment(userId: MongoID, otsdMode: boolean): Promise<User> {
+    const user = await this.getById(userId);
+
+    const startOfMonthDate = Tools.startOfMonthDate();
+
+    if (otsdMode) {
+      startOfMonthDate.setDate(user.payoutTime.getDate() - 1);
+    }
+
+    const paymentData = getPaymentDataBefore.call(user, startOfMonthDate, WAITING_PAYMENTS_ATTR);
+
+    if (paymentData.earnings === 0) {
+      throw new Error('User don\'t have earnings');
+    }
+
+    const nowTime = new Date();
+    const monthYearKey = `${nowTime.getMonth()}_${nowTime.getFullYear()}`;
+    const pUserId = user._id.toString();
+
+    const dbPaymentData = {
+      earnings: paymentData.earnings,
+      quantity: paymentData.quantity,
+    };
+
+    const genPromise = collection.updateOne({
       _id: user._id,
     }, {
       $set: {
-        [CURR_EARNINGS_ATTR]: 0,
-        [CURR_SOLD_QUANTITY_ATTR]: 0,
         [PAYOUT_TIME_ATTR]: nowTime,
-      },
-
-      $inc: {
-        [EARNINGS_ATTR]: currEarnings,
-        [SOLD_QUANTITY_ATTR]: currSoldQuantity,
-        [EARNINGS_FOR_REF_ATTR]: earningsForRef,
-        [CURR_EARNINGS_FOR_REF_ATTR]: currEarningsForRef,
+        [WAITING_PAYMENTS_ATTR]: paymentData.remaining,
       },
     });
 
-    user[CURR_EARNINGS_ATTR] = 0;
-    user[CURR_SOLD_QUANTITY_ATTR] = 0;
-    user[EARNINGS_ATTR] += currEarnings;
-    user[SOLD_QUANTITY_ATTR] += currEarnings;
-    user[EARNINGS_FOR_REF_ATTR] += earningsForRef;
-    user[CURR_EARNINGS_FOR_REF_ATTR] += currEarningsForRef;
+    const paymentPromise = paymentsCollection.insertOne({
+      ...dbPaymentData,
+      createdAt: nowTime,
+      userId: pUserId,
+    });
+
+    const monthPaymentPromise = monthPaymentsCollection.updateOne({
+      monthYear: monthYearKey,
+      userId: pUserId,
+    }, {
+      $set: {
+        updatedAt: nowTime,
+      },
+
+      $inc: dbPaymentData,
+    }, {
+      upsert: true,
+    });
+
+    await Promise.all([
+      genPromise,
+      paymentPromise,
+      monthPaymentPromise,
+    ]);
+
     user[PAYOUT_TIME_ATTR] = nowTime;
+    user[WAITING_PAYMENTS_ATTR] = paymentData.remaining;
 
     return user;
   },
 
   async referralPayment(userId: MongoID): Promise<User> {
     const user = await this.getById(userId);
-    const fromUser = user._id.toString();
-
-    const refUser = await collection.findOne({
-      fromUser,
-      [CURR_SOLD_QUANTITY_ATTR]: {
-        $gt: 0,
-      },
-    });
-
-    if (refUser) {
-      throw new Error('Pay for the product first');
-    }
-
-    const currRefSoldQuantity = user[CURR_REF_SOLD_QUANTITY_ATTR];
-    const refPurchasePrice = Settings.getFloatOption('REF_PURCHASE_PRICE');
-    const currRefEarnings = currRefSoldQuantity * refPurchasePrice;
     const nowTime = new Date();
+
+    const setObj = {
+      [REF_SOLD_QUANTITY]: 0,
+      [REF_PAYOUT_TIME_ATTR]: nowTime,
+    };
 
     await collection.updateOne({
       _id: user._id,
     }, {
-      $set: {
-        [CURR_REF_SOLD_QUANTITY_ATTR]: 0,
-        [REF_PAYOUT_TIME_ATTR]: nowTime,
-      },
-
-      $inc: {
-        [REF_SOLD_QUANTITY_ATTR]: currRefSoldQuantity,
-        [REF_EARNINGS_ATTR]: currRefEarnings,
-      },
+      $set: setObj,
     });
 
-    await collection.updateMany({
-      fromUser,
-    }, {
-      $set: {
-        [CURR_SOLD_QUANTITY_FOR_REF_ATTR]: 0,
-        [CURR_EARNINGS_FOR_REF_ATTR]: 0,
-      },
-    });
-
-    user[CURR_REF_SOLD_QUANTITY_ATTR] = 0;
-    user[REF_SOLD_QUANTITY_ATTR] += currRefSoldQuantity;
-    user[REF_EARNINGS_ATTR] += currRefEarnings;
-    user[REF_PAYOUT_TIME_ATTR] = nowTime;
-
+    Object.assign(user, setObj);
     return user;
   },
 

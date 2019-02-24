@@ -22,7 +22,17 @@ const users = Object.freeze({
 
   getLoginsHistory: (query: any) => tools.getRequestWithURL(`${basePath}/logins-history`, query),
 
-  payment: (id: string) => putAxiosWithPath(`/payment/${id}`),
+  getPaymentsByMonth: (query: any) => tools.getRequestWithURL(`${basePath}/payments-by-month`, query),
+
+  getPayments: (query: any) => tools.getRequestWithURL(`${basePath}/payments`, query),
+
+  getSoldProducts: (query: any) => tools.getRequestWithURL(`${basePath}/sold-products`, query),
+
+  waitingForPayment: () => tools.getRequestWithURL(`${basePath}/waiting-for-payment`),
+
+  paymentStartOfMonth: (id: string) => putAxiosWithPath(`/payment-som/${id}`),
+
+  paymentOnTheSameMonth: (id: string) => putAxiosWithPath(`/payment-otsd/${id}`),
 
   referralPayment: (id: string) => putAxiosWithPath(`/referral-payment/${id}`),
 

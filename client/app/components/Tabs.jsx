@@ -23,9 +23,10 @@ type ReactNodeOrReactNodeCollection = React$Node | React$Node[];
 
 type Props = {
   children: ReactNodeOrReactNodeCollection,
-  activeIndex: number,
-  className: ?string,
-  onChange: ?Function, // eslint-disable-line react/no-unused-prop-types
+  activeIndex?: number,
+  className?: ?string,
+  // eslint-disable-next-line react/no-unused-prop-types
+  onChange?: ?Function,
 };
 
 type State = {
@@ -147,9 +148,11 @@ class Tabs extends React.PureComponent<Props, State> {
         contentData = Component ? <Component /> : item.props.render();
       }
 
+      const key = `tb_${idx}`;
+
       const childrenEl = (
         <li
-          key={idx}
+          key={key}
           className="nav-item"
         >
           <a

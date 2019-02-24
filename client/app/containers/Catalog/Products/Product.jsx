@@ -61,7 +61,7 @@ const Product = (props: Props) => {
         </div>
       </div>
       <div className="nm">{props.title}</div>
-      <div className="prc">{props.price} $</div>
+      <div className="prc">{NumberFormat(props.price)}</div>
     </Link>
   );
 };

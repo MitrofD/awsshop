@@ -8,7 +8,7 @@ const usersCollection = MongoStore.collection('users');
   'lastName',
   'lastActionTime',
   'lastRefActionTime',
-  'currSoldQuantity',
+  'soldQuantity',
   'verification',
 ].forEach((key) => {
   usersCollection.createIndex({

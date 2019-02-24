@@ -9,7 +9,16 @@ const TYPE = {
   TO: 'TO',
 };
 
-type Props = {};
+const MAX_DETAIL_TYPE = {
+  month: 'month',
+  year: 'year',
+  decade: 'decade',
+  century: 'century',
+};
+
+type Props = {
+  maxDetail?: $Keys<typeof MAX_DETAIL_TYPE>,
+};
 
 type State = {
   fromDate: ?Date,
@@ -17,11 +26,17 @@ type State = {
   showDatePicker: ?string,
 };
 
+const defaultProps = {
+  maxDetail: MAX_DETAIL_TYPE.month,
+};
+
 const onKeyDownInput = (event: SyntheticEvent<HTMLElement>) => {
   event.preventDefault();
 };
 
 class DateRange extends React.PureComponent<Props, State> {
+  static defaultProps = defaultProps;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -60,8 +75,22 @@ class DateRange extends React.PureComponent<Props, State> {
   }
 
   onChangeToDatePicker(date: Date) {
+    const fSMaxDetail = this.props.maxDetail;
     let dateTime = date.getTime();
-    dateTime += 86399999;
+    let mDays = 1;
+
+    if (fSMaxDetail === MAX_DETAIL_TYPE.year) {
+      const nextMonth = date.getMonth() + 1;
+      const nextDate = new Date(date.getFullYear(), nextMonth, 0);
+      mDays = nextDate.getDate();
+    } else if (fSMaxDetail === MAX_DETAIL_TYPE.month) {
+      mDays = 10;
+    } else if (fSMaxDetail === MAX_DETAIL_TYPE.century) {
+      mDays = 36525;
+    }
+
+    const totalMs = mDays * 86400000;
+    dateTime += totalMs - 1;
     this.toDate = new Date(dateTime);
   }
 
@@ -135,6 +164,7 @@ class DateRange extends React.PureComponent<Props, State> {
         <Fragment>
           <FixedOverlay onClick={this.onClickFixedOverlay} />
           <DatePicker
+            maxDetail={this.props.maxDetail}
             maxDate={toDate}
             onChange={this.onChangeFromDatePicker}
             value={fromDate}
@@ -146,6 +176,7 @@ class DateRange extends React.PureComponent<Props, State> {
         <Fragment>
           <FixedOverlay onClick={this.onClickFixedOverlay} />
           <DatePicker
+            maxDetail={this.props.maxDetail}
             minDate={fromDate}
             onChange={this.onChangeToDatePicker}
             value={toDate}

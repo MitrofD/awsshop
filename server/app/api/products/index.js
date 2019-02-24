@@ -3,7 +3,7 @@ const collection = require('./collections/products');
 const rawCollection = require('./collections/raw-products');
 const categories = require('../categories');
 const tools = require('../tools');
-const users = require('../users');
+const usersCollection = MongoStore.collection('users');
 
 const SHOP_TYPE = {
   ALIEXPRESS: 'ALIEXPRESS',
@@ -311,7 +311,11 @@ const products = {
   },
 
   async push(userId: string, rawId: string, data: any): Promise<Object> {
-    const user = await users.getById(userId);
+    const pUserId = tools.getMongoID(userId);
+
+    const user = await usersCollection.findOne({
+      _id: pUserId,
+    });
 
     if (!user) {
       throw new Error(NOT_FOUND_TEXT);

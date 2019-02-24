@@ -1,10 +1,22 @@
 .Admin {
+  .Start {
+    .dt {
+      margin-top: 120px;
+    }
+
+    @include media-breakpoint-down(sm) {
+      .dt {
+        margin-top: 0;
+      }
+    }
+  }
+
   .Payments,
   .ReferralPayments {
     table {
       th:first-child,
       td:first-child {
-        width: 32%;
+        width: 25%;
       }
 
       th:nth-child(2),

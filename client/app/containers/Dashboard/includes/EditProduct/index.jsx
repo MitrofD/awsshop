@@ -473,7 +473,7 @@ class EditProduct extends React.Component<Props, State> {
               )}
               {this.origPrice > 0 && (
                 <div className="attr-inf">
-                  <strong>Original price:</strong> {this.origPrice} $
+                  <strong>Original price:</strong> {NumberFormat(this.origPrice)}
                 </div>
               )}
             </div>
@@ -492,7 +492,7 @@ class EditProduct extends React.Component<Props, State> {
             </div>
             <div className="col-sm-6">
               <div className="form-group">
-                <label>{tt('Price')} ({tt('earnings')}: {this.earningsPrice} $)</label>
+                <label>{tt('Price')} ({tt('earnings')}: {this.earningsPrice})</label>
                 <NumberInput
                   className={inputCNs.price}
                   defaultValue={this.price}

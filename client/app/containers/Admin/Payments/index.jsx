@@ -1,4 +1,41 @@
 // @flow
+import React from 'react';
+import { Switch, Route } from 'react-router-dom';
+import data from '../../../api/data';
+
+const {
+  Loadable,
+  LoadableWithParams,
+} = require('../../../components/Loadable')(cN => import(`./${cN}`));
+
+const StartPage = Loadable('Start');
+const StartOfMonthPaymentsPage = LoadableWithParams('Payments', {
+  mode: 'START_OF_MONTH',
+});
+
+const OnTheSameDatePaymentsPage = LoadableWithParams('Payments', {
+  mode: 'ON_THE_SAME_DATE',
+});
+
+export default () => (
+  <Switch>
+    <Route
+      component={StartPage}
+      exact
+      path="/admin/payments"
+    />
+    <Route
+      component={StartOfMonthPaymentsPage}
+      path="/admin/payments/som"
+    />
+    <Route
+      component={OnTheSameDatePaymentsPage}
+      path="/admin/payments/otsd"
+    />
+  </Switch>
+);
+
+/*
 import React, { Fragment } from 'react';
 import NoHaveLabel from '../../includes/NoHaveLabel';
 import LoadMore from '../../includes/LoadMore';
@@ -285,3 +322,4 @@ class Payments extends React.Component<Props, State> {
 }
 
 export default Payments;
+*/

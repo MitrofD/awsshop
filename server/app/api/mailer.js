@@ -148,13 +148,10 @@ const mailerGenerator = (templatePath: string): Promise<Object> => {
       }
 
       const mailer = getMailer(templatePath);
-      resolve(mailer);
 
-      /*
       mailer.verify().then(() => {
         resolve(mailer);
       }).catch(reject);
-      */
     });
   });
 };

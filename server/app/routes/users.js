@@ -187,8 +187,14 @@ module.exports = function usersRoute() {
     }).catch(next);
   });
 
-  this.put('/users/payment/:id', Middleware.admin_Sess, (req, res, next) => {
-    users.payment(req.params.id).then((user) => {
+  this.put('/users/payment-som/:id', Middleware.admin_Sess, (req, res, next) => {
+    users.payment(req.params.id, false).then((user) => {
+      res.json(user);
+    }).catch(next);
+  });
+
+  this.put('/users/payment-otsm/:id', Middleware.admin_Sess, (req, res, next) => {
+    users.payment(req.params.id, true).then((user) => {
       res.json(user);
     }).catch(next);
   });
@@ -196,6 +202,30 @@ module.exports = function usersRoute() {
   this.put('/users/referral-payment/:id', Middleware.admin_Sess, (req, res, next) => {
     users.referralPayment(req.params.id).then((user) => {
       res.json(user);
+    }).catch(next);
+  });
+
+  this.get('/users/waiting-for-payment', Middleware.userId_Sess, (req, res, next) => {
+    users.waitingForPayment(req.params.id).then((earnings) => {
+      res.json(earnings);
+    }).catch(next);
+  });
+
+  this.get('/users/sold-products', Middleware.userId_Sess, (req, res, next) => {
+    users.getSoldProducts(req.userId, req.query).then((data) => {
+      res.json(data);
+    }).catch(next);
+  });
+
+  this.get('/users/payments-by-month', Middleware.userId_Sess, (req, res, next) => {
+    users.getPaymentsByMonth(req.userId, req.query).then((data) => {
+      res.json(data);
+    }).catch(next);
+  });
+
+  this.get('/users/payments', Middleware.userId_Sess, (req, res, next) => {
+    users.getPayments(req.userId, req.query).then((data) => {
+      res.json(data);
     }).catch(next);
   });
 

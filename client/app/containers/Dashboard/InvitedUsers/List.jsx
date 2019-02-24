@@ -2,6 +2,7 @@
 import React from 'react';
 import LoadMore from '../../includes/LoadMore';
 import XHRSpin from '../../includes/XHRSpin';
+import NoHaveLabel from '../../includes/NoHaveLabel';
 import { tt } from '../../../components/TranslateElement';
 import user from '../../../api/user';
 import serverSettings from '../../../api/server-settings';
@@ -180,7 +181,7 @@ class List extends React.Component<Props, State> {
     if (xhrRequest) {
       content = <XHRSpin />;
       disabledSearchButton = true;
-    } else {
+    } else if (this.items.length > 0) {
       content = (
         <table className="table tbl-hd">
           <thead>
@@ -216,6 +217,8 @@ class List extends React.Component<Props, State> {
           </tbody>
         </table>
       );
+    } else {
+      content = <NoHaveLabel>No have invited users</NoHaveLabel>;
     }
 
     if (showLoadMore) {

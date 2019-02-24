@@ -47,3 +47,39 @@ Tools.prettyTime = (isoStr: string): string => {
 };
 
 Tools.subUrl = (sub: string) => `${Config.protocol}${sub}.${Config.domain}${Config.port}`;
+
+Tools.getMonthNameForDate = (function getMonthNameForDateFunc() {
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  return (date: Date) => {
+    const nowMonthIdx = date.getMonth();
+    return monthNames[nowMonthIdx];
+  };
+}());
+
+Tools.getMonthYearForDate = (date: Date) => {
+  const month = Tools.getMonthNameForDate(date);
+  const year = date.getFullYear();
+
+  return `${month} ${year}`;
+};
+
+Tools.getPrevMonthName = () => {
+  const currTime = new Date();
+  currTime.setMonth(currTime.getMonth() - 1);
+
+  return Tools.getMonthNameForDate(currTime);
+};

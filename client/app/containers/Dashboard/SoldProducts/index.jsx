@@ -1,12 +1,13 @@
 // @flow
 import React from 'react';
-import TimeRangeControl from '../../includes/TimeRangeControl';
+import NoHaveLabel from '../../includes/NoHaveLabel';
 import LoadMore from '../../includes/LoadMore';
 import XHRSpin from '../../includes/XHRSpin';
 import DateRange from '../../../components/DateRange';
 import { tt } from '../../../components/TranslateElement';
-import windowScroll from '../../../api/window-scroll';
+import TimeRangeControl from '../../includes/TimeRangeControl';
 import users from '../../../api/users';
+import windowScroll from '../../../api/window-scroll';
 
 const SCROLL_FAULT = 40;
 
@@ -23,7 +24,7 @@ const defaultProps = {
   limit: 50,
 };
 
-class LoginsHistory extends React.PureComponent<Props, State> {
+class SoldProducts extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
   constructor(props: Props, context: null) {
@@ -37,9 +38,9 @@ class LoginsHistory extends React.PureComponent<Props, State> {
     const self: any = this;
     self.onApplyTimeRangeControl = this.onApplyTimeRangeControl.bind(this);
     self.onChangeSearchInput = this.onChangeSearchInput.bind(this);
-    self.onScrollWindow = this.onScrollWindow.bind(this);
-    self.onSetDateRange = this.onSetDateRange.bind(this);
     self.onSetRootNode = this.onSetRootNode.bind(this);
+    self.onSetDateRange = this.onSetDateRange.bind(this);
+    self.onScrollWindow = this.onScrollWindow.bind(this);
     self.onSubmitSearchForm = this.onSubmitSearchForm.bind(this);
   }
 
@@ -66,6 +67,12 @@ class LoginsHistory extends React.PureComponent<Props, State> {
     this.searchText = pureValue.length > 0 ? pureValue : null;
   }
 
+  onSetRootNode(el: ?HTMLElement) {
+    if (el) {
+      this.rootNode = el;
+    }
+  }
+
   onScrollWindow(scrollData: Object) {
     const rootNodeHeight = this.rootNode.offsetHeight;
     const rootNodeTop = this.rootNode.offsetTop;
@@ -89,13 +96,7 @@ class LoginsHistory extends React.PureComponent<Props, State> {
     }
   }
 
-  onSetRootNode(el: ?HTMLElement) {
-    if (el) {
-      this.rootNode = el;
-    }
-  }
-
-  getSearchTextPattern(): ?string {
+  getFindTitlePattern(): ?string {
     if (this.searchText) {
       const escapedStr = Tools.escapedString(this.searchText);
       return `.*${escapedStr}.*`;
@@ -104,8 +105,8 @@ class LoginsHistory extends React.PureComponent<Props, State> {
     return null;
   }
 
-  getSearchTextRegExp(): ?RegExp {
-    const searchTextPattern = this.getSearchTextPattern();
+  getFindTitleRegExp(): ?RegExp {
+    const searchTextPattern = this.getFindTitlePattern();
     return searchTextPattern ? new RegExp(searchTextPattern, 'i') : null;
   }
 
@@ -124,9 +125,10 @@ class LoginsHistory extends React.PureComponent<Props, State> {
   filter() {
     this.stopListenWindowScroll();
 
-    const queryObj = {};
-    queryObj.limit = this.props.limit;
-    queryObj.skip = this.items.length;
+    const queryObj: { [string]: any } = {
+      limit: this.props.limit,
+      skip: this.items.length,
+    };
 
     if (this.dateRange) {
       const {
@@ -143,13 +145,13 @@ class LoginsHistory extends React.PureComponent<Props, State> {
       }
     }
 
-    const searchTextPattern = this.getSearchTextPattern();
+    const searchTextPattern = this.getFindTitlePattern();
 
     if (searchTextPattern) {
       queryObj.searchPattern = searchTextPattern;
     }
 
-    users.getLoginsHistory(queryObj).then(({ items, loadMore }) => {
+    users.getSoldProducts(queryObj).then(({ items, loadMore }) => {
       this.items = this.items.concat(items);
 
       this.setStateAfterRequest({
@@ -173,13 +175,6 @@ class LoginsHistory extends React.PureComponent<Props, State> {
     });
   }
 
-  topListenWindowScroll() {
-    if (this.scrollFunc) {
-      windowScroll.unbind(this.scrollFunc);
-      this.scrollFunc = null;
-    }
-  }
-
   stopListenWindowScroll() {
     if (this.scrollFunc) {
       windowScroll.unbind(this.scrollFunc);
@@ -188,10 +183,10 @@ class LoginsHistory extends React.PureComponent<Props, State> {
   }
 
   dateRange: ?DateRange = null;
+  searchText: ?string = null;
   items: Object[] = [];
   rootNode: HTMLElement;
   scrollFunc: ?Function = null;
-  searchText: ?string = null;
   unmounted = true;
 
   render() {
@@ -202,20 +197,21 @@ class LoginsHistory extends React.PureComponent<Props, State> {
 
     let content = null;
     let disabledSearchButton = false;
-    let itemsContent = null;
     let loadMoreContent = null;
+    let itemsContent = null;
 
     if (xhrRequest) {
       content = <XHRSpin />;
       disabledSearchButton = true;
-    } else {
+    } else if (this.items.length > 0) {
       content = (
         <table className="table tbl-hd">
           <thead>
             <tr>
-              <th>{tt('User')}</th>
-              <th>{tt('Location')}</th>
-              <th>{tt('Time')}</th>
+              <th>Image</th>
+              <th>ID and title</th>
+              <th>Price</th>
+              <th>Earnings</th>
             </tr>
           </thead>
         </table>
@@ -224,18 +220,32 @@ class LoginsHistory extends React.PureComponent<Props, State> {
       itemsContent = (
         <table className="table">
           <tbody>
-            {this.items.map(item => (
-              <tr key={item._id}>
-                <td>
-                  {item.description} (<a href={`mailto:${item.userEmail}`}>{item.userEmail}</a>)
-                </td>
-                <td><strong className="text-danger">{item.ip}</strong> / {item.location}</td>
-                <td>{Tools.prettyTime(item.createdAt)}</td>
-              </tr>
-            ))}
+            {this.items.map((item) => {
+              const pId = item._id.toString();
+
+              return (
+                <tr key={pId}>
+                  <td>
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="img-thumbnail"
+                    />
+                  </td>
+                  <td>
+                    <strong className="text-primary mb-3">{item.productId}</strong>
+                    <div>{item.title}</div>
+                  </td>
+                  <td>{NumberFormat(item.price)}</td>
+                  <td className="text-danger">{NumberFormat(item.earnings)}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       );
+    } else {
+      itemsContent = <NoHaveLabel>{tt('No have products')}</NoHaveLabel>;
     }
 
     if (showLoadMore) {
@@ -244,8 +254,8 @@ class LoginsHistory extends React.PureComponent<Props, State> {
     }
 
     return (
-      <div className="LoginsHistory">
-        <div className="ttl">{tt('Logins history')}</div>
+      <div className="SoldProducts">
+        <div className="ttl">{tt('Sold products')}</div>
         <form
           noValidate
           className="actns"
@@ -253,13 +263,13 @@ class LoginsHistory extends React.PureComponent<Props, State> {
         >
           <div className="row">
             <div className="col-sm-12 form-group">
-              <label>{tt('Username or email:')}</label>
+              <label>{tt('Product name:')}</label>
               <input
                 className="form-control"
                 defaultValue={this.searchText}
                 onChange={this.onChangeSearchInput}
                 type="text"
-                placeholder="Ex: Steve Jobs"
+                placeholder="Ex: car"
               />
             </div>
           </div>
@@ -282,16 +292,16 @@ class LoginsHistory extends React.PureComponent<Props, State> {
         <div className="dt">
           {content}
           <div
-            className="lst"
+            className="lst row"
             ref={this.onSetRootNode}
           >
             {itemsContent}
-            {loadMoreContent}
           </div>
+          {loadMoreContent}
         </div>
       </div>
     );
   }
 }
 
-export default LoginsHistory;
+export default SoldProducts;

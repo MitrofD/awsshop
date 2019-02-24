@@ -1,17 +1,21 @@
 // @flow
 import React from 'react';
-import TimeRangeControl from '../../includes/TimeRangeControl';
 import LoadMore from '../../includes/LoadMore';
 import XHRSpin from '../../includes/XHRSpin';
-import DateRange from '../../../components/DateRange';
-import { tt } from '../../../components/TranslateElement';
 import windowScroll from '../../../api/window-scroll';
+import data from '../../../api/data';
 import users from '../../../api/users';
 
 const SCROLL_FAULT = 40;
 
+const MODE = {
+  START_OF_MONTH: 'START_OF_MONTH',
+  ON_THE_SAME_DATE: 'ON_THE_SAME_DATE',
+};
+
 type Props = {
   limit?: number,
+  mode: $Keys<typeof MODE>,
 };
 
 type State = {
@@ -23,7 +27,7 @@ const defaultProps = {
   limit: 50,
 };
 
-class LoginsHistory extends React.PureComponent<Props, State> {
+class Payments extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
   constructor(props: Props, context: null) {
@@ -34,18 +38,42 @@ class LoginsHistory extends React.PureComponent<Props, State> {
       xhrRequest: true,
     };
 
+    this.title = 'Last payout -';
+
+    if (props.mode === MODE.ON_THE_SAME_DATE) {
+      this.paymentFunc = users.paymentOnTheSameMonth;
+      this.title += ' on the same date';
+      this.breakFunc = (item: Object, uItem: Object) => {
+        const currDate = new Date(this.startOfMonthTime);
+        const usDate = new Date(uItem.payoutTime);
+        currDate.setDate(usDate.getDate() - 1);
+        return item.t > currDate.getTime();
+      };
+    } else {
+      this.paymentFunc = users.paymentStartOfMonth;
+      this.title += ` end of ${Tools.getPrevMonthName()}`;
+      this.breakFunc = (item: Object) => item.t > this.startOfMonthTime;
+    }
+
     const self: any = this;
-    self.onApplyTimeRangeControl = this.onApplyTimeRangeControl.bind(this);
     self.onChangeSearchInput = this.onChangeSearchInput.bind(this);
+    self.onClickPaidButton = self.onClickPaidButton.bind(this);
     self.onScrollWindow = this.onScrollWindow.bind(this);
-    self.onSetDateRange = this.onSetDateRange.bind(this);
     self.onSetRootNode = this.onSetRootNode.bind(this);
     self.onSubmitSearchForm = this.onSubmitSearchForm.bind(this);
   }
 
   componentDidMount() {
     this.unmounted = false;
-    this.filter();
+
+    data.getStartOfMonthTime().then((startOfMonthTime) => {
+      if (this.unmounted) {
+        return;
+      }
+
+      this.startOfMonthTime = startOfMonthTime;
+      this.filter();
+    });
   }
 
   componentWillUnmount() {
@@ -53,17 +81,31 @@ class LoginsHistory extends React.PureComponent<Props, State> {
     this.stopListenWindowScroll();
   }
 
-  onApplyTimeRangeControl(fromDate: Date, toDate: Date) {
-    if (this.dateRange) {
-      this.dateRange.fromDate = fromDate;
-      this.dateRange.toDate = toDate;
-    }
-  }
-
   onChangeSearchInput(event: SyntheticEvent<HTMLInputElement>) {
     const input = event.currentTarget;
     const pureValue = input.value.trim();
     this.searchText = pureValue.length > 0 ? pureValue : null;
+  }
+
+  onClickPaidButton(event: SyntheticEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    const button = event.currentTarget;
+    button.disabled = true;
+    const userId = button.dataset.id;
+
+    this.paymentFunc(userId).then(() => {
+      const idx = parseInt(button.dataset.idx);
+      const item = this.items[idx];
+
+      if (typeof item === 'object' && item !== null) {
+        item.disabledPay = true;
+      }
+
+      NotificationBox.success('Operation completed successfully', true);
+    }).catch((error) => {
+      NotificationBox.danger(error.message);
+      button.disabled = false;
+    });
   }
 
   onScrollWindow(scrollData: Object) {
@@ -81,12 +123,6 @@ class LoginsHistory extends React.PureComponent<Props, State> {
     event.preventDefault();
     this.reset();
     this.filter();
-  }
-
-  onSetDateRange(el: ?DateRange) {
-    if (el) {
-      this.dateRange = el;
-    }
   }
 
   onSetRootNode(el: ?HTMLElement) {
@@ -127,21 +163,8 @@ class LoginsHistory extends React.PureComponent<Props, State> {
     const queryObj = {};
     queryObj.limit = this.props.limit;
     queryObj.skip = this.items.length;
-
-    if (this.dateRange) {
-      const {
-        fromDate,
-        toDate,
-      } = this.dateRange;
-
-      if (fromDate) {
-        queryObj.from = fromDate.getTime();
-      }
-
-      if (toDate) {
-        queryObj.to = toDate.getTime();
-      }
-    }
+    queryObj.sortBy = 'lastActionTime';
+    queryObj.sortDesc = -1;
 
     const searchTextPattern = this.getSearchTextPattern();
 
@@ -149,8 +172,42 @@ class LoginsHistory extends React.PureComponent<Props, State> {
       queryObj.searchPattern = searchTextPattern;
     }
 
-    users.getLoginsHistory(queryObj).then(({ items, loadMore }) => {
-      this.items = this.items.concat(items);
+    users.get(queryObj).then(({ items, loadMore }) => {
+      const itemsArrLength = items.length;
+      let i = 0;
+
+      for (; i < itemsArrLength; i += 1) {
+        const item = items[i];
+        const pArr = Tools.isArray(item.waitingPayments) ? item.waitingPayments : [];
+        const pArrLength = pArr.length;
+        let earnings = 0;
+        let pI = 0;
+
+        for (; pI < pArrLength; pI += 1) {
+          const pItem = pArr[pI];
+
+          if (this.breakFunc(pItem, item)) {
+            break;
+          }
+
+          earnings += pItem.e;
+        }
+
+        delete item.waitingPayments;
+
+        let disabledPay = true;
+        let earningsText = '- - -';
+
+        if (earnings > 0) {
+          disabledPay = false;
+          earningsText = NumberFormat(earnings);
+        }
+
+        item._id = item._id.toString();
+        item.disabledPay = disabledPay;
+        item.earningsText = earningsText;
+        this.items.push(item);
+      }
 
       this.setStateAfterRequest({
         showLoadMore: loadMore,
@@ -187,12 +244,15 @@ class LoginsHistory extends React.PureComponent<Props, State> {
     }
   }
 
-  dateRange: ?DateRange = null;
   items: Object[] = [];
   rootNode: HTMLElement;
   scrollFunc: ?Function = null;
   searchText: ?string = null;
   unmounted = true;
+  breakFunc: (Object, Object) => boolean;
+  paymentFunc: Function;
+  startOfMonthTime = 0;
+  title: string;
 
   render() {
     const {
@@ -213,9 +273,10 @@ class LoginsHistory extends React.PureComponent<Props, State> {
         <table className="table tbl-hd">
           <thead>
             <tr>
-              <th>{tt('User')}</th>
-              <th>{tt('Location')}</th>
-              <th>{tt('Time')}</th>
+              <th>User</th>
+              <th>Last payout</th>
+              <th>Waiting for payments</th>
+              <th />
             </tr>
           </thead>
         </table>
@@ -224,13 +285,24 @@ class LoginsHistory extends React.PureComponent<Props, State> {
       itemsContent = (
         <table className="table">
           <tbody>
-            {this.items.map(item => (
+            {this.items.map((item, idx) => (
               <tr key={item._id}>
                 <td>
-                  {item.description} (<a href={`mailto:${item.userEmail}`}>{item.userEmail}</a>)
+                  <a href={`mailto:${item.email}`}>{item.firstName} {item.lastName}</a>
                 </td>
-                <td><strong className="text-danger">{item.ip}</strong> / {item.location}</td>
-                <td>{Tools.prettyTime(item.createdAt)}</td>
+                <td>{Tools.prettyTime(item.payoutTime)}</td>
+                <td>{item.earningsText}</td>
+                <td>
+                  <button
+                    className="btn btn-sm btn-primary"
+                    disabled={item.disabledPay}
+                    data-idx={idx}
+                    data-id={item._id}
+                    onClick={this.onClickPaidButton}
+                  >
+                    Pay
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -244,29 +316,22 @@ class LoginsHistory extends React.PureComponent<Props, State> {
     }
 
     return (
-      <div className="LoginsHistory">
-        <div className="ttl">{tt('Logins history')}</div>
+      <div className="Payments">
+        <div className="ttl">{this.title}</div>
         <form
           noValidate
           className="actns"
           onSubmit={this.onSubmitSearchForm}
         >
           <div className="row">
-            <div className="col-sm-12 form-group">
-              <label>{tt('Username or email:')}</label>
+            <div className="col-sm-8">
               <input
                 className="form-control"
                 defaultValue={this.searchText}
                 onChange={this.onChangeSearchInput}
                 type="text"
-                placeholder="Ex: Steve Jobs"
+                placeholder="Username or email"
               />
-            </div>
-          </div>
-          <DateRange ref={this.onSetDateRange} />
-          <div className="row">
-            <div className="col-sm-8">
-              <TimeRangeControl onApply={this.onApplyTimeRangeControl} />
             </div>
             <div className="col-sm-4">
               <button
@@ -274,7 +339,7 @@ class LoginsHistory extends React.PureComponent<Props, State> {
                 disabled={disabledSearchButton}
                 type="submit"
               >
-                {tt('Search')}
+                Search
               </button>
             </div>
           </div>
@@ -294,4 +359,4 @@ class LoginsHistory extends React.PureComponent<Props, State> {
   }
 }
 
-export default LoginsHistory;
+export default Payments;

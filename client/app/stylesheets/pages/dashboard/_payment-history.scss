@@ -1,0 +1,41 @@
+.Dashboard .PaymentHistory {
+  table {
+    th:first-child,
+    td:first-child {
+      width: 30%;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+      width: 20%;
+    }
+
+    th:last-child,
+    td:last-child {
+      text-align: right;
+    }
+  }
+
+  .All .dt {
+    min-height: 300px;
+  }
+
+  .ByMonth {
+    form button[type="submit"] {
+      margin-top: 2rem;
+    }
+  }
+
+  .WaitingForPayment {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin: 50px 0;
+  }
+
+  @include media-breakpoint-down(sm) {
+    .ByMonth form button[type="submit"] {
+      margin-top: 0;
+    }
+  }
+}
