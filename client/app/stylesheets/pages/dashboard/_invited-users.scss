@@ -1,4 +1,9 @@
-.InvitedUsers {
+.Dashboard .InvitedUsers {
+  form button[type="submit"] {
+    margin-top: 2rem;
+  }
+
+  .WaitingForPayment,
   .ReferralCode {
     text-align: center;
     color: $secondary;
@@ -18,27 +23,21 @@
     }
   }
 
-  border-bottom: dashed 1px $border-color;
-
   .List {
     th:first-child,
     td:first-child {
-      width: 27%;
-    }
-
-    th:nth-child(2),
-    td:nth-child(2) {
-      width: 25%;
-    }
-
-    th:nth-child(3),
-    td:nth-child(3) {
-      width: 25%;
+      width: 20%;
     }
 
     th:last-child,
     td:last-child {
       text-align: right;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    form button[type="submit"] {
+      margin-top: 0;
     }
   }
 }

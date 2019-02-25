@@ -29,21 +29,19 @@ const ReferralCode = () => {
         // eslint-disable-next-line no-empty
       } catch (copyErr) {}
 
-      NotificationBox.success(`Referral code "${pureRefCode}" is copied`);
+      NotificationBox.success(`Referral code "${pureRefCode}" is copied`, true);
       rBody.removeChild(input);
     }
   };
 
   return (
     <a
-      className="ReferralCode row"
+      className="ReferralCode col-sm-6"
       href="#"
       onClick={onClickReferralCode}
     >
-      <div className="col-sm-12">
-        <div className="info animated pulse">{tt('Referral code')}: {pureRefCode}</div>
-        ({tt('Click to copy')})
-      </div>
+      <div className="info animated pulse">{tt('Referral code')}: {pureRefCode}</div>
+      ({tt('Click to copy')})
     </a>
   );
 };

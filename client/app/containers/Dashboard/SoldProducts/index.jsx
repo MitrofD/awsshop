@@ -211,7 +211,7 @@ class SoldProducts extends React.Component<Props, State> {
               <th>Image</th>
               <th>ID and title</th>
               <th>Price</th>
-              <th>Earnings</th>
+              <th>Date</th>
             </tr>
           </thead>
         </table>
@@ -233,11 +233,14 @@ class SoldProducts extends React.Component<Props, State> {
                     />
                   </td>
                   <td>
-                    <strong className="text-primary mb-3">{item.productId}</strong>
+                    <strong className="text-primary mb-3">#{item.productId}</strong>
                     <div>{item.title}</div>
                   </td>
-                  <td>{NumberFormat(item.price)}</td>
-                  <td className="text-danger">{NumberFormat(item.earnings)}</td>
+                  <td>
+                    <div className="text-secondary">{NumberFormat(item.price)}</div>
+                    <div className="text-danger">Earnings: {NumberFormat(item.earnings)}</div>
+                  </td>
+                  <td>{Tools.prettyTime(item.createdAt)}</td>
                 </tr>
               );
             })}

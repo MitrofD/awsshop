@@ -4,8 +4,10 @@ const { ObjectID } = require('mongodb');
 const collection = require('./collections/users');
 const loginsCollection = require('./collections/logins');
 const monthPaymentsCollection = require('./collections/month-payments');
+const monthRefPaymentsCollection = require('./collections/month-ref-payments');
 const ordersCollection = require('./collections/orders');
 const paymentsCollection = require('./collections/payments');
+const refPaymentsCollection = require('./collections/ref-payments');
 const products = require('../products');
 const tools = require('../tools');
 const { random, alphabet } = require('../random');
@@ -157,8 +159,10 @@ const getPureLimit = (mbLimit: any) => {
   return pureLimit;
 };
 
-function getPaymentsFromAttr(attr: string): Object[] {
-  const pVal = this[attr];
+const getMonthYearKey = (date: Date) => `${date.getMonth()}_${date.getFullYear()}`;
+
+function getPayments(): Object[] {
+  const pVal = this[WAITING_PAYMENTS_ATTR];
 
   if (Array.isArray(pVal)) {
     return pVal;
@@ -167,9 +171,19 @@ function getPaymentsFromAttr(attr: string): Object[] {
   return [];
 }
 
-function getPaymentDataBefore(date: Date, attr: string): Object {
+function getRefPayments(): Object {
+  const pVal = this[REF_WAITING_PAYMENTS_ATTR];
+
+  if (typeof pVal === 'object' && pVal !== null) {
+    return pVal;
+  }
+
+  return {};
+}
+
+function getPaymentDataBefore(date: Date): Object {
   const time = date.getTime();
-  const arr = getPaymentsFromAttr.call(this, attr);
+  const arr = getPayments.call(this);
   const arrLength = arr.length;
   let earnings = 0;
   let quantity = 0;
@@ -190,6 +204,40 @@ function getPaymentDataBefore(date: Date, attr: string): Object {
     earnings,
     quantity,
     remaining: arr.slice(i),
+  };
+}
+
+function getRefPaymentData(): Object {
+  const obj = getRefPayments.call(this);
+  const userIds = Object.keys(obj);
+  const keysLength = userIds.length;
+  const rArr = [];
+  const refPurchasePrice = Settings.getFloatOption('REF_PURCHASE_PRICE');
+  let tQuantity = 0;
+  let tEarnings = 0;
+  let i = 0;
+
+  for (; i < keysLength; i += 1) {
+    const userId = userIds[i];
+    const val = obj[userId];
+    const quantity = val.q;
+    const earnings = quantity * refPurchasePrice;
+
+    rArr.push({
+      earnings,
+      quantity,
+      userId,
+      user: val.uF,
+    });
+
+    tQuantity += quantity;
+    tEarnings += earnings;
+  }
+
+  return {
+    earnings: tEarnings,
+    quantity: tQuantity,
+    items: rArr,
   };
 }
 
@@ -324,34 +372,27 @@ const users = {
     const pureSkip = getPureSkip(rQuery.skip);
     const pureLimit = getPureLimit(rQuery.limit);
 
-    if (typeof rQuery.searchPattern === 'string') {
-      const searchRegExpArr = [];
-      const needRegExp = new RegExp(rQuery.searchPattern, 'i');
+    const updatedAtObj = {};
+    const fromDate = tools.dateFromData(rQuery.from);
+    const toDate = tools.dateFromData(rQuery.to);
 
-      [
-        'email',
-        'firstName',
-        'lastName',
-      ].forEach((sKey) => {
-        const item = {
-          [sKey]: {
-            $regex: needRegExp,
-          },
-        };
-
-        searchRegExpArr.push(item);
-      });
-
-      pureQuery.$or = searchRegExpArr;
+    if (fromDate) {
+      updatedAtObj.$gte = fromDate;
+      pureQuery.updatedAt = updatedAtObj;
     }
 
-    pureQuery.fromUser = userId;
+    if (toDate) {
+      updatedAtObj.$lte = toDate;
+      pureQuery.updatedAt = updatedAtObj;
+    }
+
+    pureQuery.userId = userId;
 
     const findPromise = new Promise((resolve, reject) => {
-      collection.find(pureQuery, {
+      monthRefPaymentsCollection.find(pureQuery, {
         limit: pureLimit + 1,
         skip: pureSkip,
-      }).sort('createdAt', -1).toArray((error, items) => {
+      }).sort('updatedAt', -1).toArray((error, items) => {
         if (error) {
           reject(error);
           return;
@@ -667,7 +708,7 @@ const users = {
     const pQuantity = parseInt(quantity) || 1;
     const currEarnings = pQuantity * product.earnings;
 
-    const currPaymentsArr = getPaymentsFromAttr.call(user, WAITING_PAYMENTS_ATTR);
+    const currPaymentsArr = getPayments.call(user);
     currPaymentsArr.push({
       t: nowTimeMS,
       e: currEarnings,
@@ -690,19 +731,25 @@ const users = {
       } catch (getRefError) {}
 
       if (refUser) {
-        const refCurrPaymentsArr = getPaymentsFromAttr.call(refUser, REF_WAITING_PAYMENTS_ATTR);
-        refCurrPaymentsArr.push({
-          t: nowTimeMS,
-          q: pQuantity,
-          u: `${user.firstName} ${user.lastName}`,
-        });
+        const refCurrPayments = getRefPayments.call(refUser);
+        const exVal = refCurrPayments[userId];
+        let refQuntity = pQuantity;
+
+        if (typeof exVal === 'object' && exVal !== null) {
+          refQuntity += exVal.q;
+        }
+
+        refCurrPayments[userId] = {
+          uF: `${user.firstName} ${user.lastName}`,
+          q: refQuntity,
+        };
 
         const refUpdatePromise = collection.updateOne({
           _id: refUser._id,
         }, {
           $set: {
             [LAST_REF_ACTION_TIME]: nowTime,
-            [REF_WAITING_PAYMENTS_ATTR]: refCurrPaymentsArr,
+            [REF_WAITING_PAYMENTS_ATTR]: refCurrPayments,
           },
 
           $inc: {
@@ -906,9 +953,17 @@ const users = {
 
   async waitingForPayment(userId: MongoID): Promise<number> {
     const user = await this.getById(userId);
-    const startOfMonthDate = Tools.startOfMonthDate();
-    const paymentData = getPaymentDataBefore.call(user, startOfMonthDate, WAITING_PAYMENTS_ATTR);
+    const nowTime = new Date();
+    const paymentData = getPaymentDataBefore.call(user, nowTime);
     return paymentData.earnings;
+  },
+
+  async refWaitingForPayment(userId: MongoID): Promise<number> {
+    const user = await this.getById(userId);
+    const pQuantity = parseInt(user[REF_SOLD_QUANTITY]) || 0;
+    const refPurchPrice = Settings.getFloatOption('REF_PURCHASE_PRICE');
+    const earnings = pQuantity * refPurchPrice;
+    return earnings;
   },
 
   async payment(userId: MongoID, otsdMode: boolean): Promise<User> {
@@ -920,14 +975,14 @@ const users = {
       startOfMonthDate.setDate(user.payoutTime.getDate() - 1);
     }
 
-    const paymentData = getPaymentDataBefore.call(user, startOfMonthDate, WAITING_PAYMENTS_ATTR);
+    const paymentData = getPaymentDataBefore.call(user, startOfMonthDate);
 
     if (paymentData.earnings === 0) {
       throw new Error('User don\'t have earnings');
     }
 
     const nowTime = new Date();
-    const monthYearKey = `${nowTime.getMonth()}_${nowTime.getFullYear()}`;
+    const monthYearKey = getMonthYearKey(nowTime);
     const pUserId = user._id.toString();
 
     const dbPaymentData = {
@@ -975,22 +1030,76 @@ const users = {
     return user;
   },
 
-  async referralPayment(userId: MongoID): Promise<User> {
+  async refPayment(userId: MongoID): Promise<User> {
     const user = await this.getById(userId);
+    const paymentData = getRefPaymentData.call(user);
+
+    if (paymentData.earnings === 0) {
+      throw new Error('User don\'t have referral earnings');
+    }
+
     const nowTime = new Date();
+    const pUserId = user._id.toString();
+    const monthYearKey = getMonthYearKey(nowTime);
+
+    const prevMonthPayment = await monthRefPaymentsCollection.findOne({
+      monthYear: monthYearKey,
+      userId: pUserId,
+    });
+
+    const allPromises = [];
+
+    if (prevMonthPayment) {
+      const newItems = prevMonthPayment.items.concat(paymentData.items);
+
+      const updatePromise = monthRefPaymentsCollection.updateOne({
+        _id: prevMonthPayment._id,
+      }, {
+        $set: {
+          items: newItems,
+          updatedAt: nowTime,
+        },
+
+        $inc: {
+          quantity: paymentData.quantity,
+          earnings: paymentData.earnings,
+        },
+      });
+
+      allPromises.push(updatePromise);
+    } else {
+      const insertPromise = monthRefPaymentsCollection.insertOne({
+        userId: pUserId,
+        updatedAt: nowTime,
+        monthYear: monthYearKey,
+        items: paymentData.items,
+        quantity: paymentData.quantity,
+        earnings: paymentData.earnings,
+      });
+
+      allPromises.push(insertPromise);
+    }
 
     const setObj = {
       [REF_SOLD_QUANTITY]: 0,
       [REF_PAYOUT_TIME_ATTR]: nowTime,
     };
 
-    await collection.updateOne({
+    const getUpdatePromise = collection.updateOne({
       _id: user._id,
     }, {
       $set: setObj,
+      $unset: {
+        REF_WAITING_PAYMENTS_ATTR: '',
+      },
     });
 
+    allPromises.push(getUpdatePromise);
+    await Promise.all(allPromises);
+
+    delete user[REF_WAITING_PAYMENTS_ATTR];
     Object.assign(user, setObj);
+
     return user;
   },
 

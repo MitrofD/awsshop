@@ -59,8 +59,6 @@ const user = (function genUserObj() {
 
     get: getCopy,
 
-    getInvitedUsers: (query: any) => tools.getRequestWithURL(`${basePath}/invited-users`, query),
-
     login(email: string, password: string): Promise<Object> {
       const loginPromise = new Promise((resolve, reject) => {
         axios.post(`${proxyPath}/login`, {

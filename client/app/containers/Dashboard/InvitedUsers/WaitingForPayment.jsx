@@ -18,7 +18,7 @@ class WaitingForPayment extends React.PureComponent<Props> {
       this.forceUpdate();
     };
 
-    users.waitingForPayment().then((waitingForPayment) => {
+    users.refWaitingForPayment().then((waitingForPayment) => {
       if (this.unmounted) {
         return;
       }
@@ -46,7 +46,7 @@ class WaitingForPayment extends React.PureComponent<Props> {
 
   render() {
     return (
-      <div className="WaitingForPayment">
+      <div className="WaitingForPayment col-sm-6">
         <h2 className={this.waitingForPaymentCN}>{this.waitingForPayment}</h2>
       </div>
     );

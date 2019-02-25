@@ -1,10 +1,12 @@
 // @flow
 import React from 'react';
+import PaymentsList from './PaymentsList';
 import LoadMore from '../../includes/LoadMore';
 import XHRSpin from '../../includes/XHRSpin';
 import NoHaveLabel from '../../includes/NoHaveLabel';
+import DateRange from '../../../components/DateRange';
 import { tt } from '../../../components/TranslateElement';
-import user from '../../../api/user';
+import users from '../../../api/users';
 import serverSettings from '../../../api/server-settings';
 import windowScroll from '../../../api/window-scroll';
 
@@ -35,10 +37,10 @@ class List extends React.Component<Props, State> {
     };
 
     const self: any = this;
-    self.onChangeSearchInput = this.onChangeSearchInput.bind(this);
     self.onScrollWindow = this.onScrollWindow.bind(this);
     self.onSetRootNode = this.onSetRootNode.bind(this);
     self.onSubmitSearchForm = this.onSubmitSearchForm.bind(this);
+    self.onRefDateRange = this.onRefDateRange.bind(this);
   }
 
   componentDidMount() {
@@ -59,12 +61,6 @@ class List extends React.Component<Props, State> {
   componentWillUnmount() {
     this.unmounted = true;
     this.stopListenWindowScroll();
-  }
-
-  onChangeSearchInput(event: SyntheticEvent<HTMLInputElement>) {
-    const input = event.currentTarget;
-    const pureValue = input.value.trim();
-    this.findEmail = pureValue.length > 0 ? pureValue : null;
   }
 
   onScrollWindow(scrollData: Object) {
@@ -90,18 +86,10 @@ class List extends React.Component<Props, State> {
     }
   }
 
-  getFindEmailPattern(): ?string {
-    if (this.findEmail) {
-      const escapedStr = Tools.escapedString(this.findEmail);
-      return `.*${escapedStr}.*`;
+  onRefDateRange(el: ?DateRange) {
+    if (el) {
+      this.dateRange = el;
     }
-
-    return null;
-  }
-
-  getFindEmailRegExp(): ?RegExp {
-    const findEmailPattern = this.getFindEmailPattern();
-    return findEmailPattern ? new RegExp(findEmailPattern, 'i') : null;
   }
 
   setStateAfterRequest(newState: Object) {
@@ -118,19 +106,37 @@ class List extends React.Component<Props, State> {
 
   filter() {
     this.stopListenWindowScroll();
-
     const queryObj = {};
     queryObj.limit = this.props.limit;
     queryObj.skip = this.items.length;
 
-    const findEmailPattern = this.getFindEmailPattern();
+    if (this.dateRange) {
+      const {
+        fromDate,
+        toDate,
+      } = this.dateRange;
 
-    if (findEmailPattern) {
-      queryObj.searchPattern = findEmailPattern;
+      if (fromDate) {
+        queryObj.from = fromDate.getTime();
+      }
+
+      if (toDate) {
+        queryObj.to = toDate.getTime();
+      }
     }
 
-    user.getInvitedUsers(queryObj).then(({ items, loadMore }) => {
-      this.items = items;
+    users.getInvitedUsers(queryObj).then(({ items, loadMore }) => {
+      const itemsLength = items.length;
+      let i = 0;
+
+      for (; i < itemsLength; i += 1) {
+        const item = items[i];
+        const itemUpdateDate = new Date(item.updatedAt);
+        item.monthYear = Tools.getMonthYearForDate(itemUpdateDate);
+        item.earningsText = NumberFormat(item.earnings);
+        item.list = <PaymentsList items={item.items} />;
+        this.items.push(item);
+      }
 
       this.setStateAfterRequest({
         showLoadMore: loadMore,
@@ -160,7 +166,7 @@ class List extends React.Component<Props, State> {
     }
   }
 
-  findEmail: ?string = null;
+  dateRange: ?DateRange = null;
   items: Object[] = [];
   refPurchasePrice = 0;
   rootNode: HTMLElement;
@@ -186,10 +192,9 @@ class List extends React.Component<Props, State> {
         <table className="table tbl-hd">
           <thead>
             <tr>
-              <th>{tt('Username')}</th>
-              <th>{tt('Email')}</th>
-              <th>{tt('Total earnings')}</th>
-              <th>{tt('Waiting for payment')}</th>
+              <th>Month</th>
+              <th>By users</th>
+              <th>Quantity / earnings</th>
             </tr>
           </thead>
         </table>
@@ -198,22 +203,13 @@ class List extends React.Component<Props, State> {
       itemsContent = (
         <table className="table">
           <tbody>
-            {this.items.map((item) => {
-              const fullName = `${item.firstName} ${item.lastName}`;
-              const waitingEarnings = item.currSoldForRefQuantity * this.refPurchasePrice;
-              const tEarnings = item.earningsForRef - item.currEarningsForRef;
-
-              return (
-                <tr key={item._id}>
-                  <td>{fullName}</td>
-                  <td>
-                    <a href={`mailto:${item.email}`}>{item.email}</a>
-                  </td>
-                  <td>{NumberFormat(tEarnings)} $</td>
-                  <td>{NumberFormat(waitingEarnings)} $</td>
-                </tr>
-              );
-            })}
+            {this.items.map(item => (
+              <tr key={item._id}>
+                <td>{item.monthYear}</td>
+                <td>{item.list}</td>
+                <td>{item.quantity} / <strong className="text-danger">{item.earningsText}</strong></td>
+              </tr>
+            ))}
           </tbody>
         </table>
       );
@@ -234,12 +230,9 @@ class List extends React.Component<Props, State> {
           onSubmit={this.onSubmitSearchForm}
         >
           <div className="col-sm-10">
-            <input
-              className="form-control"
-              defaultValue={this.findEmail}
-              onChange={this.onChangeSearchInput}
-              type="text"
-              placeholder="Username or email"
+            <DateRange
+              maxDetail="year"
+              ref={this.onRefDateRange}
             />
           </div>
           <div className="col-sm-2">

@@ -200,13 +200,19 @@ module.exports = function usersRoute() {
   });
 
   this.put('/users/referral-payment/:id', Middleware.admin_Sess, (req, res, next) => {
-    users.referralPayment(req.params.id).then((user) => {
+    users.refPayment(req.params.id).then((user) => {
       res.json(user);
     }).catch(next);
   });
 
   this.get('/users/waiting-for-payment', Middleware.userId_Sess, (req, res, next) => {
-    users.waitingForPayment(req.params.id).then((earnings) => {
+    users.waitingForPayment(req.userId).then((earnings) => {
+      res.json(earnings);
+    }).catch(next);
+  });
+
+  this.get('/users/ref-waiting-for-payment', Middleware.userId_Sess, (req, res, next) => {
+    users.refWaitingForPayment(req.userId).then((earnings) => {
       res.json(earnings);
     }).catch(next);
   });
