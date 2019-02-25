@@ -11,6 +11,7 @@ const SCROLL_FAULT = 40;
 const MODE = {
   START_OF_MONTH: 'START_OF_MONTH',
   ON_THE_SAME_DATE: 'ON_THE_SAME_DATE',
+  CURR_TIME: 'CURR_TIME',
 };
 
 type Props = {
@@ -49,6 +50,10 @@ class Payments extends React.PureComponent<Props, State> {
         currDate.setDate(usDate.getDate() - 1);
         return item.t > currDate.getTime();
       };
+    } else if (props.mode === MODE.CURR_TIME) {
+      this.paymentFunc = users.paymentCurr;
+      this.title += ' current time';
+      this.breakFunc = () => false;
     } else {
       this.paymentFunc = users.paymentStartOfMonth;
       this.title += ` end of ${Tools.getPrevMonthName()}`;

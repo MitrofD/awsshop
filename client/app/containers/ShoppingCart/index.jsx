@@ -143,7 +143,7 @@ class ShoppingCart extends React.PureComponent<Props, State> {
             <div className="smmry">
               <div className="ttl">{tt('Cart summary')}</div>
               <div className="prc">
-                <span ref={this.setTotalPriceRef} /> $
+                <span ref={this.setTotalPriceRef} />
               </div>
               <CoinPayments ref={this.setCoinPaymentsRef} />
             </div>

@@ -3,8 +3,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Start = () => (
-  <div className="Start">
-    <div className="dt text-center">
+  <div className="Start text-center">
+    <div className="dt mb-3">
       <Link
         className="btn btn-primary btn-lg mb-3 mb-md-0"
         to="/admin/payments/som"
@@ -18,6 +18,12 @@ const Start = () => (
         Last payout - on the same date
       </Link>
     </div>
+    <Link
+      className="btn btn-primary btn-lg"
+      to="/admin/payments/curr"
+    >
+      Last payout - current time
+    </Link>
   </div>
 );
 

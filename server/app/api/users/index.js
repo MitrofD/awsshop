@@ -966,6 +966,63 @@ const users = {
     return earnings;
   },
 
+  async paymentCurr(userId: MongoID): Promise<User> {
+    const user = await this.getById(userId);
+    const nowTime = new Date();
+    const paymentData = getPaymentDataBefore.call(user, nowTime);
+
+    if (paymentData.earnings === 0) {
+      throw new Error('User don\'t have earnings');
+    }
+
+    const monthYearKey = getMonthYearKey(nowTime);
+    const pUserId = user._id.toString();
+
+    const dbPaymentData = {
+      earnings: paymentData.earnings,
+      quantity: paymentData.quantity,
+    };
+
+    const genPromise = collection.updateOne({
+      _id: user._id,
+    }, {
+      $set: {
+        [PAYOUT_TIME_ATTR]: nowTime,
+        [WAITING_PAYMENTS_ATTR]: paymentData.remaining,
+      },
+    });
+
+    const paymentPromise = paymentsCollection.insertOne({
+      ...dbPaymentData,
+      createdAt: nowTime,
+      userId: pUserId,
+    });
+
+    const monthPaymentPromise = monthPaymentsCollection.updateOne({
+      monthYear: monthYearKey,
+      userId: pUserId,
+    }, {
+      $set: {
+        updatedAt: nowTime,
+      },
+
+      $inc: dbPaymentData,
+    }, {
+      upsert: true,
+    });
+
+    await Promise.all([
+      genPromise,
+      paymentPromise,
+      monthPaymentPromise,
+    ]);
+
+    user[PAYOUT_TIME_ATTR] = nowTime;
+    user[WAITING_PAYMENTS_ATTR] = paymentData.remaining;
+
+    return user;
+  },
+
   async payment(userId: MongoID, otsdMode: boolean): Promise<User> {
     const user = await this.getById(userId);
 

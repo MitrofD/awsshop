@@ -34,6 +34,8 @@ const users = Object.freeze({
 
   refWaitingForPayment: () => tools.getRequestWithURL(`${basePath}/ref-waiting-for-payment`),
 
+  paymentCurr: (id: string) => putAxiosWithPath(`/payment-curr/${id}`),
+
   paymentStartOfMonth: (id: string) => putAxiosWithPath(`/payment-som/${id}`),
 
   paymentOnTheSameMonth: (id: string) => putAxiosWithPath(`/payment-otsd/${id}`),

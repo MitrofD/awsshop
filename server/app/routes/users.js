@@ -187,6 +187,12 @@ module.exports = function usersRoute() {
     }).catch(next);
   });
 
+  this.put('/users/payment-curr/:id', Middleware.admin_Sess, (req, res, next) => {
+    users.paymentCurr(req.params.id).then((user) => {
+      res.json(user);
+    }).catch(next);
+  });
+
   this.put('/users/payment-som/:id', Middleware.admin_Sess, (req, res, next) => {
     users.payment(req.params.id, false).then((user) => {
       res.json(user);
