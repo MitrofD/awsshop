@@ -37,6 +37,16 @@ const OPTIONS = {
     getPure: isPositiveNumb,
   },
 
+  PROFIT_PRICE: {
+    default: 100,
+    getPure: isPositiveNumb,
+  },
+
+  PROFIT_PRICE_PERC: {
+    default: 10,
+    getPure: isPositiveNumb,
+  },
+
   PURCHASE_PRICE: {
     default: 40,
     getPure: isPositiveNumb,
@@ -225,9 +235,11 @@ const settings = Object.freeze({
   },
 });
 
-module.exports = new Promise((resolve, reject) => {
+const retObj: Promise<Object> = new Promise((resolve, reject) => {
   getInitSettings().then((options) => {
     CURR_OPTIONS = options;
     resolve(settings);
   }).catch(reject);
 });
+
+module.exports = retObj;

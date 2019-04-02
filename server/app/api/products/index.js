@@ -33,6 +33,18 @@ const getEarningsForPrice = (price: number) => {
   return earnings;
 };
 
+const getProfitPrice = (price: number) => {
+  const pProfPrice = Settings.getFloatOption('PROFIT_PRICE');
+  const pProfPricePerc = Settings.getFloatOption('PROFIT_PRICE_PERC');
+  let profit = (price / 100) * pProfPricePerc;
+
+  if (profit > pProfPrice) {
+    profit = pProfPrice;
+  }
+
+  return price + profit;
+};
+
 const pureProductOrThrowError = (data: Object, asRaw: boolean = false): Object => {
   const pureUrl = typeof data.url === 'string' ? data.url.trim() : EMPTY_STR;
 
@@ -53,6 +65,11 @@ const pureProductOrThrowError = (data: Object, asRaw: boolean = false): Object =
   }
 
   const purePrice = parseFloat(data.price) || 0;
+
+  if (purePrice === 0) {
+    throw new Error('Price is required');
+  }
+
   const pureOrigPrice = parseFloat(data.origPrice) || 0;
   const timeNow = new Date();
 
@@ -106,17 +123,16 @@ const pureProductOrThrowError = (data: Object, asRaw: boolean = false): Object =
   if (!asRaw) {
     imageAttrName = 'image';
 
-    if (insertData.price === 0) {
+    if (insertData.origPrice === 0) {
       throw new Error('Price is required');
     }
 
-    insertData.earnings = getEarningsForPrice(insertData.price);
+    insertData.earnings = getEarningsForPrice(insertData.origPrice);
+    insertData.price = getProfitPrice(insertData.origPrice);
 
     if (insertData.earnings === 0) {
       throw new Error('Earnings is required');
     }
-
-    insertData.isApproved = false;
 
     const pureCategoryId = typeof data.categoryId === 'string' ? data.categoryId.trim() : EMPTY_STR;
 
@@ -337,6 +353,8 @@ const products = {
     rawProduct.origPrice = rawProduct.price;
     const pureProduct = pureProductOrThrowError(rawProduct);
     pureProduct.userId = userId;
+    pureProduct.isApproved = user.isAdmin;
+
     pureProduct.advData = {
       userEmail: user.email,
       userFullName: `${user.firstName} ${user.lastName}`,

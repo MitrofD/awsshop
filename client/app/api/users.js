@@ -22,7 +22,7 @@ const users = Object.freeze({
 
   getLoginsHistory: (query: any) => tools.getRequestWithURL(`${basePath}/logins-history`, query),
 
-  getInvitedUsers: (query: any) => tools.getRequestWithURL(`${basePath}/invited-users`, query),
+  getRefPaymentsHistory: (query: any) => tools.getRequestWithURL(`${basePath}/ref-payments-history`, query),
 
   getPaymentsByMonth: (query: any) => tools.getRequestWithURL(`${basePath}/payments-by-month`, query),
 

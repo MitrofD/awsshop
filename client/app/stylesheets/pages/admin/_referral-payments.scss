@@ -1,0 +1,9 @@
+.Admin .ReferralPayments {
+  .History button[type="submit"] {
+    margin-top: 2rem !important;
+
+    @include media-breakpoint-down(sm) {
+      margin-top: 0 !important;
+    }
+  }
+}

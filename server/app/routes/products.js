@@ -135,7 +135,8 @@ module.exports = function productsRoute() {
           return;
         }
 
-        req.body.description = body;
+        const oldDesc = typeof req.body.description === 'string' ? req.body.description.trim() : '';
+        req.body.description = oldDesc + body;
         finishFunc();
       });
     } else {

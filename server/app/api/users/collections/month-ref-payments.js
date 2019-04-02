@@ -6,6 +6,10 @@ collection.createIndex({
 });
 
 collection.createIndex({
+  userName: 1,
+});
+
+collection.createIndex({
   monthYear: 1,
   userId: 1,
 }, {

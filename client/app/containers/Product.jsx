@@ -40,6 +40,7 @@ class Product extends React.PureComponent<Props, State> {
     const self: any = this;
     self.onClickTabItem = this.onClickTabItem.bind(this);
     self.onClickAddToCartButton = this.onClickAddToCartButton.bind(this);
+    self.onClickToThumbImage = this.onClickToThumbImage.bind(this);
   }
 
   componentDidMount() {
@@ -59,6 +60,7 @@ class Product extends React.PureComponent<Props, State> {
 
     products.getById(this.props.id).then((data) => {
       this.data = data;
+      this.currImage = data.image;
       finishWithState({});
     }).catch(() => {
       finishWithState({
@@ -101,7 +103,7 @@ class Product extends React.PureComponent<Props, State> {
     button.disabled = true;
 
     orders.add(id).then(() => {
-      NotificationBox.success('Added to Cart successful');
+      NotificationBox.success('Added to cart successful');
       button.disabled = false;
     }).catch((error) => {
       NotificationBox.danger(error.message);
@@ -109,6 +111,23 @@ class Product extends React.PureComponent<Props, State> {
     });
   }
 
+  onClickToThumbImage(event: SyntheticEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    const element = event.currentTarget;
+    let removeFromEnd = 2;
+    const pData = Tools.anyAsObj(this.data);
+
+    if (pData.type === 'ALIEXPRESS') {
+      removeFromEnd += 10;
+    }
+
+    let imageSrc = element.style.backgroundImage.substr(5);
+    imageSrc = imageSrc.substr(0, imageSrc.length - removeFromEnd);
+    this.currImage = imageSrc;
+    this.forceUpdate();
+  }
+
+  currImage: ?string = null;
   data: ?Object = null;
   unmounted = true;
 
@@ -133,7 +152,7 @@ class Product extends React.PureComponent<Props, State> {
             <img
               alt="main_img"
               className="img-thumbnail"
-              src={pData.image}
+              src={this.currImage}
             />
           </div>
           <div className="col-md-8">
@@ -151,12 +170,15 @@ class Product extends React.PureComponent<Props, State> {
             </div>
             <div className="thmbs">
               {pData.images.map((image, idx) => {
-                let key = `img_${idx}`;
+                const key = `img_${idx}`;
 
                 return (
-                  <div
+                  <a
+                    href="#"
                     className="itm"
                     key={key}
+                    onClick={this.onClickToThumbImage}
+                    role="button"
                     style={{ backgroundImage: `url(${image})` }}
                   />
                 );

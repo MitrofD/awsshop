@@ -47,7 +47,7 @@ class WaitingForPayment extends React.PureComponent<Props> {
   render() {
     return (
       <div className="WaitingForPayment">
-        <h2 className={this.waitingForPaymentCN}>{this.waitingForPayment}</h2>
+        <h2 className={this.waitingForPaymentCN}>Waiting for payment: {this.waitingForPayment}</h2>
       </div>
     );
   }

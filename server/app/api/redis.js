@@ -41,12 +41,14 @@ const oldOnConnectHandle = clientPrototype.on_connect;
 
 clientPrototype.on_connect = function onConnect() {
   this.IS_CONNECTED = true;
+  const keys = Object.keys(this.CONNECT_SUBS);
+  const keysLength = keys.length;
+  let i = 0;
 
-  Object.values(this.CONNECT_SUBS).forEach((func) => {
-    if (typeof func === 'function') {
-      func();
-    }
-  });
+  for (; i < keysLength; i += 1) {
+    const key = keys[i];
+    this.CONNECT_SUBS[key]();
+  }
 
   oldOnConnectHandle.call(this);
 };
@@ -55,11 +57,14 @@ const oldConnectionGoneHandle = clientPrototype.connection_gone;
 
 clientPrototype.connection_gone = function connectionGone(why, error) {
   if (this.IS_CONNECTED) {
-    Object.values(this.DISCONNECT_SUBS).forEach((func) => {
-      if (typeof func === 'function') {
-        func();
-      }
-    });
+    const keys = Object.keys(this.DISCONNECT_SUBS);
+    const keysLength = keys.length;
+    let i = 0;
+
+    for (; i < keysLength; i += 1) {
+      const key = keys[i];
+      this.DISCONNECT_SUBS[key]();
+    }
   }
 
   this.IS_CONNECTED = false;

@@ -89,17 +89,12 @@ class EditProduct extends React.Component<Props, State> {
       xhrRequest: true,
     };
 
-    const origPrice = this.isRaw ? this.price : this.origPrice;
-    this.origPrice = parseFloat(origPrice) || 0;
-
     const self: any = this;
-    self.onChangePriceInput = this.onChangePriceInput.bind(this);
     self.onChangeTitleInput = this.onChangeTitleInput.bind(this);
     self.onChangeCategorySelect = this.onChangeCategorySelect.bind(this);
     self.onClickCancelButton = this.onClickCancelButton.bind(this);
     self.onClickTabItem = this.onClickTabItem.bind(this);
     self.onClickThumb = this.onClickThumb.bind(this);
-    self.onSetPriceInput = this.onSetPriceInput.bind(this);
     self.onSubmitForm = this.onSubmitForm.bind(this);
   }
 
@@ -161,21 +156,28 @@ class EditProduct extends React.Component<Props, State> {
 
     const defVal = 0;
 
-    const makeGetEarnings = (purchPrice: any, purchPricePerc: any) => {
+    const makeEarnings = (purchPrice: any, purchPricePerc: any) => {
       const pPurchPrice = parseFloat(purchPrice) || defVal;
       const pPurchPricePerc = parseFloat(purchPricePerc) || defVal;
+      let earnings = (this.price / 100) * pPurchPricePerc;
 
-      this.getEarnings = () => {
-        let earnings = (this.price / 100) * pPurchPricePerc;
+      if (earnings > pPurchPrice) {
+        earnings = pPurchPrice;
+      }
 
-        if (earnings > pPurchPrice) {
-          earnings = pPurchPrice;
-        }
+      this.earningsPrice = NumberFormat(earnings);
+    };
 
-        return NumberFormat(earnings);
-      };
+    const makeProfitPrice = (profPrice: any, purchPricePerc: any) => {
+      const pProfPrice = parseFloat(profPrice) || defVal;
+      const pProfPerc = parseFloat(purchPricePerc) || defVal;
+      let profit = (this.price / 100) * pProfPerc;
 
-      this.earningsPrice = this.getEarnings();
+      if (profit > pProfPrice) {
+        profit = pProfPrice;
+      }
+
+      this.profitPrice = NumberFormat(this.price + profit);
 
       this.setState({
         xhrRequest: false,
@@ -183,23 +185,16 @@ class EditProduct extends React.Component<Props, State> {
     };
 
     serverSettings.get().then((sSettings) => {
-      makeGetEarnings(sSettings.PURCHASE_PRICE, sSettings.PURCHASE_PRICE_PERC);
+      makeEarnings(sSettings.PURCHASE_PRICE, sSettings.PURCHASE_PRICE_PERC);
+      makeProfitPrice(sSettings.PROFIT_PRICE, sSettings.PROFIT_PRICE_PERC);
     }).catch(() => {
-      makeGetEarnings(defVal, defVal);
+      makeEarnings(defVal, defVal);
+      makeProfitPrice(defVal, defVal);
     });
   }
 
   componentWillUnmount() {
     this.unmounted = true;
-  }
-
-  onChangePriceInput(event: Event, price: ?number) {
-    this.price = price || EMPTY_NUM;
-    this.earningsPrice = this.getEarnings();
-
-    this.setStateAfterInputChange({
-      priceError: this.getRequiredErrorWithPropNum('price'),
-    });
   }
 
   onChangeTitleInput(event: SyntheticEvent<HTMLInputElement>) {
@@ -247,12 +242,6 @@ class EditProduct extends React.Component<Props, State> {
     });
   }
 
-  onSetPriceInput(el: ?NumberInput) {
-    if (el) {
-      this.priceInputRef = el;
-    }
-  }
-
   onSubmitForm(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     const methodName = this.isRaw ? 'push' : 'update';
@@ -262,7 +251,6 @@ class EditProduct extends React.Component<Props, State> {
       description: this.description,
       images: this.state.images,
       title: this.title,
-      price: this.price,
       shipping: this.shipping,
     };
 
@@ -318,8 +306,6 @@ class EditProduct extends React.Component<Props, State> {
     }, Config.inputTimeout);
   }
 
-  getEarnings: Function = () => null;
-
   stopInputChangeTimer() {
     if (this.inputChangeTimer) {
       clearTimeout(this.inputChangeTimer);
@@ -340,8 +326,8 @@ class EditProduct extends React.Component<Props, State> {
   };
   title: string;
   price: number;
+  profitPrice: string;
   priceInputRef: NumberInput;
-  origPrice: number;
   shipping: string;
   uniqueIDs: { [string]: string } = {};
   unmounted = true;
@@ -369,7 +355,6 @@ class EditProduct extends React.Component<Props, State> {
       category: inputCN,
       description: inputCN,
       title: inputCN,
-      price: inputCN,
       shipping: inputCN,
     };
 
@@ -392,11 +377,6 @@ class EditProduct extends React.Component<Props, State> {
       if (titleError) {
         errorLabels.title = <InvalidLabel>{titleError}</InvalidLabel>;
         inputCNs.title += errorCNPrefix;
-      }
-
-      if (priceError) {
-        errorLabels.price = <InvalidLabel>{priceError}</InvalidLabel>;
-        inputCNs.price += errorCNPrefix;
       }
 
       if (shippingError) {
@@ -471,11 +451,9 @@ class EditProduct extends React.Component<Props, State> {
                   <strong>Product link:</strong> <a href={this.props.url}>{this.props.url}</a>
                 </div>
               )}
-              {this.origPrice > 0 && (
-                <div className="attr-inf">
-                  <strong>Original price:</strong> {NumberFormat(this.origPrice)}
-                </div>
-              )}
+              <div className="attr-inf">
+                <strong>Original price:</strong> {NumberFormat(this.price)}
+              </div>
             </div>
           </div>
           <div className="row">
@@ -493,14 +471,11 @@ class EditProduct extends React.Component<Props, State> {
             <div className="col-sm-6">
               <div className="form-group">
                 <label>{tt('Price')} ({tt('earnings')}: {this.earningsPrice})</label>
-                <NumberInput
-                  className={inputCNs.price}
-                  defaultValue={this.price}
-                  min={0}
-                  onChange={this.onChangePriceInput}
-                  ref={this.onSetPriceInput}
+                <input
+                  disabled
+                  className="form-control"
+                  defaultValue={this.profitPrice}
                 />
-                {errorLabels.price}
               </div>
             </div>
           </div>

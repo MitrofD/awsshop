@@ -1,13 +1,11 @@
 // @flow
 import React from 'react';
-import PaymentsList from './PaymentsList';
+import NoHaveLabel from '../../includes/NoHaveLabel';
 import LoadMore from '../../includes/LoadMore';
 import XHRSpin from '../../includes/XHRSpin';
-import NoHaveLabel from '../../includes/NoHaveLabel';
 import DateRange from '../../../components/DateRange';
 import { tt } from '../../../components/TranslateElement';
 import users from '../../../api/users';
-import serverSettings from '../../../api/server-settings';
 import windowScroll from '../../../api/window-scroll';
 
 const SCROLL_FAULT = 40;
@@ -25,7 +23,7 @@ const defaultProps = {
   limit: 50,
 };
 
-class List extends React.Component<Props, State> {
+class History extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
   constructor(props: Props, context: null) {
@@ -37,30 +35,33 @@ class List extends React.Component<Props, State> {
     };
 
     const self: any = this;
-    self.onScrollWindow = this.onScrollWindow.bind(this);
+    self.onChangeSearchInput = this.onChangeSearchInput.bind(this);
     self.onSetRootNode = this.onSetRootNode.bind(this);
+    self.onScrollWindow = this.onScrollWindow.bind(this);
     self.onSubmitSearchForm = this.onSubmitSearchForm.bind(this);
     self.onRefDateRange = this.onRefDateRange.bind(this);
   }
 
   componentDidMount() {
     this.unmounted = false;
-
-    serverSettings.get().then((settings) => {
-      if (this.unmounted) {
-        return;
-      }
-
-      this.refPurchasePrice = parseFloat(settings.REF_PURCHASE_PRICE) || 0;
-      this.filter();
-    }).catch((error) => {
-      NotificationBox.danger(error.message);
-    });
+    this.filter();
   }
 
   componentWillUnmount() {
     this.unmounted = true;
     this.stopListenWindowScroll();
+  }
+
+  onChangeSearchInput(event: SyntheticEvent<HTMLInputElement>) {
+    const input = event.currentTarget;
+    const pureValue = input.value.trim();
+    this.searchText = pureValue.length > 0 ? pureValue : null;
+  }
+
+  onSetRootNode(el: ?HTMLElement) {
+    if (el) {
+      this.rootNode = el;
+    }
   }
 
   onScrollWindow(scrollData: Object) {
@@ -80,16 +81,19 @@ class List extends React.Component<Props, State> {
     this.filter();
   }
 
-  onSetRootNode(el: ?HTMLElement) {
-    if (el) {
-      this.rootNode = el;
-    }
-  }
-
   onRefDateRange(el: ?DateRange) {
     if (el) {
       this.dateRange = el;
     }
+  }
+
+  getSearchPattern(): ?string {
+    if (this.searchText) {
+      const escapedStr = Tools.escapedString(this.searchText);
+      return `.*${escapedStr}.*`;
+    }
+
+    return null;
   }
 
   setStateAfterRequest(newState: Object) {
@@ -106,9 +110,12 @@ class List extends React.Component<Props, State> {
 
   filter() {
     this.stopListenWindowScroll();
+
     const queryObj = {};
     queryObj.limit = this.props.limit;
     queryObj.skip = this.items.length;
+    queryObj.sortBy = 'lastRefActionTime';
+    queryObj.sortDesc = -1;
 
     if (this.dateRange) {
       const {
@@ -125,16 +132,22 @@ class List extends React.Component<Props, State> {
       }
     }
 
+    const searchPattern = this.getSearchPattern();
+
+    if (searchPattern) {
+      queryObj.searchPattern = searchPattern;
+    }
+
     users.getRefPaymentsHistory(queryObj).then(({ items, loadMore }) => {
-      const itemsLength = items.length;
+      const itemsArrLength = items.length;
       let i = 0;
 
-      for (; i < itemsLength; i += 1) {
+      for (; i < itemsArrLength; i += 1) {
         const item = items[i];
         const itemUpdateDate = new Date(item.updatedAt);
         item.monthYear = Tools.getMonthYearForDate(itemUpdateDate);
+        item._id = item._id.toString();
         item.earningsText = NumberFormat(item.earnings);
-        item.list = <PaymentsList items={item.items} />;
         this.items.push(item);
       }
 
@@ -168,8 +181,8 @@ class List extends React.Component<Props, State> {
 
   dateRange: ?DateRange = null;
   items: Object[] = [];
-  refPurchasePrice = 0;
   rootNode: HTMLElement;
+  searchText: ?string = null;
   scrollFunc: ?Function = null;
   unmounted = true;
 
@@ -192,8 +205,8 @@ class List extends React.Component<Props, State> {
         <table className="table tbl-hd">
           <thead>
             <tr>
-              <th>Month</th>
-              <th>By users</th>
+              <th>Month / year</th>
+              <th>User</th>
               <th>Quantity / earnings</th>
             </tr>
           </thead>
@@ -206,15 +219,17 @@ class List extends React.Component<Props, State> {
             {this.items.map(item => (
               <tr key={item._id}>
                 <td>{item.monthYear}</td>
-                <td>{item.list}</td>
-                <td>{item.quantity} / <strong className="text-danger">{item.earningsText}</strong></td>
+                <td>{item.userName}</td>
+                <td>
+                  {item.quantity} / <strong className="text-danger">{item.earningsText}</strong>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       );
     } else {
-      content = <NoHaveLabel>No have invited users</NoHaveLabel>;
+      content = <NoHaveLabel>No have payments</NoHaveLabel>;
     }
 
     if (showLoadMore) {
@@ -223,26 +238,39 @@ class List extends React.Component<Props, State> {
     }
 
     return (
-      <div className="List">
+      <div className="History">
         <form
           noValidate
-          className="row actns"
+          className="actns"
           onSubmit={this.onSubmitSearchForm}
         >
-          <div className="col-sm-10">
-            <DateRange
-              maxDetail="year"
-              ref={this.onRefDateRange}
-            />
+          <div className="row">
+            <div className="col-sm-12 form-group">
+              <label>{tt('Username or email:')}</label>
+              <input
+                className="form-control"
+                onChange={this.onChangeSearchInput}
+                type="text"
+                placeholder="Ex: Steve Jobs"
+              />
+            </div>
           </div>
-          <div className="col-sm-2">
-            <button
-              className="btn btn-primary btn-sm btn-block"
-              disabled={disabledSearchButton}
-              type="submit"
-            >
-              {tt('Search')}
-            </button>
+          <div className="row">
+            <div className="col-sm-10">
+              <DateRange
+                maxDetail="year"
+                ref={this.onRefDateRange}
+              />
+            </div>
+            <div className="col-sm-2">
+              <button
+                className="btn btn-primary btn-sm btn-block"
+                disabled={disabledSearchButton}
+                type="submit"
+              >
+                {tt('Search')}
+              </button>
+            </div>
           </div>
         </form>
         <div className="dt">
@@ -260,4 +288,4 @@ class List extends React.Component<Props, State> {
   }
 }
 
-export default List;
+export default History;

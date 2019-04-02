@@ -241,8 +241,15 @@ module.exports = function usersRoute() {
     }).catch(next);
   });
 
-  this.get('/users/invited-users', Middleware.userId_Sess, (req, res, next) => {
-    users.getInvitedUsers(req.userId, req.query).then((data) => {
+  this.get('/users/ref-payments-history', Middleware.userId_Sess, (req, res, next) => {
+    const isAdmin = req.session.get(Enums.SESS_USER_IS_ADMIN);
+    let userId: ?string = null;
+
+    if (!isAdmin) {
+      userId = req.userId;
+    }
+
+    users.refPaymentsHistory(req.query, userId).then((data) => {
       res.json(data);
     }).catch(next);
   });

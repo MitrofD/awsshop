@@ -37,7 +37,7 @@ if (supportEmail.length === 0) {
 }
 
 let [
-  ,
+  fFull,
   protocol,
   domain,
   port,

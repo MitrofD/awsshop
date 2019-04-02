@@ -52,6 +52,7 @@
     "prefer-const": 1,
     "import/no-extraneous-dependencies": 0,
     "jsx-a11y/anchor-is-valid": 0,
+    "jsx-a11y/anchor-has-content": 0,
     "jsx-a11y/label-has-for": [2, {
       "components": [
         "Label"

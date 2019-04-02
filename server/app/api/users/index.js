@@ -7,7 +7,7 @@ const monthPaymentsCollection = require('./collections/month-payments');
 const monthRefPaymentsCollection = require('./collections/month-ref-payments');
 const ordersCollection = require('./collections/orders');
 const paymentsCollection = require('./collections/payments');
-const refPaymentsCollection = require('./collections/ref-payments');
+// const refPaymentsCollection = require('./collections/ref-payments');
 const products = require('../products');
 const tools = require('../tools');
 const { random, alphabet } = require('../random');
@@ -152,7 +152,9 @@ const getPureLimit = (mbLimit: any) => {
 
   if (Number.isNaN(pureLimit)) {
     return DEF_LIMIT;
-  } else if (pureLimit > MAX_LIMIT) {
+  }
+
+  if (pureLimit > MAX_LIMIT) {
     return MAX_LIMIT;
   }
 
@@ -366,11 +368,18 @@ const users = {
     return findPromise;
   },
 
-  async getInvitedUsers(userId: string, query: any): Promise<Object> {
+  async refPaymentsHistory(query: any, userId: ?string = null): Promise<Object> {
     const rQuery = tools.anyAsObj(query);
     const pureQuery = {};
     const pureSkip = getPureSkip(rQuery.skip);
     const pureLimit = getPureLimit(rQuery.limit);
+
+    if (typeof rQuery.searchPattern === 'string') {
+      const needRegExp = new RegExp(rQuery.searchPattern, 'i');
+      pureQuery.userName = {
+        $regex: needRegExp,
+      };
+    }
 
     const updatedAtObj = {};
     const fromDate = tools.dateFromData(rQuery.from);
@@ -386,7 +395,9 @@ const users = {
       pureQuery.updatedAt = updatedAtObj;
     }
 
-    pureQuery.userId = userId;
+    if (userId) {
+      pureQuery.userId = userId;
+    }
 
     const findPromise = new Promise((resolve, reject) => {
       monthRefPaymentsCollection.find(pureQuery, {
@@ -1106,6 +1117,11 @@ const users = {
 
     const allPromises = [];
 
+    const insertIncData = {
+      quantity: paymentData.quantity,
+      earnings: paymentData.earnings,
+    };
+
     if (prevMonthPayment) {
       const newItems = prevMonthPayment.items.concat(paymentData.items);
 
@@ -1117,25 +1133,30 @@ const users = {
           updatedAt: nowTime,
         },
 
-        $inc: {
-          quantity: paymentData.quantity,
-          earnings: paymentData.earnings,
-        },
+        $inc: insertIncData,
       });
 
       allPromises.push(updatePromise);
     } else {
       const insertPromise = monthRefPaymentsCollection.insertOne({
+        ...insertIncData,
+        userName: `${user.firstName} ${user.lastName}`,
         userId: pUserId,
         updatedAt: nowTime,
         monthYear: monthYearKey,
         items: paymentData.items,
-        quantity: paymentData.quantity,
-        earnings: paymentData.earnings,
       });
 
       allPromises.push(insertPromise);
     }
+
+    /*
+    const insertToHistoryPromise = refPaymentsCollection.insertOne({
+      ...insertData,
+      createdAt: nowTime,
+      userId: pUserId,
+    });
+    */
 
     const setObj = {
       [REF_SOLD_QUANTITY]: 0,
