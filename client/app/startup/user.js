@@ -33,4 +33,4 @@ configUserPromise.then(() => {
   user.subscribe(applyUser);
 }).catch(Tools.emptyRejectExeption);
 
-module.exports = configUserPromise;
+export default configUserPromise;

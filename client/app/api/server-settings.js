@@ -21,4 +21,4 @@ const serverSettings = {
   },
 };
 
-module.exports = serverSettings;
+export default serverSettings;

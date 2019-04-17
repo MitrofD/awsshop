@@ -30,6 +30,8 @@ const getDateNow = () => {
 
 class DatePicker extends React.Component<Props> {
   static defaultProps = defaultProps;
+  cleanBtnNode: React$Node = null;
+  todayBtnNode: React$Node = null;
 
   constructor(props: Props, context: null) {
     super(props, context);
@@ -120,27 +122,9 @@ class DatePicker extends React.Component<Props> {
   }
 
   calendar: Calendar;
-  cleanBtnNode: React$Node = null;
-  todayBtnNode: React$Node = null;
   disabledTodayButton: boolean;
 
   render() {
-    const nowTime = getDateNow();
-    let disabledTodayButton = false;
-
-    const {
-      maxDate,
-      minDate,
-    } = this.props;
-
-    if (maxDate instanceof Date) {
-      disabledTodayButton = maxDate < nowTime;
-    }
-
-    if (minDate instanceof Date) {
-      disabledTodayButton = minDate > nowTime;
-    }
-
     return (
       <div className="DatePicker">
         <div className="inner">

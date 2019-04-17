@@ -1,0 +1,89 @@
+.Support {
+  width: 100%;
+  max-width: none;
+
+  .left {
+    text-align: center;
+    padding-top: 10rem;
+    padding-bottom: 10rem;
+
+    .form-group {
+      padding-bottom: 35px;
+    }
+
+    .form-control,
+    select {
+      padding: .4375rem .75rem .4375rem 4.25rem;
+      color: #999;
+      font-size: .625rem;
+      font-weight: 600;
+      border-color: #f0f0f0;
+      text-transform: uppercase;
+      background-repeat: no-repeat;
+      background-position: 22px;
+    }
+
+    input,
+    .select-wrap {
+      height: 3.875rem;
+      text-align: left;
+    }
+
+    select {
+      width: 100%;
+      background-color: transparent;
+      border-width: 0;
+      margin-left: -10px;
+    }
+
+    textarea.form-control,
+    .select-wrap {
+      padding-top: 1.3rem;
+      padding-bottom: 1.3rem;
+    }
+
+    .info {
+      font-size: .9375rem;
+      margin: 0.5rem 0 2rem 0;
+    }
+
+    button {
+      padding: 1.125rem .75rem;
+    }
+
+    .name .form-control {
+      background-image: url("#{$var-images-path}/user.png");
+    }
+
+    .email .form-control {
+      background-image: url("#{$var-images-path}/email.png");
+    }
+
+    .phone .form-control {
+      background-image: url("#{$var-images-path}/phone.png");
+    }
+
+    .subject .form-control {
+      background-image: url("#{$var-images-path}/question.png");
+    }
+
+    .message textarea {
+      background-position-y: 22px;
+      background-image: url("#{$var-images-path}/message.png");
+    }
+  }
+
+  .right {
+    background-image: url("#{$var-images-path}/support-right.jpg");
+    background-size: cover;
+    background-position: 0;
+  }
+
+  @include media-breakpoint-down(xs) {
+    .left {
+      text-align: center;
+      padding-top: 3rem;
+      padding-bottom: 1rem;
+    }
+  }
+}

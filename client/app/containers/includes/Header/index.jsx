@@ -78,26 +78,44 @@ class Header extends React.PureComponent<Props, State> {
                   <NavLink
                     exact
                     className="nav-link"
-                    isActive={isActiveCatalogLink}
                     to="/"
+                  >
+                    {tt('Home')}
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    className="nav-link"
+                    isActive={isActiveCatalogLink}
+                    to="/catalog"
                   >
                     {tt('Catalog')}
                   </NavLink>
                 </li>
+                {!user && (
+                  <li className="nav-item">
+                    <Link
+                      className="nav-link"
+                      to="/create-shop"
+                    >
+                      {tt('Create Shop')}
+                    </Link>
+                  </li>
+                )}
                 <li className="nav-item">
                   <NavLink
                     className="nav-link"
-                    to="/warranty"
+                    to={`${Config.dashboardPath}/invited-users`}
                   >
-                    {tt('Warranty')}
+                    {tt('Become partner')}
                   </NavLink>
                 </li>
                 <li className="nav-item">
                   <NavLink
                     className="nav-link"
-                    to="/shipping-and-payment"
+                    to="/support"
                   >
-                    {tt('Shipping and payment')}
+                    {tt('Contact us')}
                   </NavLink>
                 </li>
               </ul>

@@ -5,7 +5,7 @@ import Page from '../includes/Page';
 import InvitedUsers from './InvitedUsers';
 import { tt } from '../../components/TranslateElement';
 
-const { Loadable } = require('../../components/Loadable')(cN => import(`./${cN}`));
+const { Loadable } = require('../../components/Loadable').default(cN => import(`./${cN}`));
 
 const ImportedProductsPage = Loadable('ImportedProducts');
 const PaymentHistoryPage = Loadable('PaymentHistory');

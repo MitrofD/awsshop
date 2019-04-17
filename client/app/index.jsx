@@ -130,6 +130,7 @@ if (rBody) {
     unmountComponentAtNode(rootNode);
 
     if (error) {
+      console.error(error);
       NotificationBox.danger(error.message);
       return;
     }
@@ -160,7 +161,7 @@ if (rBody) {
   };
 
   // eslint-disable-next-line global-require
-  const startupPromise = require('./startup');
+  const startupPromise = require('./startup').default;
 
   startupPromise.then(() => {
     startupDone();

@@ -23,8 +23,7 @@ const tools = Object.freeze({
       axios.get(queryStr).then(({ data }) => {
         resolve(data);
       }).catch((error) => {
-        const getError = new Error(error.response.data);
-        reject(getError);
+        reject(new Error(error.response.data));
       });
     });
 
@@ -33,6 +32,12 @@ const tools = Object.freeze({
 
   queryToObj: (query: string): Object => {
     const rObj: { [string]: string } = {};
+
+    if (query.length > 0) {
+      // eslint-disable-next-line no-param-reassign
+      query = query.substr(1);
+    }
+
     const decodeQuery = decodeURIComponent(query);
     const keyValParts = decodeQuery.split('&');
 

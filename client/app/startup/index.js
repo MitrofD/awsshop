@@ -29,10 +29,7 @@ const startupPromise: Promise<any[]> = new Promise((resolve, reject) => {
     ]);
 
     resolve(waitingPromises);
-  }).catch((error) => {
-    const loadConfigError = new Error(error.response.data);
-    reject(loadConfigError);
-  });
+  }).catch(reject);
 });
 
-module.exports = startupPromise;
+export default startupPromise;

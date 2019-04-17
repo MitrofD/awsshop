@@ -188,7 +188,10 @@ class DateRange extends React.PureComponent<Props, State> {
     return (
       <div className="DateRange row">
         <div className="from">
-          <label>{tt('From')}:</label>
+          <label>
+            {tt('From')}
+            :
+          </label>
           <div className="itm">
             {fromDatePicker}
             <input
@@ -206,7 +209,10 @@ class DateRange extends React.PureComponent<Props, State> {
           </div>
         </div>
         <div className="to">
-          <label>{tt('To')}:</label>
+          <label>
+            {tt('To')}
+            :
+          </label>
           <div className="itm">
             {toDatePicker}
             <input

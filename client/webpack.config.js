@@ -37,11 +37,9 @@ const config = {
       }, {
         test: /\.s?css$/,
         use: [
-          isDevMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-          {
+          isDevMode ? 'style-loader' : MiniCssExtractPlugin.loader, {
             loader: 'css-loader',
             options: {
-              minimize: true,
               sourceMap: isDevMode,
             },
           }, {

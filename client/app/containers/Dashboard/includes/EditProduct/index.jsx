@@ -1,14 +1,14 @@
 // @flow
 import React from 'react';
 import tinymce from 'tinymce/tinymce';
-import 'tinymce/themes/modern';
+// import 'tinymce/themes/modern';
 import 'tinymce/plugins/colorpicker';
 import 'tinymce/plugins/textcolor';
 import 'tinymce/plugins/hr';
 import 'tinymce/plugins/image';
 import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
-import 'tinymce/skins/lightgray/skin.min.css';
+// import 'tinymce/skins/lightgray/skin.min.css';
 import CategorySelect from './CategorySelect';
 import XHRSpin from '../../../includes/XHRSpin';
 import NumberInput from '../../../../components/NumberInput';

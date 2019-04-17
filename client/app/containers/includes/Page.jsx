@@ -1,6 +1,7 @@
 // @flow
 import React, { Fragment } from 'react';
 import Header from './Header';
+import Footer from './Footer';
 import UserAlerts from './UserAlerts';
 import user from '../../api/user';
 
@@ -15,7 +16,7 @@ const defaultProps = {
 
 const Page = (props: Props) => {
   const currUser = user.get();
-  let className = 'innr';
+  let className = 'innr white-box';
 
   if (props.className) {
     className += ` ${props.className}`;
@@ -30,6 +31,7 @@ const Page = (props: Props) => {
           {props.children}
         </div>
       </main>
+      <Footer user={currUser} />
     </Fragment>
   );
 };

@@ -1,0 +1,35 @@
+.StaticPage {
+  .dt {
+    .Apple-interchange-newline {
+      display: none;
+    }
+
+    line-height: 2.5rem;
+
+    table {
+      @extend .table;
+      @extend .table-hover;
+      border: none;
+      line-height: 1rem;
+
+      strong {
+        font-family: 'Futura PT Bold';
+      }
+
+      td,
+      th {
+        padding: .625rem 3.125rem;
+        border-color: #f3f3f3;
+      }
+    }
+
+    p {
+      color: #6e6e6e;
+      font-size: .9375rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

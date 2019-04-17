@@ -7,8 +7,7 @@ const getWithAttr = (attr: string, val: string): Promise<Object> => {
     axios.get(`${proxyPath}/category?${attr}=${val}`).then(({ data }) => {
       resolve(data);
     }).catch((error) => {
-      const errorObj = new Error(error.response.data);
-      reject(errorObj);
+      reject(new Error(error.response.data));
     });
   });
 
@@ -21,8 +20,7 @@ const categories = Object.freeze({
       axios.post(`${proxyPath}/categories`, category).then(({ data }) => {
         resolve(data);
       }).catch((error) => {
-        const addError = new Error(error.response.data);
-        reject(addError);
+        reject(new Error(error.response.data));
       });
     });
 
@@ -45,8 +43,7 @@ const categories = Object.freeze({
       axios.get(queryStr).then(({ data }) => {
         resolve(data);
       }).catch((error) => {
-        const getError = new Error(error.response.data);
-        reject(getError);
+        reject(new Error(error.response.data));
       });
     });
 
@@ -58,11 +55,8 @@ const categories = Object.freeze({
       axios.delete(`${proxyPath}/categories/${id}`).then(() => {
         resolve();
       }).catch((error) => {
-        const removeError = new Error(error.response.data);
-        reject(removeError);
+        reject(new Error(error.response.data));
       });
-
-      return promise;
     });
 
     return promise;
@@ -73,8 +67,7 @@ const categories = Object.freeze({
       axios.put(`${proxyPath}/category/${id}`, newData).then(({ data }) => {
         resolve(data);
       }).catch((error) => {
-        const editError = new Error(error.response.data);
-        reject(editError);
+        reject(new Error(error.response.data));
       });
     });
 

@@ -4,33 +4,27 @@ import { Switch, Route, NavLink } from 'react-router-dom';
 import Page from '../includes/Page';
 import { tt } from '../../components/TranslateElement';
 
-const {
-  Loadable,
-  LoadableWithParams,
-} = require('../../components/Loadable')(cN => import(`./${cN}`));
-
-/*
-const ActiveOrdersPage = LoadableWithParams('Orders', {
-  isActive: true,
-});
-*/
+const { Loadable } = require('../../components/Loadable').default(cN => import(`./${cN}`));
 
 const CategoriesPage = Loadable('Categories');
+const FAQsPage = Loadable('FAQs');
 const LoginsHistoryPage = Loadable('LoginsHistory');
-const PaymentsPage = LoadableWithParams('Payments');
-const ReferralPaymentsPage = LoadableWithParams('ReferralPayments');
-const ProductsPage = LoadableWithParams('Products');
-// const OrdersHistoryPage = LoadableWithParams('Orders');
+const PaymentsPage = Loadable('Payments');
+const ReferralPaymentsPage = Loadable('ReferralPayments');
+const PagesPage = Loadable('Pages');
+const ProductsPage = Loadable('Products');
 const SettingsPage = Loadable('Settings');
+const SupportPage = Loadable('Support');
 const UsersPage = Loadable('Users');
 
+const faqsLink = `${Config.adminPath}/faqs`;
 const loginsHistoryLink = `${Config.adminPath}/logins-history`;
-// const ordersHistoryLink = `${Config.adminPath}/orders-history`;
-// const ordersLink = `${Config.adminPath}/orders`;
 const paymentsLink = `${Config.adminPath}/payments`;
 const referralPaymentsLink = `${Config.adminPath}/referral-payments`;
+const pagesLink = `${Config.adminPath}/pages`;
 const productsLink = `${Config.adminPath}/products`;
 const settingsLink = `${Config.adminPath}/settings`;
+const supportLink = `${Config.adminPath}/support`;
 const usersLink = `${Config.adminPath}/users`;
 
 const Admin = () => (
@@ -45,6 +39,11 @@ const Admin = () => (
             to={Config.adminPath}
           >
             {tt('Categories')}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to={faqsLink}>
+            {tt('FAQ items')}
           </NavLink>
         </li>
         <li>
@@ -63,6 +62,11 @@ const Admin = () => (
           </NavLink>
         </li>
         <li>
+          <NavLink to={pagesLink}>
+            {tt('Pages')}
+          </NavLink>
+        </li>
+        <li>
           <NavLink to={productsLink}>
             {tt('Products')}
           </NavLink>
@@ -70,6 +74,11 @@ const Admin = () => (
         <li>
           <NavLink to={settingsLink}>
             {tt('Settings')}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to={supportLink}>
+            {tt('Support')}
           </NavLink>
         </li>
         <li>
@@ -87,6 +96,10 @@ const Admin = () => (
           path={Config.adminPath}
         />
         <Route
+          component={FAQsPage}
+          path={faqsLink}
+        />
+        <Route
           component={LoginsHistoryPage}
           path={loginsHistoryLink}
         />
@@ -99,12 +112,20 @@ const Admin = () => (
           path={referralPaymentsLink}
         />
         <Route
+          component={PagesPage}
+          path={pagesLink}
+        />
+        <Route
           component={ProductsPage}
           path={productsLink}
         />
         <Route
           component={SettingsPage}
           path={settingsLink}
+        />
+        <Route
+          component={SupportPage}
+          path={supportLink}
         />
         <Route
           component={UsersPage}

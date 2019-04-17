@@ -26,8 +26,12 @@ const getPromiseWithPathAndQuery = (path: string, query: any): Promise<Object> =
     axios.get(queryStr).then(({ data }) => {
       resolve(data);
     }).catch((error) => {
-      const getError = new Error(error.response.data);
-      reject(getError);
+      if (tools.isError(error)) {
+        reject(error);
+        return;
+      }
+
+      reject(new Error(error.response.data));
     });
   });
 

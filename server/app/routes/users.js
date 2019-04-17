@@ -140,9 +140,8 @@ module.exports = function usersRoute() {
   this.post('/resetPassword', Middleware.jsonBodyParser, verificationMiddleware, (req, res, next) => {
     users.resetPassword(req.verification.id, req.verification.code, req.body.password).then((user) => {
       if (user) {
-        const mailData = Object.assign({
-          confirmTTLMin: users.CONFIRM_TTL_MIN,
-        }, user);
+        const mailData = Object.assign({}, user);
+        mailData.confirmTTLMin = users.CONFIRM_TTL_MIN;
 
         Mailer.sendTo(user.email, {
           data: mailData,

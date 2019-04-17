@@ -22,4 +22,4 @@ translationsPromise.then(() => {
   });
 }).catch(Tools.emptyRejectExeption);
 
-module.exports = translationsPromise;
+export default translationsPromise;

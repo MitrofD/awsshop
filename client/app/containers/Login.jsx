@@ -16,7 +16,7 @@ type State = {
   xhrRequest: boolean,
 };
 
-const isChangedInputVal = (val: any) => typeof val === 'string';
+const isChangedVal = (val: any) => typeof val === 'string';
 
 class Login extends React.Component<Props, State> {
   constructor(props: Props, context: void) {
@@ -113,7 +113,9 @@ class Login extends React.Component<Props, State> {
       }
 
       user.apply(uData);
-      toRoute('/');
+      const queryObj = Tools.queryToObj(window.location.search);
+      const rPath = typeof queryObj.redirect === 'string' ? queryObj.redirect : '/';
+      toRoute(rPath);
     }).catch((error) => {
       if (this.unmounted) {
         return;
@@ -167,7 +169,7 @@ class Login extends React.Component<Props, State> {
 
     let allInputsChanged = true;
 
-    if (isChangedInputVal(this.email)) {
+    if (isChangedVal(this.email)) {
       if (emailError) {
         errorLabels.email = <InvalidLabel>{emailError}</InvalidLabel>;
         inputCNs.email += errorCNPrefix;
@@ -176,7 +178,7 @@ class Login extends React.Component<Props, State> {
       allInputsChanged = false;
     }
 
-    if (isChangedInputVal(this.password)) {
+    if (isChangedVal(this.password)) {
       if (passwordError) {
         errorLabels.password = <InvalidLabel>{passwordError}</InvalidLabel>;
         inputCNs.password += errorCNPrefix;
@@ -255,9 +257,9 @@ class Login extends React.Component<Props, State> {
             </div>
             <Link
               className="lnk bld ftr-lnk"
-              to="/registration"
+              to="/create-shop"
             >
-              {tt('Registration')}
+              {tt('Create shop')}
             </Link>
           </div>
         </div>

@@ -65,6 +65,7 @@
       },
       "allowChildren": true
     }],
+    "react/destructuring-assignment": 0,
     "react/no-find-dom-node": 0,
     "react/no-unused-prop-types": 1,
     "react/jsx-no-undef": [

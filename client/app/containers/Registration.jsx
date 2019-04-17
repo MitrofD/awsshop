@@ -337,7 +337,7 @@ class Registration extends React.Component<Props, State> {
       <div className="Registration frm-cntnr">
         <div className="frm">
           <div className="innr animated pulse">
-            <div className="ttl">{tt('Registration')}</div>
+            <div className="ttl">{tt('Create shop')}</div>
             <form
               noValidate
               onSubmit={this.onSubmitForm}

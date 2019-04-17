@@ -4,7 +4,7 @@ import { NavLink, Switch, Route } from 'react-router-dom';
 import Page from '../includes/Page';
 import { tt } from '../../components/TranslateElement';
 
-const { Loadable } = require('../../components/Loadable')(cN => import(`./${cN}`));
+const { Loadable } = require('../../components/Loadable').default(cN => import(`./${cN}`));
 
 const PasswordPage = Loadable('Password');
 const PerfectMoneyPage = Loadable('PerfectMoney');

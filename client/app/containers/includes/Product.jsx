@@ -1,9 +1,9 @@
 // @flow
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { tt } from '../../../components/TranslateElement';
-import orders from '../../../api/orders';
-import user from '../../../api/user';
+import { tt } from '../../components/TranslateElement';
+import orders from '../../api/orders';
+import user from '../../api/user';
 
 type Props = {
   _id: string,
@@ -44,7 +44,7 @@ const Product = (props: Props) => {
 
   return (
     <Link
-      className="Product col-md-3"
+      className="Product"
       to={productLink}
     >
       <div

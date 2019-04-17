@@ -1,0 +1,124 @@
+.Home {
+  main.container {
+    padding-left: 0;
+    padding-right: 0;
+
+    .info {
+      padding-top: 150px;
+      color: $white;
+
+      h6 {
+        margin: 0 0 1.75rem;
+        font-size: 3.75rem;
+        line-height: 5.3125rem;
+        font-family: 'Futura PT Bold';
+      }
+
+      p {
+        font-size: 1.25rem;
+      }
+
+      .btn {
+        margin: 1.6875rem 0 0;
+        padding: 1rem 1.5625rem;
+        color: #fff;
+        border-color: #fff;
+        border-width: .125rem;
+        font-size: .8125rem;
+      }
+    }
+
+    .sub-info {
+      @include border-radius(5px);
+      margin-top: -120px;
+      padding: 7.5rem .9375rem;
+      color: $white;
+      font-size: 2.1875rem;
+      background-image: url("#{$var-images-path}/home-sub-info.jpg");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .ProductsSlider {
+      margin-top: 4.375rem;
+    }
+  }
+
+  .top {
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: right;
+    background-image: url("#{$var-images-path}/home-top.jpg");
+    background-color: $primary;
+    height: 780px;
+  }
+
+  .Categories {
+    margin-top: 2.1875rem;
+
+    .cat {
+      height: 300px;
+      position: relative;
+
+      .desc {
+        position: absolute;
+        bottom: 2.5rem;
+        left: 2.8125rem;
+
+        .ttl,
+        .btn {
+          color: $white;
+        }
+
+        .ttl {
+          margin-bottom: 1.5625rem;
+        }
+
+        .btn {
+          text-transform: uppercase;
+          padding: 1rem 1.5625rem;
+          color: #fff;
+          border-color: #fff;
+          border-width: .125rem;
+
+          .arr {
+            margin: 0 0 0 1.25rem;
+            background-image: url("#{$var-images-path}/arrow-right-solid.svg");
+            background-repeat: no-repeat;
+            width: 18px;
+            height: 18px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-top: -2px;
+          }
+
+          &:hover {
+            background-color: $primary;
+            border-color: $primary;
+          }
+        }
+      }
+
+      .img {
+        @include border-radius(5px);
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        width: 100%;
+        height: 100%;
+      }
+
+      &.cat-1 .img {
+        background-image: url("#{$var-images-path}/cat-1.jpg");
+      }
+
+      &.cat-2 .img {
+        background-image: url("#{$var-images-path}/cat-2.jpg");
+      }
+
+      &.cat-3 .img {
+        background-image: url("#{$var-images-path}/cat-3.jpg");
+      }
+    }
+  }
+}

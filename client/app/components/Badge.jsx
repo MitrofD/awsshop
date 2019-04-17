@@ -9,7 +9,10 @@ type Props = ItemProps & {
   className: string,
 };
 
-const Badge = (props: Props) => <span className={`Badge ${props.className}`}>{props.children}</span>;
+const Badge = ({
+  className,
+  children,
+}: Props) => <span className={`Badge ${className}`}>{children}</span>;
 
 const DangerBadge = (props: ItemProps) => <Badge className="danger">{props.children}</Badge>;
 const PrimaryBadge = (props: ItemProps) => <Badge className="primary">{props.children}</Badge>;

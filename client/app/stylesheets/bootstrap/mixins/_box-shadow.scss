@@ -1,5 +1,11 @@
-@mixin box-shadow($shadow...) {
-  @if $enable-shadows {
+@mixin box-shadow($shadow, $inset: false) {
+  @if $inset {
+    -webkit-box-shadow:inset $shadow;
+    -moz-box-shadow:inset $top $left $blur $color;
+    box-shadow:inset $top $left $blur $color;
+  } @else {
+    -webkit-box-shadow: $shadow;
+    -moz-box-shadow: $shadow;
     box-shadow: $shadow;
   }
 }

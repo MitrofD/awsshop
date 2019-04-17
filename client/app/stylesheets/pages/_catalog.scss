@@ -21,51 +21,9 @@
     .XHRSpin {
       min-height: 450px;
     }
-  }
 
-  .Product {
-    display: block;
-    margin-bottom: 35px;
-
-    .nm {
-      @extend .text-truncate;
-      font-size: 17px;
-      padding: 10px 0;
-    }
-
-    .actn {
-      background-color: $primary;
-      bottom: 0;
-      border-radius: $border-radius;
-      box-shadow: 0px -3px 9px 0px rgba(64, 85, 238, 0.4);
-      display: none;
-      text-align: center;
-      padding: 35px 0;
-      position: absolute;
-      opacity: 0.98;
-      left: 0;
-      width: 100%;
-
-      .btn {
-        color: $primary;
-      }
-    }
-
-    .prvw {
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: contain;
-      border: solid 1px $border-color;
-      border-radius: $border-radius;
-      height: 268px;
-      width: 100%;
-      position: relative;
-    }
-
-    &:hover {
-      .actn {
-        display: block;
-      }
+    .Product {
+      @extend .col-md-3;
     }
   }
 

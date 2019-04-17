@@ -1,19 +1,22 @@
 // @flow
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
+import StaticPage from './StaticPage';
 
 const {
   Loadable,
   LoadableIfUserNeeded,
   LoadableIfAdmin,
   LoadableWithParams,
-} = require('../components/Loadable')(cN => import(`./${cN}`));
+} = require('../components/Loadable').default(cN => import(`./${cN}`));
 
 const AdminPage = LoadableIfAdmin('Admin');
 const CatalogPage = LoadableWithParams('Catalog');
 const EmailVerificationSendedPage = LoadableWithParams('EmailVerificationResent');
 const EmailVerificationPage = LoadableWithParams('EmailVerification');
 const DashboardPage = LoadableIfUserNeeded('Dashboard', true);
+const HomePage = Loadable('Home');
+const FAQPage = Loadable('FAQ');
 const ForgotPasswordPage = LoadableIfUserNeeded('ForgotPassword', false);
 const FindPasswordTipPage = Loadable('FindPasswordTip');
 const LoginPage = LoadableIfUserNeeded('Login', false);
@@ -23,15 +26,18 @@ const ResetPasswordPage = LoadableWithParams('ResetPassword');
 const ProductPage = LoadableWithParams('Product');
 const SettingsPage = LoadableIfUserNeeded('Settings', true);
 const ShoppingCartPage = LoadableIfUserNeeded('ShoppingCart', true);
-const ShippingAndPaymentPage = Loadable('ShippingAndPayment');
-const WarrantyPage = Loadable('Warranty');
+const SupportPage = Loadable('Support');
 
 const Routes = () => (
   <Switch>
     <Route
-      component={CatalogPage}
+      component={HomePage}
       exact
       path="/"
+    />
+    <Route
+      component={CatalogPage}
+      path="/catalog"
     />
     <Route
       component={CatalogPage}
@@ -51,7 +57,7 @@ const Routes = () => (
     />
     <Route
       component={RegistrationPage}
-      path="/registration"
+      path="/create-shop"
     />
     <Route
       component={EmailVerificationSendedPage}
@@ -60,6 +66,10 @@ const Routes = () => (
     <Route
       component={EmailVerificationPage}
       path="/email-verification/:verificationCode"
+    />
+    <Route
+      component={FAQPage}
+      path="/faq"
     />
     <Route
       component={ForgotPasswordPage}
@@ -86,12 +96,17 @@ const Routes = () => (
       path="/shopping-cart"
     />
     <Route
-      component={ShippingAndPaymentPage}
-      path="/shipping-and-payment"
+      component={SupportPage}
+      path="/support"
     />
     <Route
-      component={WarrantyPage}
-      path="/warranty"
+      path="/s/:path"
+      render={({ match, history }) => (
+        <StaticPage
+          history={history}
+          path={match.params.path}
+        />
+      )}
     />
     <Route
       component={OrdersCompletedPage}

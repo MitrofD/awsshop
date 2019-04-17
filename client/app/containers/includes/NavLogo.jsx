@@ -8,7 +8,7 @@ const NavLogo = () => (
     className="navbar-logo"
   >
     <div className="img" />
-    Awesome shop
+    Aws-shop
   </Link>
 );
 

@@ -19,10 +19,10 @@ const Tab = (props: ItemProps) => props.children;
 Tab.defaultProps = tabDefaultProps;
 Tab.displayName = tabName;
 
-type ReactNodeOrReactNodeCollection = React$Node | React$Node[];
+// type ReactNodeOrReactNodeCollection = React$Node | React$Node[];
 
 type Props = {
-  children: ReactNodeOrReactNodeCollection,
+  children: React$Node,
   activeIndex?: number,
   className?: ?string,
   // eslint-disable-next-line react/no-unused-prop-types

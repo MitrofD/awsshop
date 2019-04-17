@@ -1,6 +1,6 @@
 // @flow
 import React, { Fragment } from 'react';
-import Product from './Product';
+import Product from '../../includes/Product';
 import LoadMore from '../../includes/LoadMore';
 import XHRSpin from '../../includes/XHRSpin';
 import NoHaveLabel from '../../includes/NoHaveLabel';
@@ -173,11 +173,8 @@ class Grid extends React.Component<Props, State> {
           <div className="row">
             {this.items.map(item => (
               <Product
+                {...item}
                 key={item._id}
-                _id={item._id}
-                image={item.image}
-                price={item.price}
-                title={item.title}
               />
             ))}
           </div>

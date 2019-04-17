@@ -1,0 +1,36 @@
+.Admin .Support {
+  .Messages {
+    .Item {
+      @include border-radius($border-radius);
+      padding: 1rem;
+      border-style: solid;
+      border-color: $border-color;
+      border-width: $border-width + 1;
+      margin-bottom: 1rem;
+
+      .title, {
+        text-transform: uppercase;
+        font-family: 'Futura PT Heavy';
+
+        .time {
+          float: right;
+          font-family: 'Open Sans Regular';
+          font-size: 0.9rem;
+        }
+      }
+
+      .blockquote {
+        border-top: inherit;
+        border-width: $border-width;
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        font-size: 1rem;
+      }
+
+      .answr {
+        margin-top: 1rem;
+        text-align: right;
+      }
+    }
+  }
+}

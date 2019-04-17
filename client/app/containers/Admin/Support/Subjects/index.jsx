@@ -1,0 +1,321 @@
+// @flow
+import React from 'react';
+import Item from './Item';
+import ItemSubmitModal from './ItemSubmitModal';
+import NoHaveLabel from '../../../includes/NoHaveLabel';
+import LoadMore from '../../../includes/LoadMore';
+import XHRSpin from '../../../includes/XHRSpin';
+import { tt } from '../../../../components/TranslateElement';
+import support from '../../../../api/support';
+import windowScroll from '../../../../api/window-scroll';
+
+const SCROLL_FAULT = 40;
+
+type Props = {
+  limit?: number,
+};
+
+type State = {
+  modal: React$Node,
+  loadMore: boolean,
+  xhrRequest: boolean,
+};
+
+const defaultProps = {
+  limit: 50,
+};
+
+class Subjects extends React.Component<Props, State> {
+  static defaultProps = defaultProps;
+
+  constructor(props: Props, context: null) {
+    super(props, context);
+
+    this.state = {
+      modal: null,
+      loadMore: false,
+      xhrRequest: true,
+    };
+
+    const self: any = this;
+    self.onAddedItem = this.onAddedItem.bind(this);
+    self.onChangeSearchInput = this.onChangeSearchInput.bind(this);
+    self.onClickAddButton = this.onClickAddButton.bind(this);
+    self.onCloseModal = this.onCloseModal.bind(this);
+    self.onDeleteItem = this.onDeleteItem.bind(this);
+    self.onSetRootNode = this.onSetRootNode.bind(this);
+    self.onScrollWindow = this.onScrollWindow.bind(this);
+    self.onSubmitSearchForm = this.onSubmitSearchForm.bind(this);
+  }
+
+  componentDidMount() {
+    this.unmounted = false;
+    this.filter();
+  }
+
+  componentWillUnmount() {
+    this.unmounted = true;
+    this.stopListenWindowScroll();
+  }
+
+  onAddedItem(item: Object) {
+    const searchSubjectRegExp = this.getSearchRegExp();
+
+    if (!searchSubjectRegExp || searchSubjectRegExp.test(item.name)) {
+      const itemId = item._id;
+
+      this.items.splice(0, 0, (
+        <Item
+          data={item}
+          key={itemId}
+          onDelete={this.onDeleteItem}
+        />
+      ));
+
+      this.itemIds.splice(0, 0, itemId);
+    }
+
+    this.onCloseModal();
+  }
+
+  onChangeSearchInput(event: SyntheticEvent<HTMLInputElement>) {
+    const input = event.currentTarget;
+    const pureValue = input.value.trim();
+    this.searchSubject = pureValue.length > 0 ? pureValue : null;
+  }
+
+  onCloseModal() {
+    this.setState({
+      modal: null,
+    });
+  }
+
+  onClickAddButton() {
+    this.setState({
+      modal: (
+        <ItemSubmitModal
+          isOpened
+          onSuccess={this.onAddedItem}
+          onClose={this.onCloseModal}
+        />
+      ),
+    });
+  }
+
+  onDeleteItem(id: string) {
+    const idx = this.itemIds.indexOf(id);
+
+    if (idx !== -1) {
+      this.items.splice(idx, 1);
+      this.itemIds.splice(idx, 1);
+      this.forceUpdate();
+    }
+  }
+
+  onSetRootNode(el: ?HTMLElement) {
+    if (el) {
+      this.rootNode = el;
+    }
+  }
+
+  onScrollWindow(scrollData: Object) {
+    const rootNodeHeight = this.rootNode.offsetHeight;
+    const rootNodeTop = this.rootNode.offsetTop;
+    const rootNodeBottom = rootNodeHeight + rootNodeTop;
+    const windowBottom = SCROLL_FAULT + scrollData.height + scrollData.topPos;
+
+    if (windowBottom >= rootNodeBottom) {
+      this.filter();
+    }
+  }
+
+  onSubmitSearchForm() {
+    this.reset();
+    this.filter();
+  }
+
+  getSearchPattern(): ?string {
+    if (this.searchSubject) {
+      const escapedStr = Tools.escapedString(this.searchSubject);
+      return `.*${escapedStr}.*`;
+    }
+
+    return null;
+  }
+
+  getSearchRegExp(): ?RegExp {
+    const searchPattern = this.getSearchPattern();
+    return searchPattern ? new RegExp(searchPattern, 'i') : null;
+  }
+
+  setStateAfterRequest(newState: Object) {
+    if (this.unmounted) {
+      return;
+    }
+
+    const pureNewState = Object.assign({
+      xhrRequest: false,
+    }, newState);
+
+    this.setState(pureNewState);
+  }
+
+  filter() {
+    this.stopListenWindowScroll();
+    const query = {};
+    query.limit = this.props.limit;
+    const searchPattern = this.getSearchPattern();
+
+    if (searchPattern) {
+      query.searchPattern = searchPattern;
+    }
+
+    query.skip = this.items.length;
+
+    support.getSubjects(query).then(({ items, loadMore }) => {
+      items.forEach((item) => {
+        const itemId = item._id;
+        this.items.push((
+          <Item
+            data={item}
+            key={itemId}
+            onDelete={this.onDeleteItem}
+          />
+        ));
+
+        this.itemIds.push(itemId);
+      });
+
+      this.setStateAfterRequest({
+        loadMore,
+      });
+
+      if (loadMore) {
+        this.scrollFunc = windowScroll.bind(this.onScrollWindow);
+      }
+    }).catch((error) => {
+      NotificationBox.danger(error.message);
+      this.setStateAfterRequest({});
+    });
+  }
+
+  stopListenWindowScroll() {
+    if (this.scrollFunc) {
+      windowScroll.unbind(this.scrollFunc);
+      this.scrollFunc = null;
+    }
+  }
+
+  reset() {
+    this.items = [];
+    this.itemIds = [];
+
+    this.setState({
+      xhrRequest: true,
+    });
+  }
+
+  searchSubject: ?string = null;
+  items: React$Element<typeof Item>[] = [];
+  itemIds: string[] = [];
+  rootNode: HTMLElement;
+  scrollFunc: ?Function = null;
+  unmounted = true;
+
+  render() {
+    const {
+      modal,
+      loadMore,
+      xhrRequest,
+    } = this.state;
+
+    let content = null;
+    let itemsContent = null;
+    let headerContent = null;
+
+    if (xhrRequest) {
+      content = <XHRSpin />;
+    } else {
+      if (this.items.length > 0) {
+        itemsContent = (
+          <table className="table">
+            <tbody>
+              {this.items}
+            </tbody>
+          </table>
+        );
+
+        headerContent = (
+          <table className="table tbl-hd">
+            <thead>
+              <tr>
+                <th>{tt('Subject')}</th>
+                <th className="text-right">{tt('Actions')}</th>
+              </tr>
+            </thead>
+          </table>
+        );
+      } else {
+        headerContent = (
+          <NoHaveLabel>
+            {tt('No have items')}
+          </NoHaveLabel>
+        );
+      }
+
+      content = (
+        <form
+          noValidate
+          className="row actns"
+          onSubmit={this.onSubmitSearchForm}
+        >
+          <div className="col-sm-8">
+            <input
+              className="form-control"
+              defaultValue={this.searchSubject}
+              onChange={this.onChangeSearchInput}
+              type="text"
+              placeholder="Search text"
+            />
+          </div>
+          <div className="col-sm-2">
+            <button
+              className="btn btn-outline-primary btn-sm btn-block"
+              type="submit"
+            >
+              {tt('Search')}
+            </button>
+          </div>
+          <div className="col-sm-2">
+            <button
+              className="btn btn-primary btn-sm btn-block"
+              onClick={this.onClickAddButton}
+              type="button"
+            >
+              {tt('Add item')}
+            </button>
+          </div>
+        </form>
+      );
+    }
+
+    return (
+      <div className="Subjects">
+        {modal}
+        <div className="dt">
+          {content}
+          {headerContent}
+          <div
+            className="lst"
+            ref={this.onSetRootNode}
+          >
+            {itemsContent}
+            {loadMore && <LoadMore />}
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default Subjects;

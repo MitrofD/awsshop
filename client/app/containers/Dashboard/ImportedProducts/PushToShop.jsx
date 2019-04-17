@@ -19,7 +19,7 @@ class PushToShop extends React.PureComponent<Props> {
 
   onClickCancelButton(event: SyntheticEvent<HTMLElement>) {
     event.preventDefault();
-    this.props.onCancel()();
+    this.props.onCancel();
   }
 
   onSaveProduct(product: Object) {

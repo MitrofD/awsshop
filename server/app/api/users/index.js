@@ -7,7 +7,6 @@ const monthPaymentsCollection = require('./collections/month-payments');
 const monthRefPaymentsCollection = require('./collections/month-ref-payments');
 const ordersCollection = require('./collections/orders');
 const paymentsCollection = require('./collections/payments');
-// const refPaymentsCollection = require('./collections/ref-payments');
 const products = require('../products');
 const tools = require('../tools');
 const { random, alphabet } = require('../random');

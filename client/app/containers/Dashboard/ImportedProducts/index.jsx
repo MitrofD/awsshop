@@ -278,7 +278,7 @@ class ImportedProducts extends React.Component<Props, State> {
     let className = 'ImportedProducts';
 
     if (pushItem) {
-      className += ' edt-md';
+      className += ' fnt-md';
     }
 
     return (

@@ -208,10 +208,10 @@ class Settings extends React.Component<Props, State> {
       content = (
         <Fragment>
           <div className="ttl">{tt('Settings')}</div>
-          <div className="dt row">
+          <div className="dt">
             <form
-              className="col-sm-12 col-md-6"
               noValidate
+              className="row"
               onSubmit={this.onSubmitForm}
             >
               {formStrDataKeys.map((key) => {
@@ -225,18 +225,20 @@ class Settings extends React.Component<Props, State> {
 
                 return (
                   <div
-                    className="form-group"
+                    className="col-md-6"
                     key={key}
                   >
-                    <label>{tt(key)}:</label>
-                    <input
-                      className={tClassName}
-                      defaultValue={this.formStrData[key]}
-                      name={key}
-                      onChange={this.onChangeInput}
-                      type="text"
-                    />
-                    {inputData.errorNode}
+                    <div className="form-group">
+                      <label>{tt(key)}:</label>
+                      <input
+                        className={tClassName}
+                        defaultValue={this.formStrData[key]}
+                        name={key}
+                        onChange={this.onChangeInput}
+                        type="text"
+                      />
+                      {inputData.errorNode}
+                    </div>
                   </div>
                 );
               })}
@@ -249,23 +251,25 @@ class Settings extends React.Component<Props, State> {
 
                 return (
                   <div
-                    className="form-group"
+                    className="col-md-6"
                     key={key}
                   >
-                    <label>{tt(key)}:</label>
-                    <NumberInput
-                      className={inputData.className}
-                      defaultValue={this.formNumData[key]}
-                      min={minNum}
-                      name={key}
-                      onChange={this.onChangeNumberInput}
-                    />
-                    {inputData.errorNode}
+                    <div className="form-group">
+                      <label>{tt(key)}:</label>
+                      <NumberInput
+                        className={inputData.className}
+                        defaultValue={this.formNumData[key]}
+                        min={minNum}
+                        name={key}
+                        onChange={this.onChangeNumberInput}
+                      />
+                      {inputData.errorNode}
+                    </div>
                   </div>
                 );
               })}
               <button
-                className="btn btn-primary"
+                className="btn btn-primary col-12"
                 disabled={pDisabledSubmit}
                 type="submit"
               >

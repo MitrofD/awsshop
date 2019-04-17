@@ -3,6 +3,7 @@ const {
   COIN_PAYMENTS_ID,
   URL,
   SUPPORT_EMAIL,
+  SUPPORT_PHONE,
 } = process.env;
 
 const inConfigText = 'in config file';
@@ -67,11 +68,19 @@ if (Tools.domainRegExp.test(domain)) {
   name = pureDomainParts[0];
 }
 
+let supportPhone: ?string = null;
+
+if (typeof SUPPORT_PHONE === 'string') {
+  const pureSupportPhone = SUPPORT_PHONE.trim();
+  supportPhone = pureSupportPhone.length > 0 ? pureSupportPhone : null;
+}
+
 Config = {
   coinPaymentsId,
   protocol,
   port,
   supportEmail,
+  supportPhone,
   wssProtocol,
   domain: pureDomain,
   isSecure: secure,

@@ -24,6 +24,7 @@ class ConfirmModal extends React.PureComponent<Props> {
     const footer = (
       <button
         className="btn btn-danger btn-sm"
+        type="button"
         onClick={this.onClickConfirmButton}
       >
         Confirm

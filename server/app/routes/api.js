@@ -15,12 +15,11 @@ const checkToken = (token: any) => {
 
 module.exports = function apiRoutes() {
   const basePath = `/api/${apiVersionText}/:token`;
-  const purchasePath = `${basePath}/purchase`;
 
-  this.post(purchasePath, Middleware.jsonBodyParser, (req, res, next) => {
+  this.post(`${basePath}/purchase`, Middleware.jsonBodyParser, (req, res, next) => {
     checkToken(req.params.token);
 
-    users.soldProductInQuantities(req.body.id, req.body.quantitys).then(() => {
+    users.soldProductInQuantities(req.body.id, req.body.quantities).then(() => {
       res.json(Tools.okObj);
     }).catch(next);
   });

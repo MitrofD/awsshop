@@ -28,8 +28,7 @@ module.exports = function categoriesRoute() {
       return;
     }
 
-    const getError = new Error('Incorrect request');
-    next(getError);
+    next(new Error('Incorrect request'));
   });
 
   this.delete('/categories/:id', Middleware.admin_Sess, (req, res, next) => {

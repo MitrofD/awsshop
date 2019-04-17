@@ -147,7 +147,7 @@ function LoadableFunc(opts) {
   return createLoadableComponent(load, opts);
 }
 
-module.exports = (imp) => {
+export default (imp) => {
   const loadableDefData = (componentName) => {
     const rData = {
       loader: () => imp(componentName),
