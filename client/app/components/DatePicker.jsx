@@ -30,7 +30,9 @@ const getDateNow = () => {
 
 class DatePicker extends React.Component<Props> {
   static defaultProps = defaultProps;
+
   cleanBtnNode: React$Node = null;
+
   todayBtnNode: React$Node = null;
 
   constructor(props: Props, context: null) {
@@ -122,6 +124,7 @@ class DatePicker extends React.Component<Props> {
   }
 
   calendar: Calendar;
+
   disabledTodayButton: boolean;
 
   render() {

@@ -25,6 +25,16 @@ const defaultProps = {
 class ByMonth extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  dateRange: ?DateRange = null;
+
+  items: Object[] = [];
+
+  scrollFunc: ?Function = null;
+
+  searchText: ?string = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -160,12 +170,7 @@ class ByMonth extends React.PureComponent<Props, State> {
     }
   }
 
-  dateRange: ?DateRange = null;
-  items: Object[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  searchText: ?string = null;
-  unmounted = true;
 
   render() {
     const {

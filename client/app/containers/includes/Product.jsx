@@ -54,6 +54,7 @@ const Product = (props: Props) => {
         <div className="actn">
           <button
             className="btn btn-light animated pulse"
+            type="button"
             onClick={onClickAddButton}
           >
             {tt('Add to cart')}

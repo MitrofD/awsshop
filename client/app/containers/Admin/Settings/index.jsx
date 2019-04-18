@@ -15,6 +15,18 @@ type State = {
 };
 
 class Settings extends React.Component<Props, State> {
+  formChangedData: { [string]: boolean } = {};
+
+  formCurrData: { [string]: any } = {};
+
+  formNumData: { [string]: any } = {};
+
+  formStrData: { [string]: any } = {};
+
+  inputChangeTimer: ?TimeoutID = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -91,11 +103,14 @@ class Settings extends React.Component<Props, State> {
     const currValue = this.formCurrData[attrName];
     this.formNumData[attrName] = value;
     this.formChangedData[attrName] = currValue !== value;
-    const oldErrors = this.state.errors;
-    oldErrors[attrName] = null;
 
-    this.setState({
-      errors: oldErrors,
+    this.setState((prevState) => {
+      const oldErrors = prevState.errors;
+      oldErrors[attrName] = null;
+
+      return {
+        errors: oldErrors,
+      };
     });
   }
 
@@ -165,13 +180,6 @@ class Settings extends React.Component<Props, State> {
     this.inputChangeTimer = null;
   }
 
-  formChangedData: { [string]: boolean } = {};
-  formCurrData: { [string]: any } = {};
-  formNumData: { [string]: any } = {};
-  formStrData: { [string]: any } = {};
-  inputChangeTimer: ?TimeoutID = null;
-  unmounted = true;
-
   render() {
     const {
       disabledSubmit,
@@ -229,7 +237,10 @@ class Settings extends React.Component<Props, State> {
                     key={key}
                   >
                     <div className="form-group">
-                      <label>{tt(key)}:</label>
+                      <label>
+                        {tt(key)}
+:
+                      </label>
                       <input
                         className={tClassName}
                         defaultValue={this.formStrData[key]}
@@ -255,7 +266,10 @@ class Settings extends React.Component<Props, State> {
                     key={key}
                   >
                     <div className="form-group">
-                      <label>{tt(key)}:</label>
+                      <label>
+                        {tt(key)}
+:
+                      </label>
                       <NumberInput
                         className={inputData.className}
                         defaultValue={this.formNumData[key]}

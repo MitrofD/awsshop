@@ -66,16 +66,38 @@ class Product extends React.PureComponent<Props, State> {
           <div className="col-md-7 mt-3 mt-sm-0">
             {title}
             <div className="my-3">
-              <strong>{tt('User')}: </strong>
+              <strong>
+                {tt('User')}
+:
+                {' '}
+              </strong>
               {advData.userFullName}
               <br />
-              <strong>{tt('User email')}: </strong>
+              <strong>
+                {tt('User email')}
+:
+                {' '}
+              </strong>
               <a href={`mailto:${advData.userEmail}`}>{advData.userEmail}</a>
             </div>
             <div className="my-3">
-              <strong>{tt('Price')}:</strong> {price} $
+              <strong>
+                {tt('Price')}
+:
+              </strong>
+              {' '}
+              {price}
+              {' '}
+$
               <br />
-              <strong>{tt('Earnings')}:</strong> {earnings} $
+              <strong>
+                {tt('Earnings')}
+:
+              </strong>
+              {' '}
+              {earnings}
+              {' '}
+$
             </div>
             <div className="btns-grp float-right">
               <button

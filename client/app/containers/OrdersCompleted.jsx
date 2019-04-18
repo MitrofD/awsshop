@@ -26,6 +26,10 @@ const INIT_STATE = {
 const STEP_DELAY = 1000;
 
 class OrdersCompleted extends React.PureComponent<Props, State> {
+  stepIntervalID: ?IntervalID = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -94,9 +98,6 @@ class OrdersCompleted extends React.PureComponent<Props, State> {
     });
   }
 
-  stepIntervalID: ?IntervalID = null;
-  unmounted = true;
-
   render() {
     const {
       alertDanger,
@@ -121,7 +122,9 @@ class OrdersCompleted extends React.PureComponent<Props, State> {
     } else {
       content = (
         <Fragment>
-          {tt('Processing, please wait')} {dotsStr}
+          {tt('Processing, please wait')}
+          {' '}
+          {dotsStr}
         </Fragment>
       );
     }

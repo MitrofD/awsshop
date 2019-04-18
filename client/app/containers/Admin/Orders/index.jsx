@@ -28,6 +28,16 @@ const defaultProps = {
 class Orders extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  findTitle: ?string = null;
+
+  items: React$Element<typeof Order>[] = [];
+
+  itemIds: string[] = [];
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
     this.title = 'orders history';
@@ -196,14 +206,11 @@ class Orders extends React.PureComponent<Props, State> {
     }
   }
 
-  findTitle: ?string = null;
-  items: React$Element<typeof Order>[] = [];
-  itemIds: string[] = [];
-  rootNodeRef: HTMLElement;
-  title: string;
-  scrollFunc: ?Function = null;
   deleteIfNeededFunc: (Object) => void;
-  unmounted = true;
+
+  rootNodeRef: HTMLElement;
+
+  title: string;
 
   render() {
     const {

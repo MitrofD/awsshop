@@ -11,16 +11,18 @@ type Props = {};
 
 type State = {
   alert: React$Node,
-  xhrRequest: boolean,
 };
 
 class ResentReactivateAccount extends React.PureComponent<Props, State> {
+  unmounted = true;
+
+  xhrRequest = false;
+
   constructor(props: Props, context: void) {
     super(props, context);
 
     this.state = {
       alert: null,
-      xhrRequest: false,
     };
 
     // binds
@@ -39,9 +41,14 @@ class ResentReactivateAccount extends React.PureComponent<Props, State> {
   onClickToResentLink(event: SyntheticEvent<HTMLElement>) {
     event.preventDefault();
 
+    if (this.xhrRequest) {
+      return;
+    }
+
+    this.xhrRequest = true;
+
     this.setState({
       alert: <AlertInfo>Send request.Please wait...</AlertInfo>,
-      xhrRequest: true,
     });
 
     const finishWithAlert = (alert: React$Node) => {
@@ -49,9 +56,10 @@ class ResentReactivateAccount extends React.PureComponent<Props, State> {
         return;
       }
 
+      this.xhrRequest = false;
+
       this.setState({
         alert,
-        xhrRequest: false,
       });
     };
 
@@ -64,20 +72,13 @@ class ResentReactivateAccount extends React.PureComponent<Props, State> {
     });
   }
 
-  unmounted = true;
-
   render() {
-    const {
-      alert,
-      xhrRequest,
-    } = this.state;
-
     return (
       <div className="ResentReactivateAccount center-layout">
         <div className="main main-message">
           <div className="logo" />
           <div className="title">{tt('reactivateAccountResentTitle')}</div>
-          {alert}
+          {this.state.alert}
           <div className="text">
             We sent a confirmation email to you. Please follow the instructions to reactivate account verification.
           </div>
@@ -85,7 +86,8 @@ class ResentReactivateAccount extends React.PureComponent<Props, State> {
             href="!#"
             onClick={this.onClickToResentLink}
           >
-            {tt('reactivateAccountResentMailLink')}&nbsp;&gt;&gt;
+            {tt('reactivateAccountResentMailLink')}
+            &nbsp;&gt;&gt;
           </a>
           <FindEmailTips />
         </div>

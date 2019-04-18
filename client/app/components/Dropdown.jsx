@@ -44,7 +44,7 @@ const DropdownItem = (props: ItemProps) => {
   }
 
   return (
-    <div {...itemsProps} >
+    <div {...itemsProps}>
       {children}
     </div>
   );
@@ -208,9 +208,13 @@ class Dropdown extends React.Component<Props> {
   }
 
   defaultParentClass: ?string;
+
   name: string;
+
   myNode: HTMLElement;
+
   parentNode: HTMLElement;
+
   uStikyName: string;
 
   render() {
@@ -237,7 +241,7 @@ class Dropdown extends React.Component<Props> {
 
     return (
       <Fragment>
-        <div {...boxProps} >
+        <div {...boxProps}>
           {itemsArray}
         </div>
         <FixedOverlay

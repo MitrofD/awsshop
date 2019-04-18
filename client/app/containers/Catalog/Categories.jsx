@@ -29,6 +29,12 @@ const defaultProps = {
 class Categories extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
+  items: Object[] = [];
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -119,10 +125,7 @@ class Categories extends React.Component<Props, State> {
     });
   }
 
-  items: Object[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {
@@ -174,7 +177,10 @@ class Categories extends React.Component<Props, State> {
                   className={getItemCN(item.name)}
                   to={Config.categoryPath + item.encodedName}
                 >
-                  {tt(item.name)}&nbsp;({item.productsCount})
+                  {tt(item.name)}
+&nbsp;(
+                  {item.productsCount}
+)
                 </Link>
               </li>
             ))}

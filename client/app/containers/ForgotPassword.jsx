@@ -17,6 +17,10 @@ type State = {
 };
 
 class ForgotPassword extends React.PureComponent<Props, State> {
+  email: ?string = null;
+
+  inputChangeTimer: ?TimeoutID = null;
+
   constructor(props: Props, context: void) {
     super(props, context);
     this.unmounted = true;
@@ -103,9 +107,8 @@ class ForgotPassword extends React.PureComponent<Props, State> {
     this.inputChangeTimer = null;
   }
 
-  email: ?string = null;
   emailInput: ?HTMLInputElement;
-  inputChangeTimer: ?TimeoutID = null;
+
   unmounted: boolean;
 
   render() {
@@ -146,7 +149,11 @@ class ForgotPassword extends React.PureComponent<Props, State> {
               onSubmit={this.onSubmitForm}
             >
               <div className="form-group">
-                <label>{tt('Your')} {tt('Email')}</label>
+                <label>
+                  {tt('Your')}
+                  {' '}
+                  {tt('Email')}
+                </label>
                 <input
                   autoComplete="off"
                   className={inputCNs.email}

@@ -1,9 +1,7 @@
 // @flow
-import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
 import AnswerModal from './AnswerModal';
 import { tt } from '../../../../components/TranslateElement';
-import support from '../../../../api/support';
 
 type Props = {
   data: Object,
@@ -15,6 +13,8 @@ type State = {
 };
 
 class Item extends React.PureComponent<Props, State> {
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -44,15 +44,19 @@ class Item extends React.PureComponent<Props, State> {
   }
 
   onClickAnswerButton() {
-    this.setState({
-      modal: (
-        <AnswerModal
-          isOpened
-          item={this.state.data}
-          onSuccess={this.onEditedItem}
-          onClose={this.onCloseModal}
-        />
-      ),
+    this.setState((prevState) => {
+      const newState = {
+        modal: (
+          <AnswerModal
+            isOpened
+            item={prevState.data}
+            onSuccess={this.onEditedItem}
+            onClose={this.onCloseModal}
+          />
+        ),
+      };
+
+      return newState;
     });
   }
 
@@ -63,8 +67,6 @@ class Item extends React.PureComponent<Props, State> {
 
     this.onCloseModal();
   }
-
-  unmounted = true;
 
   render() {
     const item = this.state.data;
@@ -77,9 +79,12 @@ class Item extends React.PureComponent<Props, State> {
         <div className="text-right">
           <button
             className="btn btn-sm btn-primary"
+            type="button"
             onClick={this.onClickAnswerButton}
           >
-            {tt('Answer to')} {item.name}
+            {tt('Answer to')}
+            {' '}
+            {item.name}
           </button>
         </div>
       );
@@ -91,18 +96,24 @@ class Item extends React.PureComponent<Props, State> {
       <div className="Item">
         {this.state.modal}
         <h5 className="title">
-          <span className="text-primary">{subject}</span> | ID#{item._id}
+          <span className="text-primary">{subject}</span>
+          {` | ID#${item._id}`}
           <span className="time">{Tools.prettyTime(item.createdAt)}</span>
         </h5>
         <h6 className="sndr">
-          {tt('From')}: {item.name}
+          {tt('From')}
+          {`: ${item.name}`}
           <a
             className="text-primary"
             href={`mailto:${item.email}`}
           >
             {` ${item.email}`}
           </a>
-          {item.phone && <a href={`tel:${item.phone}`}> {item.phone}</a>}
+          {item.phone && (
+          <a href={`tel:${item.phone}`}>
+            {` ${item.phone}`}
+          </a>
+          )}
         </h6>
         <blockquote className="blockquote">
           {item.message}

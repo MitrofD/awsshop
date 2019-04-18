@@ -24,6 +24,10 @@ const defaultProps = {
 class CategorySelect extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  id: ?string = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -85,7 +89,7 @@ class CategorySelect extends React.PureComponent<Props, State> {
     });
   }
 
-  onClickToMe(event: SyntheticEvent<HTMLElement>) {
+  onClickToMe() {
     if (this.state.xhrRequest) {
       return;
     }
@@ -110,9 +114,6 @@ class CategorySelect extends React.PureComponent<Props, State> {
 
     this.props.onChange(this.id);
   }
-
-  id: ?string = null;
-  unmounted = true;
 
   render() {
     const {

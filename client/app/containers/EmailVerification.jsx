@@ -13,6 +13,8 @@ type State = {
 };
 
 class EmailVerification extends React.PureComponent<Props, State> {
+  unmounted = true;
+
   state = {
     xhrRequest: true,
     errorMessage: null,
@@ -54,8 +56,6 @@ class EmailVerification extends React.PureComponent<Props, State> {
     this.unmounted = true;
   }
 
-  unmounted = true;
-
   render() {
     const {
       xhrRequest,
@@ -78,7 +78,8 @@ class EmailVerification extends React.PureComponent<Props, State> {
       <div className="EmailVerification frm-cntnr">
         <div className="frm">
           <div className="innr">
-            {message} {loginLink}
+            {`${message} `}
+            {loginLink}
           </div>
         </div>
       </div>

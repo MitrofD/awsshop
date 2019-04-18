@@ -28,6 +28,16 @@ const defaultProps = {
 class List extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
+  dateRange: ?DateRange = null;
+
+  items: Object[] = [];
+
+  refPurchasePrice = 0;
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -166,12 +176,7 @@ class List extends React.Component<Props, State> {
     }
   }
 
-  dateRange: ?DateRange = null;
-  items: Object[] = [];
-  refPurchasePrice = 0;
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {
@@ -207,7 +212,13 @@ class List extends React.Component<Props, State> {
               <tr key={item._id}>
                 <td>{item.monthYear}</td>
                 <td>{item.list}</td>
-                <td>{item.quantity} / <strong className="text-danger">{item.earningsText}</strong></td>
+                <td>
+                  {item.quantity}
+                  {' '}
+/
+                  {' '}
+                  <strong className="text-danger">{item.earningsText}</strong>
+                </td>
               </tr>
             ))}
           </tbody>

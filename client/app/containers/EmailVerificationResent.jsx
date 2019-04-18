@@ -24,6 +24,8 @@ const defaultProps = {
 class EmailVerificationResent extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  unmounted = true;
+
   constructor(props: Props, context: void) {
     super(props, context);
 
@@ -78,8 +80,6 @@ class EmailVerificationResent extends React.PureComponent<Props, State> {
     });
   }
 
-  unmounted = true;
-
   render() {
     const {
       advancedMessage,
@@ -95,7 +95,10 @@ class EmailVerificationResent extends React.PureComponent<Props, State> {
             <div className="ttl">{tt('Email sended')}</div>
             {this.state.alert}
             <p>
-              {rAdvancedMessage}We sent a confirmation email to <strong>{email}</strong>. Please follow the instructions to complete your registration.
+              {rAdvancedMessage}
+              {' We sent a confirmation email to'}
+              <strong>{email}</strong>
+              .Please follow the instructions to complete your registration.
               <a
                 href="#!"
                 onClick={this.onClickToResentLink}

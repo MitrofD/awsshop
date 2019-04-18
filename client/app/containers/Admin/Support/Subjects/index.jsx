@@ -28,6 +28,16 @@ const defaultProps = {
 class Subjects extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
+  searchSubject: ?string = null;
+
+  items: React$Element<typeof Item>[] = [];
+
+  itemIds: string[] = [];
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -215,12 +225,7 @@ class Subjects extends React.Component<Props, State> {
     });
   }
 
-  searchSubject: ?string = null;
-  items: React$Element<typeof Item>[] = [];
-  itemIds: string[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {

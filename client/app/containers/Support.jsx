@@ -29,6 +29,14 @@ const checkRequiredValue = (value: string, field: string): string => {
 };
 
 class Support extends React.Component<Props, State> {
+  emailCh = false;
+
+  nameCh = false;
+
+  messageCh = false;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -199,14 +207,13 @@ class Support extends React.Component<Props, State> {
     this.inputChangeTimer = null;
   }
 
-  emailCh = false;
   firstInput: ?HTMLInputElement;
-  nameCh = false;
-  messageCh = false;
+
   inputChangeTimer: ?TimeoutID;
+
   subjId: ?string;
+
   subject: ?string;
-  unmounted = true;
 
   render() {
     const {
@@ -326,6 +333,7 @@ class Support extends React.Component<Props, State> {
                 <button
                   className="btn btn-primary btn-block"
                   disabled={disabledSubmit}
+                  type="submit"
                 >
                   {tt('Send message')}
                 </button>

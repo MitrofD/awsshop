@@ -16,6 +16,16 @@ type State = {
 const isChangedVal = (val: any) => val !== null;
 
 class Password extends React.PureComponent<Props, State> {
+  confirmPassword: ?string = null;
+
+  oldPassword: ?string = null;
+
+  inputChangeTimer: ?TimeoutID = null;
+
+  password: ?string = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -153,12 +163,6 @@ class Password extends React.PureComponent<Props, State> {
 
     this.inputChangeTimer = null;
   }
-
-  confirmPassword: ?string = null;
-  oldPassword: ?string = null;
-  inputChangeTimer: ?TimeoutID = null;
-  password: ?string = null;
-  unmounted = true;
 
   render() {
     const {

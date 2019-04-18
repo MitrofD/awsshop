@@ -26,6 +26,16 @@ const defaultProps = {
 class WaitingForPayments extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
+  items: Object[] = [];
+
+  refPurchasePrice = 0;
+
+  searchText: ?string = null;
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -153,7 +163,7 @@ class WaitingForPayments extends React.Component<Props, State> {
 
       for (; i < itemsArrLength; i += 1) {
         const item = items[i];
-        let earnings = item.refSoldQuantity * this.refPurchasePrice;
+        const earnings = item.refSoldQuantity * this.refPurchasePrice;
         let disabledPay = true;
         let earningsText = '- - -';
 
@@ -197,12 +207,7 @@ class WaitingForPayments extends React.Component<Props, State> {
     }
   }
 
-  items: Object[] = [];
   rootNode: HTMLElement;
-  refPurchasePrice = 0;
-  searchText: ?string = null;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {
@@ -262,8 +267,13 @@ class WaitingForPayments extends React.Component<Props, State> {
               {this.items.map((item, idx) => (
                 <tr key={item._id}>
                   <td>
-                    {item.firstName} {item.lastName}<br />
-                    Email: <a href={`mailto:${item.email}`}>{item.email}</a>
+                    {item.firstName}
+                    {' '}
+                    {item.lastName}
+                    <br />
+                    Email:
+                    {' '}
+                    <a href={`mailto:${item.email}`}>{item.email}</a>
                   </td>
                   <td>{Tools.prettyTime(item.refPayoutTime)}</td>
                   <td>{item.earningsText}</td>
@@ -274,6 +284,7 @@ class WaitingForPayments extends React.Component<Props, State> {
                       disabled={item.disabledPay}
                       data-idx={idx}
                       data-id={item._id}
+                      type="button"
                       onClick={this.onClickPaidButton}
                     >
                       paid

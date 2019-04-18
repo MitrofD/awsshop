@@ -28,6 +28,16 @@ const defaultProps = {
 class ImportedProducts extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
+  findTitle: ?string = null;
+
+  items: React$Element<typeof Product>[] = [];
+
+  itemIds: string[] = [];
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -218,12 +228,7 @@ class ImportedProducts extends React.Component<Props, State> {
     }
   }
 
-  findTitle: ?string = null;
-  items: React$Element<typeof Product>[] = [];
-  itemIds: string[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {

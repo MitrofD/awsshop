@@ -103,7 +103,9 @@ class UserMenu extends React.PureComponent<Props, State> {
           onClick={this.onClickToMe}
         >
           <div className="icn-wrppr">
-            <i className="icn icn-prfl" /> {this.userName}
+            <i className="icn icn-prfl" />
+            {' '}
+            {this.userName}
           </div>
         </a>
         {dropdownContent}

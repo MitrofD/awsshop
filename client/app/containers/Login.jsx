@@ -1,9 +1,8 @@
 // @flow
 import React from 'react';
-import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 import { InvalidLabel } from '../components/Label';
-import { tt, TTInput } from '../components/TranslateElement';
+import { tt } from '../components/TranslateElement';
 import user from '../api/user';
 
 type Props = {
@@ -19,6 +18,14 @@ type State = {
 const isChangedVal = (val: any) => typeof val === 'string';
 
 class Login extends React.Component<Props, State> {
+  email: ?string = null;
+
+  inputChangeTimer: ?TimeoutID = null;
+
+  password: ?string = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: void) {
     super(props, context);
 
@@ -94,18 +101,6 @@ class Login extends React.Component<Props, State> {
       this.props.history.push(route);
     };
 
-    const finishWithData = (data: Object) => {
-      if (this.unmounted) {
-        return;
-      }
-
-      const setObj = Object.assign(data, {
-        xhrRequest: false,
-      });
-
-      this.setState(setObj);
-    };
-
     user.login(rEmail, rPassword).then((uData) => {
       if (!uData.isVerified) {
         toRoute(`/resend-email/${uData.email}`);
@@ -145,11 +140,7 @@ class Login extends React.Component<Props, State> {
     this.inputChangeTimer = null;
   }
 
-  email: ?string = null;
   emailInput: ?HTMLInputElement;
-  inputChangeTimer: ?TimeoutID = null;
-  password: ?string = null;
-  unmounted = true;
 
   render() {
     const {
@@ -200,7 +191,12 @@ class Login extends React.Component<Props, State> {
               onSubmit={this.onSubmitForm}
             >
               <div className="form-group">
-                <label>{tt('Login')} ({tt('Email')})</label>
+                <label>
+                  {tt('Login')}
+                  {' ('}
+                  {tt('Email')}
+                  )
+                </label>
                 <input
                   type="text"
                   name="email"

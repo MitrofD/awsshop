@@ -44,6 +44,10 @@ const getUserAlerts = (cUser: ?Object) => {
 class UserAlerts extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  unmounted = true;
+
+  userHandle: ?SubscribeHandler = null;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -74,9 +78,6 @@ class UserAlerts extends React.PureComponent<Props, State> {
       this.userHandle = null;
     }
   }
-
-  unmounted = true;
-  userHandle: ?SubscribeHandler = null;
 
   render() {
     const {

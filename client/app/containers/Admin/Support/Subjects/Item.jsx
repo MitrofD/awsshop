@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import { Link } from 'react-router-dom';
 import ItemSubmitModal from './ItemSubmitModal';
 import { tt } from '../../../../components/TranslateElement';
 import support from '../../../../api/support';
@@ -18,6 +17,8 @@ type State = {
 };
 
 class Item extends React.PureComponent<Props, State> {
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -48,15 +49,19 @@ class Item extends React.PureComponent<Props, State> {
   }
 
   onClickEditButton() {
-    this.setState({
-      modal: (
-        <ItemSubmitModal
-          isOpened
-          item={this.state.data}
-          onSuccess={this.onEditedItem}
-          onClose={this.onCloseModal}
-        />
-      ),
+    this.setState((prevState) => {
+      const newState = {
+        modal: (
+          <ItemSubmitModal
+            isOpened
+            item={this.state.data}
+            onSuccess={this.onEditedItem}
+            onClose={this.onCloseModal}
+          />
+        ),
+      };
+
+      return newState;
     });
   }
 
@@ -83,8 +88,6 @@ class Item extends React.PureComponent<Props, State> {
     this.onCloseModal();
   }
 
-  unmounted = true;
-
   render() {
     const item = this.state.data;
 
@@ -101,7 +104,8 @@ class Item extends React.PureComponent<Props, State> {
             type="button"
           >
             {tt('Edit')}
-          </button>|
+          </button>
+|
           <button
             className="rmv"
             onClick={this.onClickDeleteButton}

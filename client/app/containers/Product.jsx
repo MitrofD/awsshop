@@ -28,6 +28,12 @@ const tabs = {
 const firstTab = Object.keys(tabs)[0];
 
 class Product extends React.PureComponent<Props, State> {
+  currImage: ?string = null;
+
+  data: ?Object = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -127,10 +133,6 @@ class Product extends React.PureComponent<Props, State> {
     this.forceUpdate();
   }
 
-  currImage: ?string = null;
-  data: ?Object = null;
-  unmounted = true;
-
   render() {
     const {
       alert,
@@ -162,6 +164,7 @@ class Product extends React.PureComponent<Props, State> {
               <div className="col-sm-3">
                 <button
                   className="btn btn-primary btn-block animated pulse"
+                  type="button"
                   onClick={this.onClickAddToCartButton}
                 >
                   {tt('Add to cart')}

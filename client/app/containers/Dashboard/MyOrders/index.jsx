@@ -26,6 +26,14 @@ const defaultProps = {
 class MyOrders extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  findTitle: ?string = null;
+
+  items: React$Element<typeof Order>[] = [];
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -156,11 +164,7 @@ class MyOrders extends React.PureComponent<Props, State> {
     }
   }
 
-  findTitle: ?string = null;
-  items: React$Element<typeof Order>[] = [];
   rootNodeRef: HTMLElement;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {

@@ -27,6 +27,16 @@ const defaultProps = {
 class Messages extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
+  findName: ?string = null;
+
+  items: React$Element<typeof Item>[] = [];
+
+  itemIds: string[] = [];
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -190,12 +200,7 @@ class Messages extends React.Component<Props, State> {
     });
   }
 
-  findName: ?string = null;
-  items: React$Element<typeof Item>[] = [];
-  itemIds: string[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {
@@ -206,7 +211,7 @@ class Messages extends React.Component<Props, State> {
 
     let content = null;
     let itemsContent = null;
-    let headerContent = null;
+    const headerContent = null;
 
     if (xhrRequest) {
       content = <XHRSpin />;

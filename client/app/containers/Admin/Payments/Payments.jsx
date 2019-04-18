@@ -31,6 +31,16 @@ const defaultProps = {
 class Payments extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  startOfMonthTime = 0;
+
+  items: Object[] = [];
+
+  scrollFunc: ?Function = null;
+
+  searchText: ?string = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -249,14 +259,12 @@ class Payments extends React.PureComponent<Props, State> {
     }
   }
 
-  items: Object[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  searchText: ?string = null;
-  unmounted = true;
+
   breakFunc: (Object, Object) => boolean;
+
   paymentFunc: Function;
-  startOfMonthTime = 0;
+
   title: string;
 
   render() {
@@ -293,7 +301,11 @@ class Payments extends React.PureComponent<Props, State> {
             {this.items.map((item, idx) => (
               <tr key={item._id}>
                 <td>
-                  <a href={`mailto:${item.email}`}>{item.firstName} {item.lastName}</a>
+                  <a href={`mailto:${item.email}`}>
+                    {item.firstName}
+                    {' '}
+                    {item.lastName}
+                  </a>
                 </td>
                 <td>{Tools.prettyTime(item.payoutTime)}</td>
                 <td>{item.earningsText}</td>
@@ -303,6 +315,7 @@ class Payments extends React.PureComponent<Props, State> {
                     disabled={item.disabledPay}
                     data-idx={idx}
                     data-id={item._id}
+                    type="button"
                     onClick={this.onClickPaidButton}
                   >
                     Pay

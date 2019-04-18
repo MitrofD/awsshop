@@ -42,6 +42,10 @@ type State = {
 const EMPTY_STR = '';
 
 class SubmitForm extends React.Component<Props, State> {
+  inputChangeTimer: ?TimeoutID = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
     this.btnTitle = props._id ? 'Save changes' : 'Add page';
@@ -192,12 +196,14 @@ class SubmitForm extends React.Component<Props, State> {
   }
 
   btnTitle: string;
+
   content: string;
-  inputChangeTimer: ?TimeoutID = null;
+
   title: string;
+
   path: string;
+
   contentId: string;
-  unmounted = true;
 
   render() {
     const {
@@ -254,7 +260,10 @@ class SubmitForm extends React.Component<Props, State> {
         >
           <div className="col-6">
             <div className="form-group">
-              <label>{tt('Title')}:</label>
+              <label>
+                {tt('Title')}
+:
+              </label>
               <input
                 autoComplete="title"
                 className={inputCNs.title}
@@ -268,7 +277,10 @@ class SubmitForm extends React.Component<Props, State> {
           </div>
           <div className="col-6">
             <div className="form-group">
-              <label>{tt('Path')}:</label>
+              <label>
+                {tt('Path')}
+:
+              </label>
               <input
                 autoComplete="path"
                 className={inputCNs.path}
@@ -282,7 +294,10 @@ class SubmitForm extends React.Component<Props, State> {
           </div>
           <div className="col-12">
             <div className="form-group">
-              <label>{tt('Content')}:</label>
+              <label>
+                {tt('Content')}
+:
+              </label>
               <textarea
                 className={inputCNs.content}
                 defaultValue={this.content}

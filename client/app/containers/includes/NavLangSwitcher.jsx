@@ -13,6 +13,10 @@ type State = {
 const getSubstrName = (name: string) => name.substr(0, 3);
 
 class NavLangSwitcher extends React.PureComponent<Props, State> {
+  unmounted = true;
+
+  langsList = {};
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -73,9 +77,6 @@ class NavLangSwitcher extends React.PureComponent<Props, State> {
     });
   }
 
-  unmounted = true;
-  langsList = {};
-
   render() {
     const {
       langCode,
@@ -123,7 +124,9 @@ class NavLangSwitcher extends React.PureComponent<Props, State> {
           href="#!"
           onClick={this.onClickToMe}
         >
-          {getSubstrName(langVal)} <i className={arrowICOClassName} />
+          {getSubstrName(langVal)}
+          {' '}
+          <i className={arrowICOClassName} />
         </a>
         {langDropdown}
       </li>

@@ -27,6 +27,16 @@ const defaultProps = {
 class All extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  dateRange: ?DateRange = null;
+
+  items: Object[] = [];
+
+  scrollFunc: ?Function = null;
+
+  searchText: ?string = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -129,7 +139,6 @@ class All extends React.PureComponent<Props, State> {
 
       for (; i < itemsLength; i += 1) {
         const item = items[i];
-        const itemUpdateDate = new Date(item.updatedAt);
         item.createdAt = Tools.prettyTime(item.createdAt);
         item.earningsText = NumberFormat(item.earnings);
         this.items.push(item);
@@ -170,12 +179,7 @@ class All extends React.PureComponent<Props, State> {
     }
   }
 
-  dateRange: ?DateRange = null;
-  items: Object[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  searchText: ?string = null;
-  unmounted = true;
 
   render() {
     const {

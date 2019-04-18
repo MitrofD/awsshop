@@ -26,6 +26,16 @@ const defaultProps = {
 class Products extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
+  findTitle: ?string = null;
+
+  items: React$Element<typeof Product>[] = [];
+
+  itemIds: string[] = [];
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -182,12 +192,7 @@ class Products extends React.Component<Props, State> {
     }
   }
 
-  findTitle: ?string = null;
-  items: React$Element<typeof Product>[] = [];
-  itemIds: string[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {
@@ -238,7 +243,7 @@ class Products extends React.Component<Props, State> {
       }
     }
 
-    let className = 'Products';
+    const className = 'Products';
 
     return (
       <div className={className}>

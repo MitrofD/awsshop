@@ -29,6 +29,16 @@ const defaultProps = {
 class Pages extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
+  findTitle: ?string = null;
+
+  items: React$Element<typeof Page>[] = [];
+
+  itemIds: string[] = [];
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -258,12 +268,7 @@ class Pages extends React.Component<Props, State> {
     }
   }
 
-  findTitle: ?string = null;
-  items: React$Element<typeof Page>[] = [];
-  itemIds: string[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {

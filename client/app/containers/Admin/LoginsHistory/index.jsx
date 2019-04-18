@@ -26,6 +26,16 @@ const defaultProps = {
 class LoginsHistory extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  dateRange: ?DateRange = null;
+
+  items: Object[] = [];
+
+  scrollFunc: ?Function = null;
+
+  searchText: ?string = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -187,12 +197,7 @@ class LoginsHistory extends React.PureComponent<Props, State> {
     }
   }
 
-  dateRange: ?DateRange = null;
-  items: Object[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  searchText: ?string = null;
-  unmounted = true;
 
   render() {
     const {
@@ -227,9 +232,19 @@ class LoginsHistory extends React.PureComponent<Props, State> {
             {this.items.map(item => (
               <tr key={item._id}>
                 <td>
-                  {item.description} (<a href={`mailto:${item.userEmail}`}>{item.userEmail}</a>)
+                  {item.description}
+                  {' '}
+(
+                  <a href={`mailto:${item.userEmail}`}>{item.userEmail}</a>
+)
                 </td>
-                <td><strong className="text-danger">{item.ip}</strong> / {item.location}</td>
+                <td>
+                  <strong className="text-danger">{item.ip}</strong>
+                  {' '}
+/
+                  {' '}
+                  {item.location}
+                </td>
                 <td>{Tools.prettyTime(item.createdAt)}</td>
               </tr>
             ))}

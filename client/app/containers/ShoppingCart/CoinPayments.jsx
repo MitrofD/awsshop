@@ -18,6 +18,10 @@ const defaultProps = {
 class CoinPayments extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  unmounted = true;
+
+  userEmail = '';
+
   constructor(props: Props, context: null) {
     super(props, context);
     const pureAmount = parseFloat(props.amount) || 0;
@@ -87,10 +91,10 @@ class CoinPayments extends React.PureComponent<Props, State> {
   }
 
   descriptionInputRef: HTMLInputElement;
+
   formRef: HTMLFormElement;
+
   successURLInputRef: HTMLInputElement;
-  unmounted = true;
-  userEmail = '';
 
   render() {
     if (this.state.amount > 0) {
@@ -166,7 +170,10 @@ class CoinPayments extends React.PureComponent<Props, State> {
               name="allow_extra"
               defaultValue="1"
             />
-            <button onClick={this.onClickButton} />
+            <button
+              onClick={this.onClickButton}
+              type="button"
+            />
           </form>
         </div>
       );

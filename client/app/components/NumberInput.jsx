@@ -177,9 +177,13 @@ class NumberInput extends React.PureComponent<Props> {
   checkInputFunc(val: any) {}
 
   availableKeyCodes: number[];
+
   input: HTMLInputElement;
+
   name: string;
+
   rValue: string;
+
   unmounted: boolean;
 
   render() {

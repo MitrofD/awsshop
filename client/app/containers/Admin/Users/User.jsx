@@ -57,7 +57,9 @@ class User extends React.PureComponent<Props> {
   }
 
   adminNode: React$Node;
+
   phoneText: string;
+
   walletText: string;
 
   render() {
@@ -71,13 +73,28 @@ class User extends React.PureComponent<Props> {
 
     return (
       <tr>
-        <td>{firstName} {lastName}</td>
+        <td>
+          {firstName}
+          {' '}
+          {lastName}
+        </td>
         <td>
           <a href={`mailto:${email}`}>{email}</a>
         </td>
         <td>
-          <strong>{tt('Wallet')}:</strong> {this.walletText}<br />
-          <strong>{tt('Phone')}:</strong> {this.phoneText}
+          <strong>
+            {tt('Wallet')}
+:
+          </strong>
+          {' '}
+          {this.walletText}
+          <br />
+          <strong>
+            {tt('Phone')}
+:
+          </strong>
+          {' '}
+          {this.phoneText}
         </td>
         <td>{this.adminNode}</td>
       </tr>

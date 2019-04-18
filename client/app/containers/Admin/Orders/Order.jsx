@@ -14,6 +14,10 @@ type State = {
 };
 
 class Order extends React.PureComponent<Props, State> {
+  orderStatuses: string[] = Object.keys(orders.STATUS);
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -64,9 +68,6 @@ class Order extends React.PureComponent<Props, State> {
     });
   }
 
-  orderStatuses: string[] = Object.keys(orders.STATUS);
-  unmounted = true;
-
   render() {
     const {
       count,
@@ -87,7 +88,10 @@ class Order extends React.PureComponent<Props, State> {
       <div className="Order col-sm-6">
         <div className="row">
           <div className="col-sm-12">
-            <div className="ttl">#{orderId}</div>
+            <div className="ttl">
+#
+              {orderId}
+            </div>
           </div>
         </div>
         <div className="row">
@@ -129,26 +133,52 @@ class Order extends React.PureComponent<Props, State> {
           <div className="col-sm-12">
             <div className="inf">
               <div className="itm">
-                <strong>{tt('Customer')}: </strong>
+                <strong>
+                  {tt('Customer')}
+:
+                  {' '}
+                </strong>
                 <a href={`mailto:${userEmail}`}>{userEmail}</a>
               </div>
               <div className="itm">
-                <strong>{tt('Owner')}: </strong>
+                <strong>
+                  {tt('Owner')}
+:
+                  {' '}
+                </strong>
                 <a href={`mailto:${ownerEmail}`}>{ownerEmail}</a>
               </div>
               <div className="itm">
-                <strong>{tt('Price')}: </strong>
-                <a href="#!">ETH {price}</a>
+                <strong>
+                  {tt('Price')}
+:
+                  {' '}
+                </strong>
+                <a href="#!">
+ETH
+                  {price}
+                </a>
               </div>
               {count > 1 && (
                 <Fragment>
                   <div className="itm">
-                    <strong>{tt('Quantity')}: </strong>
+                    <strong>
+                      {tt('Quantity')}
+:
+                      {' '}
+                    </strong>
                     <a href="#!">{count}</a>
                   </div>
                   <div className="itm">
-                    <strong>{tt('Total price')}: </strong>
-                    <a href="#!">ETH {count * price}</a>
+                    <strong>
+                      {tt('Total price')}
+:
+                      {' '}
+                    </strong>
+                    <a href="#!">
+ETH
+                      {count * price}
+                    </a>
                   </div>
                 </Fragment>
               )}

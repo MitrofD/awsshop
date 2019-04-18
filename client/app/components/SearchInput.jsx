@@ -63,7 +63,9 @@ class SearchInput extends React.PureComponent<Props> {
   }
 
   timer: ?TimeoutID;
+
   regExpPrefix: string;
+
   unmounted: boolean;
 
   render() {

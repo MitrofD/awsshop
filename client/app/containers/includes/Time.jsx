@@ -10,6 +10,12 @@ type TimeParts = {
 const ONE_SEC_IN_MS = 1000;
 
 class Time extends React.PureComponent<Props> {
+  dateEl: ?HTMLElement = null;
+
+  timeEl: ?HTMLElement = null;
+
+  time = new Date();
+
   componentDidMount() {
     this.restartTimer();
   }
@@ -86,10 +92,8 @@ class Time extends React.PureComponent<Props> {
     this.startTickInterval();
   }
 
-  dateEl: ?HTMLElement = null;
-  timeEl: ?HTMLElement = null;
-  time = new Date();
   tickIntervalID: ?IntervalID;
+
   synchIntervalID: ?IntervalID;
 
   render() {

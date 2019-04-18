@@ -26,6 +26,16 @@ const defaultProps = {
 class History extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  dateRange: ?DateRange = null;
+
+  items: Object[] = [];
+
+  searchText: ?string = null;
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -179,12 +189,7 @@ class History extends React.PureComponent<Props, State> {
     }
   }
 
-  dateRange: ?DateRange = null;
-  items: Object[] = [];
   rootNode: HTMLElement;
-  searchText: ?string = null;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {
@@ -221,7 +226,10 @@ class History extends React.PureComponent<Props, State> {
                 <td>{item.monthYear}</td>
                 <td>{item.userName}</td>
                 <td>
-                  {item.quantity} / <strong className="text-danger">{item.earningsText}</strong>
+                  {item.quantity}
+                  {' '}
+/
+                  <strong className="text-danger">{item.earningsText}</strong>
                 </td>
               </tr>
             ))}

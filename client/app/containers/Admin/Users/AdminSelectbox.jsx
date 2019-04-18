@@ -16,6 +16,8 @@ const ADMIN_TEXT = 'Admin';
 const NOT_ADMIN_TEXT = 'Not admin';
 
 class AdminSelectbox extends React.PureComponent<Props, State> {
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -40,7 +42,6 @@ class AdminSelectbox extends React.PureComponent<Props, State> {
 
   onClickDropdownItem(value: any) {
     const boolValue = !!value;
-    const oldValue = this.state.isAdmin;
     this.state.isAdmin = boolValue;
     this.hideDropdown();
   }
@@ -65,8 +66,6 @@ class AdminSelectbox extends React.PureComponent<Props, State> {
       isActive: true,
     });
   }
-
-  unmounted = true;
 
   render() {
     const {

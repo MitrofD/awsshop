@@ -21,6 +21,14 @@ const defaultProps = {
 class Products extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  findTitle: ?string = null;
+
+  category: ?Object = null;
+
+  tmpFindTitle = '';
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -92,11 +100,6 @@ class Products extends React.PureComponent<Props, State> {
     });
   }
 
-  findTitle: ?string = null;
-  category: ?Object = null;
-  tmpFindTitle = '';
-  unmounted = true;
-
   render() {
     let title = ALL_TEXT;
     let goodLabel = null;
@@ -117,7 +120,9 @@ class Products extends React.PureComponent<Props, State> {
 
       goodLabel = (
         <div className="inf">
-          {tt('Goods')}: {productsCount}
+          {tt('Goods')}
+:
+          {productsCount}
         </div>
       );
     }

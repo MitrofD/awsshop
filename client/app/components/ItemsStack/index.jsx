@@ -45,12 +45,17 @@ const defaultProps = {
 
 class ItemsStack extends React.PureComponent<Props> {
   static defaultProps = defaultProps;
+
   static allStacks: { [string]: ItemsStack } = {};
 
   static get(stackName: string): ItemsStack {
     const stack = ItemsStack.allStacks[stackName];
     return stack;
   }
+
+  items: { [string]: React$Node } = {};
+
+  itemTimers: { [string]: TimeoutID } = {};
 
   constructor(props: Props, context: null) {
     super(props, context);
@@ -156,8 +161,6 @@ class ItemsStack extends React.PureComponent<Props> {
   }
 
   name: string;
-  items: { [string]: React$Node } = {};
-  itemTimers: { [string]: TimeoutID } = {};
 
   render() {
     const allItems: React$Node[] = (Object.values(this.items): any);

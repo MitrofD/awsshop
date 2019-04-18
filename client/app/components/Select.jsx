@@ -93,7 +93,9 @@ class Select extends React.PureComponent<Props, State> {
   }
 
   value: ?string;
+
   prevValue: ?string;
+
   data: any;
 
   render() {

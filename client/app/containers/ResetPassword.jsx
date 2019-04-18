@@ -22,9 +22,14 @@ type State = {
 const isChangedInputVal = (val: any) => typeof val === 'string';
 
 class ResetPassword extends React.PureComponent<Props, State> {
+  confirmPassword: ?string = null;
+
+  password: ?string = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: void) {
     super(props, context);
-    this.unmounted = true;
 
     this.state = {
       alert: null,
@@ -141,11 +146,9 @@ class ResetPassword extends React.PureComponent<Props, State> {
     this.inputChangeTimer = null;
   }
 
-  confirmPassword: ?string = null;
   inputChangeTimer: ?TimeoutID;
-  password: ?string = null;
+
   redirectTimeout: ?TimeoutID;
-  unmounted: boolean;
 
   render() {
     const {

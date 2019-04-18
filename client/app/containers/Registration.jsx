@@ -2,12 +2,10 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
-import ItemsStack from '../components/ItemsStack';
-import ToastDanger from '../components/toasts/ToastDanger';
 import Checkbox from '../components/Checkbox';
 import NumberInput from '../components/NumberInput';
 import { InvalidLabel } from '../components/Label';
-import { tt, TTInput } from '../components/TranslateElement';
+import { tt } from '../components/TranslateElement';
 
 type Props = {
   history: Object,
@@ -28,6 +26,22 @@ type State = {
 const isChangedInputVal = (val: any) => typeof val === 'string';
 
 class Registration extends React.Component<Props, State> {
+  confirmPassword: ?string = null;
+
+  email: ?string = null;
+
+  firstName: ?string = null;
+
+  lastName: ?string = null;
+
+  password: ?string = null;
+
+  phone: ?string = null;
+
+  referralCode: ?string = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: void) {
     super(props, context);
     this.unmounted = true;
@@ -234,16 +248,9 @@ class Registration extends React.Component<Props, State> {
     this.inputChangeTimer = null;
   }
 
-  confirmPassword: ?string = null;
-  email: ?string = null;
   firstInput: ?HTMLInputElement;
-  firstName: ?string = null;
-  lastName: ?string = null;
+
   inputChangeTimer: ?TimeoutID;
-  password: ?string = null;
-  phone: ?string = null;
-  referralCode: ?string = null;
-  unmounted: boolean;
 
   render() {
     const {
@@ -420,7 +427,13 @@ class Registration extends React.Component<Props, State> {
                 {errorLabels.confirmPassword}
               </div>
               <div className="form-group">
-                <label>{tt('Phone number')} ({optional})</label>
+                <label>
+                  {tt('Phone number')}
+                  {' '}
+(
+                  {optional}
+)
+                </label>
                 <NumberInput
                   disableDecimal
                   className={inputCNs.phone}
@@ -430,7 +443,13 @@ class Registration extends React.Component<Props, State> {
                 {errorLabels.phone}
               </div>
               <div className="form-group">
-                <label>{tt('Referral code')} ({optional})</label>
+                <label>
+                  {tt('Referral code')}
+                  {' '}
+(
+                  {optional}
+)
+                </label>
                 <input
                   className={inputCNs.referralCode}
                   onChange={this.onChangeReferralCodeInput}

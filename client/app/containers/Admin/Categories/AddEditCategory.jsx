@@ -22,6 +22,20 @@ const defaultProps = {
 class AddEditCategory extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
+  buttonTitle = '+ Add';
+
+  editItem = {};
+
+  firstInput: ?HTMLInputElement = null;
+
+  inputChangeTimer: ?TimeoutID = null;
+
+  isEditMode = false;
+
+  name: ?string = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -120,14 +134,6 @@ class AddEditCategory extends React.Component<Props, State> {
     this.inputChangeTimer = null;
   }
 
-  buttonTitle = '+ Add';
-  editItem = {};
-  firstInput: ?HTMLInputElement = null;
-  inputChangeTimer: ?TimeoutID = null;
-  isEditMode = false;
-  name: ?string = null;
-  unmounted = true;
-
   render() {
     const {
       nameError,
@@ -153,6 +159,7 @@ class AddEditCategory extends React.Component<Props, State> {
       <button
         className="btn btn-primary btn-sm"
         disabled={btnDisabled}
+        type="button"
         onClick={this.onClickApplyButton}
       >
         {tt(this.buttonTitle)}

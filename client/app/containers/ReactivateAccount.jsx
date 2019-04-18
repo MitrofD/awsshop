@@ -56,7 +56,11 @@ class ReactivateAccount extends React.PureComponent<Props, State> {
         <div className="main">
           <div className="sticky-title">{tt(title)}</div>
           <div className="content">
-            Reset security for {this.props.type} {this.props.verificationCode}
+            Reset security for
+            {' '}
+            {this.props.type}
+            {' '}
+            {this.props.verificationCode}
           </div>
         </div>
       </div>

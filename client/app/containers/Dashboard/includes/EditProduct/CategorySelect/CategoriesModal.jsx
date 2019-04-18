@@ -31,6 +31,14 @@ const defaultProps = {
 class CategoriesModal extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  findName: ?string = null;
+
+  items: Object[] = [];
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -193,12 +201,9 @@ class CategoriesModal extends React.PureComponent<Props, State> {
     });
   }
 
-  findName: ?string = null;
-  items: Object[] = [];
   listNode: HTMLElement;
+
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {

@@ -18,6 +18,8 @@ type State = {
 const isChangedVal = (mbStr: any) => typeof mbStr === 'string';
 
 class AnswerModal extends React.Component<Props, State> {
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -106,9 +108,10 @@ class AnswerModal extends React.Component<Props, State> {
   }
 
   firstInput: ?HTMLTextAreaElement;
+
   inputChangeTimer: ?TimeoutID;
+
   answer: ?string;
-  unmounted = true;
 
   render() {
     const {
@@ -141,6 +144,7 @@ class AnswerModal extends React.Component<Props, State> {
       <button
         className="btn btn-primary btn-sm"
         disabled={disabledSubmit}
+        type="button"
         onClick={this.onClickAnswerButton}
       >
         {tt('Apply')}

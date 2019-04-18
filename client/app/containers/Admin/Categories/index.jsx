@@ -28,6 +28,16 @@ const defaultProps = {
 class Categories extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
+  findName: ?string = null;
+
+  items: React$Element<typeof Category>[] = [];
+
+  itemIds: string[] = [];
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -219,12 +229,7 @@ class Categories extends React.Component<Props, State> {
     });
   }
 
-  findName: ?string = null;
-  items: React$Element<typeof Category>[] = [];
-  itemIds: string[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {

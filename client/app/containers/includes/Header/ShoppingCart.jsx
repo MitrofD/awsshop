@@ -14,6 +14,12 @@ type State = {
 };
 
 class ShoppingCart extends React.PureComponent<Props, State> {
+  toPath = '/login';
+
+  ordersCountSubs: ?SubscribeHandler = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -49,10 +55,6 @@ class ShoppingCart extends React.PureComponent<Props, State> {
     }
   }
 
-  toPath = '/login';
-  ordersCountSubs: ?SubscribeHandler = null;
-  unmounted = true;
-
   render() {
     return (
       <li className="nav-item">
@@ -61,7 +63,9 @@ class ShoppingCart extends React.PureComponent<Props, State> {
           to={this.toPath}
         >
           <div className="icn-wrppr">
-            <i className="icn icn-shppng-crt" /> {tt('Shopping cart')}
+            <i className="icn icn-shppng-crt" />
+            {' '}
+            {tt('Shopping cart')}
             <PrimaryBadge>{this.state.ordersCount}</PrimaryBadge>
           </div>
         </Link>

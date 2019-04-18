@@ -35,14 +35,16 @@ const Page = (props: Props) => {
           to={link}
         >
           {tt('Link')}
-        </Link>|
+        </Link>
+|
         <button
           className="edt"
           onClick={onClickEditButton}
           type="button"
         >
           {tt('Edit')}
-        </button>|
+        </button>
+|
         <button
           className="rmv"
           onClick={onClickRemoveButton}

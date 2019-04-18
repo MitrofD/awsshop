@@ -18,6 +18,8 @@ type State = {
 };
 
 class Category extends React.PureComponent<Props, State> {
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -48,15 +50,19 @@ class Category extends React.PureComponent<Props, State> {
   }
 
   onClickEditButton() {
-    this.setState({
-      modal: (
-        <AddEditCategory
-          isOpened
-          item={this.state.data}
-          onApply={this.onEditedCategory}
-          onClose={this.onCloseModal}
-        />
-      ),
+    this.setState((prevState) => {
+      const newState = {
+        modal: (
+          <AddEditCategory
+            isOpened
+            item={prevState.data}
+            onApply={this.onEditedCategory}
+            onClose={this.onCloseModal}
+          />
+        ),
+      };
+
+      return newState;
     });
   }
 
@@ -93,8 +99,6 @@ class Category extends React.PureComponent<Props, State> {
     this.onCloseModal();
   }
 
-  unmounted = true;
-
   render() {
     const category = this.state.data;
 
@@ -116,7 +120,8 @@ class Category extends React.PureComponent<Props, State> {
             type="button"
           >
             {tt('Edit')}
-          </button>|
+          </button>
+|
           <button
             className="rmv"
             onClick={this.onClickRemoveButton}

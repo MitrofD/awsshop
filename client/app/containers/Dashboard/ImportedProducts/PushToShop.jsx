@@ -38,7 +38,9 @@ class PushToShop extends React.PureComponent<Props> {
               href="#!"
               onClick={this.onClickCancelButton}
             >
-              <i className="icn icn-lng-lft-arrw" /> {tt('Go to back')}
+              <i className="icn icn-lng-lft-arrw" />
+              {' '}
+              {tt('Go to back')}
             </a>
           </div>
         </div>

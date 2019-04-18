@@ -44,7 +44,9 @@ const Pager = (props: Props) => {
         key="prev"
         onClick={onPrevClick}
       >
-        &larr; {prev}
+        &larr;
+        {' '}
+        {prev}
       </button>
     ));
   }
@@ -56,7 +58,9 @@ const Pager = (props: Props) => {
         key="next"
         onClick={onNextClick}
       >
-        {next} &rarr;
+        {next}
+        {' '}
+&rarr;
       </button>
     ));
   }

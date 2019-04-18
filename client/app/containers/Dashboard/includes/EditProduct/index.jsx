@@ -47,6 +47,19 @@ const EMPTY_NUM = 0;
 const EMPTY_STR = '';
 
 class EditProduct extends React.Component<Props, State> {
+  earningsPrice: ?string = null;
+
+  inputChangeTimer: ?TimeoutID = null;
+
+  tabs = {
+    desc: 'description',
+    shppng: 'shipping',
+  };
+
+  uniqueIDs: { [string]: string } = {};
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
     this.btnTitle = 'Save changes';
@@ -234,11 +247,14 @@ class EditProduct extends React.Component<Props, State> {
   onClickThumb(event: SyntheticEvent<HTMLElement>) {
     const { idx } = event.currentTarget.dataset;
     const pureIdx = parseInt(idx) || EMPTY_NUM;
-    const thumbImages = this.state.images;
-    thumbImages.splice(pureIdx, 1);
 
-    this.setState({
-      images: thumbImages,
+    this.setState((prevState) => {
+      const thumbImages = prevState.images;
+      thumbImages.splice(pureIdx, 1);
+
+      return {
+        images: thumbImages,
+      };
     });
   }
 
@@ -315,22 +331,22 @@ class EditProduct extends React.Component<Props, State> {
   }
 
   btnTitle: string;
+
   category: ?string;
+
   description: string;
-  earningsPrice: ?string = null;
-  inputChangeTimer: ?TimeoutID = null;
+
   isRaw: boolean;
-  tabs = {
-    desc: 'description',
-    shppng: 'shipping',
-  };
+
   title: string;
+
   price: number;
+
   profitPrice: string;
+
   priceInputRef: NumberInput;
+
   shipping: string;
-  uniqueIDs: { [string]: string } = {};
-  unmounted = true;
 
   render() {
     const {
@@ -339,7 +355,6 @@ class EditProduct extends React.Component<Props, State> {
       descriptionError,
       images,
       titleError,
-      priceError,
       shippingError,
       submitMode,
       xhrRequest,
@@ -448,11 +463,15 @@ class EditProduct extends React.Component<Props, State> {
               )}
               {this.props.url && (
                 <div className="attr-inf">
-                  <strong>Product link:</strong> <a href={this.props.url}>{this.props.url}</a>
+                  <strong>Product link:</strong>
+                  {' '}
+                  <a href={this.props.url}>{this.props.url}</a>
                 </div>
               )}
               <div className="attr-inf">
-                <strong>Original price:</strong> {NumberFormat(this.price)}
+                <strong>Original price:</strong>
+                {' '}
+                {NumberFormat(this.price)}
               </div>
             </div>
           </div>
@@ -470,7 +489,16 @@ class EditProduct extends React.Component<Props, State> {
             </div>
             <div className="col-sm-6">
               <div className="form-group">
-                <label>{tt('Price')} ({tt('earnings')}: {this.earningsPrice})</label>
+                <label>
+                  {tt('Price')}
+                  {' '}
+(
+                  {tt('earnings')}
+:
+                  {' '}
+                  {this.earningsPrice}
+)
+                </label>
                 <input
                   disabled
                   className="form-control"

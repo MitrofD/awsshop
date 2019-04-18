@@ -27,6 +27,12 @@ const defaultProps = {
 class FAQ extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  items: React$Element<typeof Item>[] = [];
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -116,10 +122,7 @@ class FAQ extends React.PureComponent<Props, State> {
     });
   }
 
-  items: React$Element<typeof Item>[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {
@@ -132,7 +135,13 @@ class FAQ extends React.PureComponent<Props, State> {
     if (xhrRequest) {
       content = <XHRSpin />;
     } else if (this.items.length === 0) {
-      content = <NoHaveLabel>{tt('Items')} {tt('not found')}</NoHaveLabel>;
+      content = (
+        <NoHaveLabel>
+          {tt('Items')}
+          {' '}
+          {tt('not found')}
+        </NoHaveLabel>
+      );
     } else {
       content = (
         <div className="items row">
@@ -147,10 +156,12 @@ class FAQ extends React.PureComponent<Props, State> {
       <Page className="FAQ sp">
         <div className="p-ttl">{tt('Frequently asked Questions')}</div>
         <p className="desc">
-          Do you have questions? The Modern Pack has answers.<br />
+          Do you have questions? The Modern Pack has answers.
+          <br />
           Read below and find out the answers to the questions that keep on bothering you
         </p>
         {content}
+        {loadMore && <LoadMore />}
       </Page>
     );
   }

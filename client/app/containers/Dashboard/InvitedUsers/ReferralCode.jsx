@@ -40,8 +40,15 @@ const ReferralCode = () => {
       href="#"
       onClick={onClickReferralCode}
     >
-      <div className="info animated pulse">{tt('Referral code')}: {pureRefCode}</div>
-      ({tt('Click to copy')})
+      <div className="info animated pulse">
+        {tt('Referral code')}
+:
+        {' '}
+        {pureRefCode}
+      </div>
+      (
+      {tt('Click to copy')}
+)
     </a>
   );
 };

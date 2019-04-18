@@ -12,7 +12,9 @@ const defaultProps = {
 
 const LoadMore = (prop: Props) => (
   <div className="LoadMore">
-    {tt(prop.text)} <span className="spnnr" />
+    {tt(prop.text)}
+    {' '}
+    <span className="spnnr" />
   </div>
 );
 

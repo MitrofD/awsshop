@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import Modal from '../../components/Modal';
-import { InvalidLabel } from '../../components/Label';
 import { tt } from '../../components/TranslateElement';
 import support from '../../api/support';
 import windowScroll from '../../api/window-scroll';
@@ -28,6 +27,16 @@ const defaultProps = {
 };
 
 class SupportSubjectsModal extends React.PureComponent<Props, State> {
+  static defaultProps = defaultProps;
+
+  searchSubject: ?string = null;
+
+  items: Object[] = [];
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -155,11 +164,7 @@ class SupportSubjectsModal extends React.PureComponent<Props, State> {
     });
   }
 
-  searchSubject: ?string = null;
-  items: Object[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {
@@ -167,13 +172,14 @@ class SupportSubjectsModal extends React.PureComponent<Props, State> {
       xhrRequest,
     } = this.state;
 
-    let content = null;
-    let itemsContent = null;
-    let headerContent = null;
+    const content = null;
+    const itemsContent = null;
+    const headerContent = null;
 
     const modalFooter = (
       <button
         className="btn btn-primary btn-sm"
+        type="button"
         onClick={this.onClickWithoutButton}
       >
         {tt('Without subject')}

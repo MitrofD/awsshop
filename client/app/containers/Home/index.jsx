@@ -22,7 +22,11 @@ const Home = () => {
         <div className="container">
           <div className="row info">
             <div className="col-md-6">
-              <h6>Your dream<br />at a good price</h6>
+              <h6>
+Your dream
+                <br />
+at a good price
+              </h6>
               <p>Do you have questions? The Modern Pack has answers</p>
               <p>Read below and find out the answers</p>
               <Link

@@ -27,6 +27,16 @@ const defaultProps = {
 class SoldProducts extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
+  dateRange: ?DateRange = null;
+
+  searchText: ?string = null;
+
+  items: Object[] = [];
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -182,12 +192,7 @@ class SoldProducts extends React.Component<Props, State> {
     }
   }
 
-  dateRange: ?DateRange = null;
-  searchText: ?string = null;
-  items: Object[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {
@@ -233,12 +238,18 @@ class SoldProducts extends React.Component<Props, State> {
                     />
                   </td>
                   <td>
-                    <strong className="text-primary mb-3">#{item.productId}</strong>
+                    <strong className="text-primary mb-3">
+#
+                      {item.productId}
+                    </strong>
                     <div>{item.title}</div>
                   </td>
                   <td>
                     <div className="text-secondary">{NumberFormat(item.price)}</div>
-                    <div className="text-danger">Earnings: {NumberFormat(item.earnings)}</div>
+                    <div className="text-danger">
+Earnings:
+                      {NumberFormat(item.earnings)}
+                    </div>
                   </td>
                   <td>{Tools.prettyTime(item.createdAt)}</td>
                 </tr>

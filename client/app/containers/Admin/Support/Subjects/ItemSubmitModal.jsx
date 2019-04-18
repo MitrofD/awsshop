@@ -24,6 +24,12 @@ const isChangedVal = (mbStr: any) => typeof mbStr === 'string';
 class ItemSubmitModal extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
+  buttonTitle = '+ Add';
+
+  editItem = {};
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -133,12 +139,11 @@ class ItemSubmitModal extends React.Component<Props, State> {
     this.inputChangeTimer = null;
   }
 
-  buttonTitle = '+ Add';
-  editItem = {};
   firstInput: ?HTMLInputElement;
+
   inputChangeTimer: ?TimeoutID;
+
   subject: ?string;
-  unmounted = true;
 
   render() {
     const {
@@ -171,6 +176,7 @@ class ItemSubmitModal extends React.Component<Props, State> {
       <button
         className="btn btn-primary btn-sm"
         disabled={disabledSubmit}
+        type="button"
         onClick={this.onClickApplyButton}
       >
         {tt(this.buttonTitle)}

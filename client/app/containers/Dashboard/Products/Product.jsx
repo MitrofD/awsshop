@@ -74,9 +74,13 @@ class Product extends React.PureComponent<Props, State> {
             {title}
             <div className={approveCN}>{approveText}</div>
             <p className="prc">
-              {tt('Price')}: {NumberFormat(price)}
+              {tt('Price')}
+:
+              {NumberFormat(price)}
               <br />
-              {tt('Earnings')}: {NumberFormat(earnings)}
+              {tt('Earnings')}
+:
+              {NumberFormat(earnings)}
             </p>
             <div className="btns-grp float-right">
               <button

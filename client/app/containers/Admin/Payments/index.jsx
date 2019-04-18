@@ -6,7 +6,7 @@ import data from '../../../api/data';
 const {
   Loadable,
   LoadableWithParams,
-} = require('../../../components/Loadable')(cN => import(`./${cN}`));
+} = require('../../../components/Loadable').default(cN => import(`./${cN}`));
 
 const StartPage = Loadable('Start');
 const StartOfMonthPaymentsPage = LoadableWithParams('Payments', {

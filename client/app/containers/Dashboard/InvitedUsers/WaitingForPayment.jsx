@@ -5,6 +5,12 @@ import users from '../../../api/users';
 type Props = {};
 
 class WaitingForPayment extends React.PureComponent<Props> {
+  unmounted = true;
+
+  waitingForPayment = '- - -';
+
+  waitingForPaymentCN = 'text-secondary';
+
   componentDidMount() {
     this.unmounted = false;
 
@@ -40,14 +46,12 @@ class WaitingForPayment extends React.PureComponent<Props> {
     this.unmounted = true;
   }
 
-  unmounted = true;
-  waitingForPayment = '- - -';
-  waitingForPaymentCN = 'text-secondary';
-
   render() {
     return (
       <div className="WaitingForPayment col-sm-6">
-        <h2 className={this.waitingForPaymentCN}>Waiting for payment: {this.waitingForPayment}</h2>
+        <h2 className={this.waitingForPaymentCN}>
+          {`Waiting for payment: ${this.waitingForPayment}`}
+        </h2>
       </div>
     );
   }

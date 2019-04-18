@@ -35,6 +35,14 @@ const defaultState = {
 class Grid extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
+  items: Object[] = [];
+
+  scrollFunc: ?Function = null;
+
+  titlePattern: ?string = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
     this.state = Object.assign({}, defaultState);
@@ -151,11 +159,7 @@ class Grid extends React.Component<Props, State> {
     }
   }
 
-  items: Object[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  titlePattern: ?string = null;
-  unmounted = true;
 
   render() {
     const {

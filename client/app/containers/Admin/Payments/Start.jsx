@@ -9,7 +9,9 @@ const Start = () => (
         className="btn btn-primary btn-lg mb-3 mb-md-0"
         to="/admin/payments/som"
       >
-        Last payout - end of {Tools.getPrevMonthName()}
+        Last payout - end of
+        {' '}
+        {Tools.getPrevMonthName()}
       </Link>
       <Link
         className="btn btn-primary btn-lg ml-0 ml-md-3"

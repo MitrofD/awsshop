@@ -2,7 +2,7 @@
 import React from 'react';
 import Product from './Product';
 import { tns } from '../../../node_modules/tiny-slider/src/tiny-slider';
-import NoHaveLabel from '../includes/NoHaveLabel';
+import NoHaveLabel from './NoHaveLabel';
 import RectangleBounceSpin from '../../components/spins/RectangleBounceSpin';
 import { tt } from '../../components/TranslateElement';
 import products from '../../api/products';
@@ -26,6 +26,12 @@ const defaultProps = {
 
 class ProductsSlider extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
+
+  hasError = false;
+
+  items: Object[] = [];
+
+  unmounted = true;
 
   constructor(props: Props, context: null) {
     super(props, context);
@@ -134,11 +140,9 @@ class ProductsSlider extends React.PureComponent<Props, State> {
     }
   }
 
-  hasError = false;
-  items: Object[] = [];
   slider: ?Object;
+
   sliderNode: HTMLElement;
-  unmounted = true;
 
   render() {
     let content = null;

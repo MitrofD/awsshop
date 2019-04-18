@@ -25,6 +25,16 @@ const defaultProps = {
 class Users extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
+  findEmail: ?string = null;
+
+  items: React$Element<typeof User>[] = [];
+
+  itemIds: string[] = [];
+
+  scrollFunc: ?Function = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -154,12 +164,7 @@ class Users extends React.Component<Props, State> {
     }
   }
 
-  findEmail: ?string = null;
-  items: React$Element<typeof User>[] = [];
-  itemIds: string[] = [];
   rootNode: HTMLElement;
-  scrollFunc: ?Function = null;
-  unmounted = true;
 
   render() {
     const {

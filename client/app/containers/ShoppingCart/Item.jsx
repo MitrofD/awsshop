@@ -15,6 +15,10 @@ type State = {
 };
 
 class Item extends React.PureComponent<Props, State> {
+  inputChangeTimer: ?TimeoutID = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -87,9 +91,7 @@ class Item extends React.PureComponent<Props, State> {
     this.inputChangeTimer = null;
   }
 
-  inputChangeTimer: ?TimeoutID = null;
   prevCount: number;
-  unmounted = true;
 
   render() {
     const {
@@ -122,7 +124,10 @@ class Item extends React.PureComponent<Props, State> {
           <div className="row">
             <div className="col-sm-4">
               <div className="form-group">
-                <label>{tt('Quantity')}:</label>
+                <label>
+                  {tt('Quantity')}
+:
+                </label>
                 <NumberInput
                   disableDecimal
                   defaultValue={count}
@@ -133,11 +138,16 @@ class Item extends React.PureComponent<Props, State> {
             </div>
             <div className="col-sm-8">
               <div className="prc">{NumberFormat(price)}</div>
-              {count > 0 && <div className="prc">Total: {NumberFormat(count * price)}</div>}
+              {count > 0 && (
+                <div className="prc">
+                  {`Total: ${NumberFormat(count * price)}`}
+                </div>
+              )}
             </div>
           </div>
           <button
             className="btn btn-danger btn-sm float-right"
+            type="button"
             onClick={this.onClickDeleteButton}
           >
             {tt('Delete')}

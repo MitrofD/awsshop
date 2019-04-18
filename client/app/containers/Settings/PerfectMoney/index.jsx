@@ -14,6 +14,12 @@ type State = {
 const isChangedVal = (val: any) => val !== null;
 
 class PerfectMoney extends React.Component<Props, State> {
+  wallet: ?string = null;
+
+  inputChangeTimer: ?TimeoutID = null;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -58,7 +64,6 @@ class PerfectMoney extends React.Component<Props, State> {
 
   onSubmitForm(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = event.currentTarget;
 
     this.setState({
       xhrRequest: true,
@@ -117,10 +122,7 @@ class PerfectMoney extends React.Component<Props, State> {
     this.inputChangeTimer = null;
   }
 
-  wallet: ?string = null;
   currPWWallet: string;
-  inputChangeTimer: ?TimeoutID = null;
-  unmounted = true;
 
   render() {
     const {
@@ -160,7 +162,11 @@ class PerfectMoney extends React.Component<Props, State> {
             onSubmit={this.onSubmitForm}
           >
             <div className="form-group">
-              <label>USD {tt('wallet')} (Ex: U12345678)</label>
+              <label>
+                USD
+                {tt('wallet')}
+                {' (Ex: U12345678)'}
+              </label>
               <input
                 autoComplete="new-password"
                 className={inputCNs.wallet}

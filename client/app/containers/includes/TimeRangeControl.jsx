@@ -96,7 +96,9 @@ const TimeRangeControl = (props: Props) => {
               onClick={onClickItemButton}
               type="button"
             >
-              {btnItem.num} {tt(btnItem.text)}
+              {btnItem.num}
+              {' '}
+              {tt(btnItem.text)}
             </button>
           </div>
         );

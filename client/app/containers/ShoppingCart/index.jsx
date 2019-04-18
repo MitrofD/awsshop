@@ -17,6 +17,14 @@ type State = {
 };
 
 class ShoppingCart extends React.PureComponent<Props, State> {
+  items: React$Element<typeof Item>[] = [];
+
+  itemIds: string[] = [];
+
+  totalPrice: number = 0;
+
+  unmounted = true;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -116,11 +124,8 @@ class ShoppingCart extends React.PureComponent<Props, State> {
   }
 
   coinPaymentsRef: CoinPayments;
-  items: React$Element<typeof Item>[] = [];
-  itemIds: string[] = [];
-  totalPrice: number = 0;
+
   totalPriceRef: HTMLElement;
-  unmounted = true;
 
   render() {
     let loader = null;
