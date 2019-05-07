@@ -70,28 +70,32 @@ class DateRange extends React.PureComponent<Props, State> {
     this.hideDatepicker();
   }
 
-  onChangeFromDatePicker(date: Date) {
+  onChangeFromDatePicker(date: ?Date) {
     this.fromDate = date;
   }
 
-  onChangeToDatePicker(date: Date) {
-    const fSMaxDetail = this.props.maxDetail;
-    let dateTime = date.getTime();
-    let mDays = 1;
+  onChangeToDatePicker(date: ?Date) {
+    if (date) {
+      const fSMaxDetail = this.props.maxDetail;
+      let dateTime = date.getTime();
+      let mDays = 1;
 
-    if (fSMaxDetail === MAX_DETAIL_TYPE.year) {
-      const nextMonth = date.getMonth() + 1;
-      const nextDate = new Date(date.getFullYear(), nextMonth, 0);
-      mDays = nextDate.getDate();
-    } else if (fSMaxDetail === MAX_DETAIL_TYPE.month) {
-      mDays = 10;
-    } else if (fSMaxDetail === MAX_DETAIL_TYPE.century) {
-      mDays = 36525;
+      if (fSMaxDetail === MAX_DETAIL_TYPE.year) {
+        const nextMonth = date.getMonth() + 1;
+        const nextDate = new Date(date.getFullYear(), nextMonth, 0);
+        mDays = nextDate.getDate();
+      } else if (fSMaxDetail === MAX_DETAIL_TYPE.month) {
+        mDays = 10;
+      } else if (fSMaxDetail === MAX_DETAIL_TYPE.century) {
+        mDays = 36525;
+      }
+
+      const totalMs = mDays * 86400000;
+      dateTime += totalMs - 1;
+      this.toDate = new Date(dateTime);
+    } else {
+      this.toDate = null;
     }
-
-    const totalMs = mDays * 86400000;
-    dateTime += totalMs - 1;
-    this.toDate = new Date(dateTime);
   }
 
   get fromDate(): ?Date {

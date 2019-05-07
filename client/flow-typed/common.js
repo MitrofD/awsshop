@@ -1,6 +1,7 @@
 declare var asHOT: Function;
 declare var Config: Object;
 declare var Enums: Object;
+declare var isMobile: boolean;
 declare var isDevMode: boolean;
 declare var NotificationBox: Object;
 declare var NumberFormat: Function;

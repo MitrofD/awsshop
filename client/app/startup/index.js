@@ -1,9 +1,11 @@
 // @flow
 import axios from 'axios';
+import carts from '../api/carts';
 
 const applyClientConfig = (data: Object): Object => {
   const advancedData = {
     adminPath: '/admin',
+    catalogPath: '/catalog',
     categoryPath: '/category/',
     dashboardPath: '/dashboard',
     inputTimeout: 150,
@@ -19,11 +21,13 @@ const startupPromise: Promise<any[]> = new Promise((resolve, reject) => {
     window.Config = Object.freeze(pureConfig);
 
     /* eslint-disable global-require */
+    const cartItemsPromise = carts.get();
     const userConfigPromise = require('./user');
     const translationsConfigPromise = require('./translations');
     /* eslint-enable global-require */
 
     const waitingPromises = Promise.all([
+      cartItemsPromise,
       userConfigPromise,
       translationsConfigPromise,
     ]);

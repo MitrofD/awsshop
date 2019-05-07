@@ -1,8 +1,9 @@
 // @flow
-import axios from 'axios';
-import tools from './tools';
-import user from './user';
+// import axios from 'axios';
+// import tools from './tools';
+// import user from './user';
 
+/*
 const DEF_PRODUCTS_COUNT = 0;
 const PRODUCTS_COUNT_SUBS = {};
 const STATUS = {
@@ -32,7 +33,9 @@ user.subscribe((userData) => {
 
   applyNewProductsCount(DEF_PRODUCTS_COUNT);
 }, true);
+*/
 
+/*
 const getPromiseWithPathAndQuery = (path: string, query: any): Promise<Object> => {
   const pureQuery: { [string]: any } = {
     limit: 100,
@@ -59,10 +62,11 @@ const getPromiseWithPathAndQuery = (path: string, query: any): Promise<Object> =
 
   return getPromise;
 };
+*/
 
 const orders = Object.freeze({
-  STATUS,
-
+  // STATUS,
+  /*
   add(id: string): Promise<Object> {
     const addPromise = new Promise((resolve, reject) => {
       axios.post(`${proxyPath}/orders/${id}`).then(({ data }) => {
@@ -76,7 +80,9 @@ const orders = Object.freeze({
 
     return addPromise;
   },
+  */
 
+  /*
   apply(code: string): Promise<void> {
     const applyPromise = new Promise((resolve, reject) => {
       axios.post(`${proxyPath}/orders/apply/${code}`).then(() => {
@@ -90,13 +96,15 @@ const orders = Object.freeze({
 
     return applyPromise;
   },
+  */
 
-  get: (query: any) => getPromiseWithPathAndQuery('/orders', query),
+  // get: (query: any) => getPromiseWithPathAndQuery('/orders', query),
 
-  getCustomer: (query: any) => getPromiseWithPathAndQuery('/orders/customer', query),
+  // getCustomer: (query: any) => getPromiseWithPathAndQuery('/orders/customer', query),
 
-  getMy: (query: any) => getPromiseWithPathAndQuery('/orders/my', query),
+  // getMy: (query: any) => getPromiseWithPathAndQuery('/orders/my', query),
 
+  /*
   getCart(): Promise<Object[]> {
     const getPromise = new Promise((resolve, reject) => {
       axios.get(`${proxyPath}/orders/cart`).then(({ data }) => {
@@ -109,7 +117,9 @@ const orders = Object.freeze({
 
     return getPromise;
   },
+  */
 
+  /*
   genOrderId(): Promise<string> {
     const genPromise = new Promise((resolve, reject) => {
       axios.post(`${proxyPath}/orders/gen-order-id`).then(({ data }) => {
@@ -122,9 +132,11 @@ const orders = Object.freeze({
 
     return genPromise;
   },
+  */
 
-  getProductsCount: () => productsCount,
+  // getProductsCount: () => productsCount,
 
+  /*
   remove(id: string): Promise<Object> {
     const removePromise = new Promise((resolve, reject) => {
       axios.delete(`${proxyPath}/orders/${id}`).then(({ data }) => {
@@ -151,7 +163,9 @@ const orders = Object.freeze({
 
     return setPromise;
   },
+  */
 
+  /*
   subscribeToCount(handle: Function) {
     const uniqueKey = tools.generateUKey('prdcts_cnt');
     PRODUCTS_COUNT_SUBS[uniqueKey] = handle;
@@ -162,6 +176,7 @@ const orders = Object.freeze({
       },
     };
   },
+  */
 });
 
 export default orders;

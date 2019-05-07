@@ -36,7 +36,7 @@ const Page = (props: Props) => {
         >
           {tt('Link')}
         </Link>
-|
+        |
         <button
           className="edt"
           onClick={onClickEditButton}
@@ -44,7 +44,7 @@ const Page = (props: Props) => {
         >
           {tt('Edit')}
         </button>
-|
+        |
         <button
           className="rmv"
           onClick={onClickRemoveButton}

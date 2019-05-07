@@ -28,6 +28,12 @@ class ItemSubmitModal extends React.Component<Props, State> {
 
   editItem = {};
 
+  firstInput: ?HTMLInputElement;
+
+  inputChangeTimer: ?TimeoutID;
+
+  subject: ?string;
+
   unmounted = true;
 
   constructor(props: Props, context: null) {
@@ -138,12 +144,6 @@ class ItemSubmitModal extends React.Component<Props, State> {
 
     this.inputChangeTimer = null;
   }
-
-  firstInput: ?HTMLInputElement;
-
-  inputChangeTimer: ?TimeoutID;
-
-  subject: ?string;
 
   render() {
     const {

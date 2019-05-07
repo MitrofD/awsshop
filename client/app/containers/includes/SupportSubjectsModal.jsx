@@ -1,6 +1,9 @@
 // @flow
 import React from 'react';
 import Modal from '../../components/Modal';
+import NoHaveLabel from './NoHaveLabel';
+import LoadMore from './LoadMore';
+import XHRSpin from './XHRSpin';
 import { tt } from '../../components/TranslateElement';
 import support from '../../api/support';
 import windowScroll from '../../api/window-scroll';
@@ -35,6 +38,8 @@ class SupportSubjectsModal extends React.PureComponent<Props, State> {
 
   scrollFunc: ?Function = null;
 
+  rootNode: HTMLElement;
+
   unmounted = true;
 
   constructor(props: Props, context: null) {
@@ -48,6 +53,7 @@ class SupportSubjectsModal extends React.PureComponent<Props, State> {
 
     const self: any = this;
     self.onChangeSearchInput = this.onChangeSearchInput.bind(this);
+    self.onClickToItem = this.onClickToItem.bind(this);
     self.onClickWithoutButton = this.onClickWithoutButton.bind(this);
     self.onSetRootNode = this.onSetRootNode.bind(this);
     self.onScrollWindow = this.onScrollWindow.bind(this);
@@ -68,6 +74,16 @@ class SupportSubjectsModal extends React.PureComponent<Props, State> {
     const input = event.currentTarget;
     const pureValue = input.value.trim();
     this.searchSubject = pureValue.length > 0 ? pureValue : null;
+  }
+
+  onClickToItem(event: SyntheticEvent<HTMLElement>) {
+    const tr = event.currentTarget;
+    const idx = parseInt(tr.dataset.idx);
+    const item = this.items[idx];
+
+    if (item) {
+      this.props.onSelect(item._id, item.subject);
+    }
   }
 
   onClickWithoutButton(event: SyntheticEvent<HTMLButtonElement>) {
@@ -159,12 +175,12 @@ class SupportSubjectsModal extends React.PureComponent<Props, State> {
   }
 
   reset() {
+    this.items = [];
+
     this.setState({
       xhrRequest: true,
     });
   }
-
-  rootNode: HTMLElement;
 
   render() {
     const {
@@ -172,9 +188,59 @@ class SupportSubjectsModal extends React.PureComponent<Props, State> {
       xhrRequest,
     } = this.state;
 
-    const content = null;
-    const itemsContent = null;
-    const headerContent = null;
+    let headerContent = null;
+    let itemsContent = null;
+
+    if (xhrRequest) {
+      itemsContent = <XHRSpin />;
+    } else {
+      headerContent = (
+        <form
+          noValidate
+          className="row mb-3"
+          onSubmit={this.onSubmitSearchForm}
+        >
+          <div className="col-9">
+            <input
+              className="form-control"
+              defaultValue={this.searchSubject}
+              onChange={this.onChangeSearchInput}
+              type="text"
+              placeholder="Enter subject"
+            />
+          </div>
+          <div className="col-3">
+            <button
+              className="btn btn-outline-primary btn-sm btn-block"
+              type="submit"
+            >
+              {tt('Search')}
+            </button>
+          </div>
+        </form>
+      );
+
+      if (this.items.length > 0) {
+        itemsContent = (
+          <table className="table table-hover table-clicked">
+            <tbody>
+              {this.items.map((item, idx) => (
+                <tr
+                  key={item._id}
+                  data-idx={idx}
+                  role="button"
+                  onClick={this.onClickToItem}
+                >
+                  <td>{item.subject}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        );
+      } else {
+        itemsContent = <NoHaveLabel>{tt('Items not found')}</NoHaveLabel>;
+      }
+    }
 
     const modalFooter = (
       <button
@@ -189,15 +255,16 @@ class SupportSubjectsModal extends React.PureComponent<Props, State> {
     return (
       <Modal
         {...this.props}
-        className="SupportSubjectsModal"
         closeButtonText="Cancel"
         footer={modalFooter}
       >
+        {headerContent}
         <div
           className="lst"
           ref={this.onSetRootNode}
         >
           {itemsContent}
+          {loadMore && <LoadMore />}
         </div>
       </Modal>
     );

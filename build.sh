@@ -1,6 +1,6 @@
 #!/bin/bash
 currPath=$PWD
-bundleDirName=bundle
+bundleDirName=bundle-aws
 bundlePath=$PWD/$bundleDirName
 publicPath=$bundlePath/public
 scriptsPath=shells/build.sh

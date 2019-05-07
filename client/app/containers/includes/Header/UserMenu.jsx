@@ -15,6 +15,8 @@ type State = {
 };
 
 class UserMenu extends React.PureComponent<Props, State> {
+  userName: string;
+
   constructor(props: Props, context: null) {
     super(props, context);
     this.userName = props.user.firstName;
@@ -61,8 +63,6 @@ class UserMenu extends React.PureComponent<Props, State> {
     });
   }
 
-  userName: string;
-
   render() {
     const {
       dropdownShown,
@@ -74,10 +74,11 @@ class UserMenu extends React.PureComponent<Props, State> {
       dropdownContent = (
         <Dropdown
           rightSticky
+          className="animated fadeIn"
           onLeave={this.onLeaveDropdown}
         >
           <DropdownItem
-            className="admn-only"
+            className="admin-only"
             onClick={this.onClickToItem}
           >
             <Link to="/admin">{tt('Admin panel')}</Link>
@@ -104,7 +105,6 @@ class UserMenu extends React.PureComponent<Props, State> {
         >
           <div className="icn-wrppr">
             <i className="icn icn-prfl" />
-            {' '}
             {this.userName}
           </div>
         </a>

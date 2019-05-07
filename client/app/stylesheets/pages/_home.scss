@@ -1,8 +1,5 @@
 .Home {
   main.container {
-    padding-left: 0;
-    padding-right: 0;
-
     .info {
       padding-top: 150px;
       color: $white;
@@ -44,12 +41,8 @@
     }
   }
 
-  .top {
-    width: 100%;
-    background-repeat: no-repeat;
-    background-position: right;
+  .top-box {
     background-image: url("#{$var-images-path}/home-top.jpg");
-    background-color: $primary;
     height: 780px;
   }
 
@@ -120,5 +113,11 @@
         background-image: url("#{$var-images-path}/cat-3.jpg");
       }
     }
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .Home .Categories .cat {
+    margin-bottom: 1rem;
   }
 }

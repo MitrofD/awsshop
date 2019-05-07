@@ -26,6 +26,10 @@ class ResetPassword extends React.PureComponent<Props, State> {
 
   password: ?string = null;
 
+  inputChangeTimer: ?TimeoutID;
+
+  redirectTimeout: ?TimeoutID;
+
   unmounted = true;
 
   constructor(props: Props, context: void) {
@@ -145,10 +149,6 @@ class ResetPassword extends React.PureComponent<Props, State> {
 
     this.inputChangeTimer = null;
   }
-
-  inputChangeTimer: ?TimeoutID;
-
-  redirectTimeout: ?TimeoutID;
 
   render() {
     const {

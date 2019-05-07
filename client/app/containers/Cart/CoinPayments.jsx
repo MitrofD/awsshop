@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import orders from '../../api/orders';
+// import orders from '../../api/orders';
 import user from '../../api/user';
 
 type Props = {
@@ -21,6 +21,12 @@ class CoinPayments extends React.PureComponent<Props, State> {
   unmounted = true;
 
   userEmail = '';
+
+  descriptionInputRef: HTMLInputElement;
+
+  formRef: HTMLFormElement;
+
+  successURLInputRef: HTMLInputElement;
 
   constructor(props: Props, context: null) {
     super(props, context);
@@ -55,7 +61,9 @@ class CoinPayments extends React.PureComponent<Props, State> {
   onClickButton(event: SyntheticEvent<HTMLButtonElement>) {
     const button = event.currentTarget;
     button.disabled = true;
+    console.log(this);
 
+    /*
     orders.genOrderId().then((orderId) => {
       this.descriptionInputRef.value = `Order ID: ${orderId}.From ${Config.url}`;
       this.successURLInputRef.value = `${Config.url}/orders-completed/${orderId}`;
@@ -64,6 +72,7 @@ class CoinPayments extends React.PureComponent<Props, State> {
       button.disabled = false;
       NotificationBox.danger(error.message);
     });
+    */
   }
 
   setAmount(amount: number) {
@@ -89,12 +98,6 @@ class CoinPayments extends React.PureComponent<Props, State> {
       this.successURLInputRef = el;
     }
   }
-
-  descriptionInputRef: HTMLInputElement;
-
-  formRef: HTMLFormElement;
-
-  successURLInputRef: HTMLInputElement;
 
   render() {
     if (this.state.amount > 0) {

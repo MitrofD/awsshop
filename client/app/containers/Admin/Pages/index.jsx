@@ -37,6 +37,8 @@ class Pages extends React.Component<Props, State> {
 
   scrollFunc: ?Function = null;
 
+  rootNode: HTMLElement;
+
   unmounted = true;
 
   constructor(props: Props, context: null) {
@@ -267,8 +269,6 @@ class Pages extends React.Component<Props, State> {
       this.scrollFunc = null;
     }
   }
-
-  rootNode: HTMLElement;
 
   render() {
     const {

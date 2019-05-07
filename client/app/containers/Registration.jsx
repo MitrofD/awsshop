@@ -1,9 +1,9 @@
 // @flow
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import NumberInput from 'tl-react-numeric-input';
 import axios from 'axios';
 import Checkbox from '../components/Checkbox';
-import NumberInput from '../components/NumberInput';
 import { InvalidLabel } from '../components/Label';
 import { tt } from '../components/TranslateElement';
 
@@ -39,6 +39,10 @@ class Registration extends React.Component<Props, State> {
   phone: ?string = null;
 
   referralCode: ?string = null;
+
+  firstInput: ?HTMLInputElement;
+
+  inputChangeTimer: ?TimeoutID;
 
   unmounted = true;
 
@@ -248,10 +252,6 @@ class Registration extends React.Component<Props, State> {
     this.inputChangeTimer = null;
   }
 
-  firstInput: ?HTMLInputElement;
-
-  inputChangeTimer: ?TimeoutID;
-
   render() {
     const {
       confirmPasswordError,
@@ -429,13 +429,13 @@ class Registration extends React.Component<Props, State> {
               <div className="form-group">
                 <label>
                   {tt('Phone number')}
-                  {' '}
-(
+                  {' ('}
                   {optional}
-)
+                  )
                 </label>
                 <NumberInput
                   disableDecimal
+                  min="0"
                   className={inputCNs.phone}
                   onChange={this.onChangePhoneInput}
                   name="phone"
@@ -445,10 +445,9 @@ class Registration extends React.Component<Props, State> {
               <div className="form-group">
                 <label>
                   {tt('Referral code')}
-                  {' '}
-(
+                  {' ('}
                   {optional}
-)
+                  )
                 </label>
                 <input
                   className={inputCNs.referralCode}

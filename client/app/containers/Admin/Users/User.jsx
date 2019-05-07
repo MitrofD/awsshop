@@ -21,6 +21,12 @@ type Props = {
 };
 
 class User extends React.PureComponent<Props> {
+  adminNode: React$Node;
+
+  phoneText: string;
+
+  walletText: string;
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -55,12 +61,6 @@ class User extends React.PureComponent<Props> {
       NotificationBox.danger(error.message);
     });
   }
-
-  adminNode: React$Node;
-
-  phoneText: string;
-
-  walletText: string;
 
   render() {
     const {

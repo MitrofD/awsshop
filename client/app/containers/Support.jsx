@@ -5,6 +5,7 @@ import SupportSubjectsModal from './includes/SupportSubjectsModal';
 import { InvalidLabel } from '../components/Label';
 import { tt } from '../components/TranslateElement';
 import support from '../api/support';
+import user from '../api/user';
 
 type Props = {};
 
@@ -35,6 +36,16 @@ class Support extends React.Component<Props, State> {
 
   messageCh = false;
 
+  subjectId: ?string = null;
+
+  defEmail: ?string;
+
+  firstInput: ?HTMLInputElement;
+
+  inputChangeTimer: ?TimeoutID;
+
+  subject: ?string;
+
   unmounted = true;
 
   constructor(props: Props, context: null) {
@@ -47,6 +58,12 @@ class Support extends React.Component<Props, State> {
       nameError: null,
       xhrRequest: false,
     };
+
+    const currUser = user.get();
+
+    if (currUser) {
+      this.defEmail = currUser.email;
+    }
 
     const self: any = this;
     self.onChangeNameInput = this.onChangeNameInput.bind(this);
@@ -130,7 +147,7 @@ class Support extends React.Component<Props, State> {
       modal: (
         <SupportSubjectsModal
           isOpened
-          subjectId={null}
+          subjectId={this.subjectId}
           onSelect={this.onSelectSupportSubjects}
           onClose={this.onCloseModal}
         />
@@ -144,8 +161,8 @@ class Support extends React.Component<Props, State> {
     });
   }
 
-  onSelectSupportSubjects(subjId: ?string, subject: ?string) {
-    this.subjId = subjId;
+  onSelectSupportSubjects(subjectId: ?string, subject: ?string) {
+    this.subjectId = subjectId;
     this.subject = subject;
     this.onCloseModal();
   }
@@ -207,14 +224,6 @@ class Support extends React.Component<Props, State> {
     this.inputChangeTimer = null;
   }
 
-  firstInput: ?HTMLInputElement;
-
-  inputChangeTimer: ?TimeoutID;
-
-  subjId: ?string;
-
-  subject: ?string;
-
   render() {
     const {
       emailError,
@@ -264,6 +273,7 @@ class Support extends React.Component<Props, State> {
 
     const errorsCount = Object.keys(errorLabels).length;
     const disabledSubmit = xhrRequest || !allInputsChanged || errorsCount > 0;
+    const subjectText = this.subject || 'What can we help you with?';
 
     return (
       <Page className="Support">
@@ -275,7 +285,7 @@ class Support extends React.Component<Props, State> {
                 {tt('Send us an E-mail')}
               </div>
               <div className="info">
-                {tt('Ask us anything! We’ll get back to you within 24-48 hours')}
+                {tt('Ask us anything! We’ll get back to you within 24 - 48 hours')}
               </div>
               <form
                 noValidate
@@ -294,9 +304,10 @@ class Support extends React.Component<Props, State> {
                 </div>
                 <div className="form-group email">
                   <input
-                    type="email"
                     className={inputCNs.email}
+                    defaultValue={this.defEmail}
                     name="email"
+                    type="email"
                     placeholder="E-mail"
                     onChange={this.onChangeEmailInput}
                   />
@@ -304,19 +315,19 @@ class Support extends React.Component<Props, State> {
                 </div>
                 <div className="form-group phone">
                   <input
-                    type="text"
                     className="form-control"
+                    type="text"
                     name="phone"
                     placeholder="Phone number (optional)"
                   />
                 </div>
                 <div className="form-group subject">
                   <a
-                    className="form-control select-wrap"
+                    className="form-control select-wrap text-truncate"
                     href="#"
                     onClick={this.onClickToSubject}
                   >
-                    what can we help you with?
+                    {subjectText}
                   </a>
                 </div>
                 <div className="form-group message">

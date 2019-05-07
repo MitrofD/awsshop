@@ -37,6 +37,10 @@ class CategoriesModal extends React.PureComponent<Props, State> {
 
   scrollFunc: ?Function = null;
 
+  listNode: HTMLElement;
+
+  rootNode: HTMLElement;
+
   unmounted = true;
 
   constructor(props: Props, context: null) {
@@ -200,10 +204,6 @@ class CategoriesModal extends React.PureComponent<Props, State> {
       xhrRequest: true,
     });
   }
-
-  listNode: HTMLElement;
-
-  rootNode: HTMLElement;
 
   render() {
     const {

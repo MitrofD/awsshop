@@ -1,4 +1,5 @@
 // @flow
+/*
 import React, { Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import Page from './includes/Page';
@@ -138,3 +139,4 @@ class OrdersCompleted extends React.PureComponent<Props, State> {
 }
 
 export default asHOT(module)(withRouter(OrdersCompleted));
+*/

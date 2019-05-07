@@ -17,6 +17,8 @@ const defaultProps = {
 class ReactivateAccount extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  unmounted: boolean;
+
   constructor(props: Props, context: void) {
     super(props, context);
     this.unmounted = true;
@@ -36,13 +38,10 @@ class ReactivateAccount extends React.PureComponent<Props, State> {
 
   onSubmitForm(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
-
     const form = event.currentTarget;
-    console.log(this); // eslint-disable-line no-console
-    console.log(form); // eslint-disable-line no-console
+    console.log(this);
+    console.log(form);
   }
-
-  unmounted: boolean;
 
   render() {
     let title = 'reactivateAccount';

@@ -19,7 +19,7 @@ const StaticPage = (props: Props) => {
     pages.withPath(props.path).then(setPage).catch(() => {
       props.history.push('/404');
     });
-  });
+  }, []);
 
   let content = null;
 

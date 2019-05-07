@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import ShoppingCart from './ShoppingCart';
+import Cart from './Cart';
 import UserMenu from './UserMenu';
 import NavLogo from '../NavLogo';
 import NavLoginOrRegister from '../NavLoginOrRegister';
@@ -60,6 +60,12 @@ class Header extends React.PureComponent<Props, State> {
       collapseMenuClassName += ' show';
     }
 
+    let becomePartnerLink = `${Config.dashboardPath}/invited-users`;
+
+    if (!user) {
+      becomePartnerLink = `/login?redirect=${becomePartnerLink}`;
+    }
+
     return (
       <header>
         <nav className="navbar navbar-expand-lg navbar-light bg-white">
@@ -105,7 +111,7 @@ class Header extends React.PureComponent<Props, State> {
                 <li className="nav-item">
                   <NavLink
                     className="nav-link"
-                    to={`${Config.dashboardPath}/invited-users`}
+                    to={becomePartnerLink}
                   >
                     {tt('Become partner')}
                   </NavLink>
@@ -130,7 +136,7 @@ class Header extends React.PureComponent<Props, State> {
                     </Link>
                   </li>
                 )}
-                <ShoppingCart user={user} />
+                <Cart />
               </ul>
             </div>
           </div>
@@ -140,4 +146,4 @@ class Header extends React.PureComponent<Props, State> {
   }
 }
 
-export default Header;
+export default asHOT(module)(Header);

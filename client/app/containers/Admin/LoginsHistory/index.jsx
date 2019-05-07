@@ -34,6 +34,8 @@ class LoginsHistory extends React.PureComponent<Props, State> {
 
   searchText: ?string = null;
 
+  rootNode: HTMLElement;
+
   unmounted = true;
 
   constructor(props: Props, context: null) {
@@ -196,8 +198,6 @@ class LoginsHistory extends React.PureComponent<Props, State> {
       this.scrollFunc = null;
     }
   }
-
-  rootNode: HTMLElement;
 
   render() {
     const {

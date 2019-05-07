@@ -27,6 +27,24 @@ const isStringWithLength = (val: any, length: number): string => {
 };
 
 const OPTIONS = {
+  CRM_URL: {
+    default: '',
+    getPure(mbUrl: any) {
+      let url = '';
+      const pMbUrl = typeof mbUrl === 'string' ? mbUrl.trim() : '';
+
+      if (pMbUrl.length > 0) {
+        url = pMbUrl;
+
+        if (!tools.urlRegExp.test(pMbUrl)) {
+          throw new Error('Has to be url type');
+        }
+      }
+
+      return url;
+    },
+  },
+
   TOKEN: {
     default: random(tokenAlphabet, tokenLength),
     getPure: (val: any) => isStringWithLength(val, tokenLength),

@@ -18,6 +18,12 @@ type State = {
 const isChangedVal = (mbStr: any) => typeof mbStr === 'string';
 
 class AnswerModal extends React.Component<Props, State> {
+  firstInput: ?HTMLTextAreaElement;
+
+  inputChangeTimer: ?TimeoutID;
+
+  answer: ?string;
+
   unmounted = true;
 
   constructor(props: Props, context: null) {
@@ -106,12 +112,6 @@ class AnswerModal extends React.Component<Props, State> {
 
     this.inputChangeTimer = null;
   }
-
-  firstInput: ?HTMLTextAreaElement;
-
-  inputChangeTimer: ?TimeoutID;
-
-  answer: ?string;
 
   render() {
     const {

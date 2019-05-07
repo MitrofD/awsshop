@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
+import { tns } from 'tiny-slider/src/tiny-slider';
 import Product from './Product';
-import { tns } from '../../../node_modules/tiny-slider/src/tiny-slider';
 import NoHaveLabel from './NoHaveLabel';
 import RectangleBounceSpin from '../../components/spins/RectangleBounceSpin';
 import { tt } from '../../components/TranslateElement';
@@ -30,6 +30,8 @@ class ProductsSlider extends React.PureComponent<Props, State> {
   hasError = false;
 
   items: Object[] = [];
+
+  slider: ?Object;
 
   unmounted = true;
 
@@ -97,10 +99,17 @@ class ProductsSlider extends React.PureComponent<Props, State> {
     });
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    if (prevState.xhrRequest !== this.state.xhrRequest && this.items.length > 0) {
+  componentWillUnmount() {
+    this.unmounted = true;
+    this.destroySliderIfNeeded();
+  }
+
+  onRefSliderNode(mbEl: ?HTMLElement) {
+    this.destroySliderIfNeeded();
+
+    if (mbEl && this.items.length > 0) {
       this.slider = tns({
-        container: this.sliderNode,
+        container: mbEl,
         items: 1,
         /* eslint-disable quote-props */
         responsive: {
@@ -125,24 +134,12 @@ class ProductsSlider extends React.PureComponent<Props, State> {
     }
   }
 
-  componentWillUnmount() {
-    this.unmounted = true;
-
+  destroySliderIfNeeded() {
     if (this.slider) {
       this.slider.destroy();
       this.slider = null;
     }
   }
-
-  onRefSliderNode(mbEl: ?HTMLElement) {
-    if (mbEl) {
-      this.sliderNode = mbEl;
-    }
-  }
-
-  slider: ?Object;
-
-  sliderNode: HTMLElement;
 
   render() {
     let content = null;
@@ -159,16 +156,23 @@ class ProductsSlider extends React.PureComponent<Props, State> {
         className += ' lm';
         innerContent = <RectangleBounceSpin />;
       } else if (this.items.length > 0) {
-        innerContent = this.items.map((item, idx) => {
-          const key = `itm-${idx}`;
+        innerContent = (
+          <div
+            className="slider"
+            ref={this.onRefSliderNode}
+          >
+            {this.items.map((item, idx) => {
+              const key = `itm-${idx}`;
 
-          return (
-            <Product
-              {...item}
-              key={key}
-            />
-          );
-        });
+              return (
+                <Product
+                  {...item}
+                  key={key}
+                />
+              );
+            })}
+          </div>
+        );
       } else {
         innerContent = <NoHaveLabel>{tt('Products not found')}</NoHaveLabel>;
       }
@@ -176,10 +180,7 @@ class ProductsSlider extends React.PureComponent<Props, State> {
       content = (
         <div className={className}>
           <div className="ttl">{tt(this.props.title)}</div>
-          <div
-            className="list"
-            ref={this.onRefSliderNode}
-          >
+          <div className="list">
             {innerContent}
           </div>
         </div>

@@ -2,6 +2,8 @@
 const users = require('../api/users');
 const csrf = require('../api/csrf');
 
+const getUnknownError = () => new Error('unknown error');
+
 const bodyParser = (req, callback) => {
   let body = '';
 
@@ -23,12 +25,13 @@ const applyUserId = (req: Object, res: Object, next: Function) => {
     req.userId = req.session.get(Enums.SESS_USER_ID);
 
     if (!req.userId) {
-      const notLoggedError = new Error('You are not logged');
-      next(notLoggedError);
+      next(new Error('You are not logged'));
       return;
     }
 
     next();
+  }).catch(() => {
+    next(getUnknownError());
   });
 };
 
@@ -60,17 +63,20 @@ Middleware.jsonBodyParser = (req, res, next) => {
 Middleware.onlyNotAuth_Sess = (req, res, next) => {
   GSession.forRequest(req, res).then(() => {
     if (req.session.get(Enums.SESS_USER_ID)) {
-      const alreadyLoggeError = new Error('You have already logged in');
-      next(alreadyLoggeError);
+      next(new Error('You have already logged in'));
       return;
     }
 
     next();
+  }).catch(() => {
+    next(getUnknownError());
   });
 };
 
 Middleware.session = (req, res, next) => {
-  GSession.forRequest(req, res).then(next);
+  GSession.forRequest(req, res).then(next).catch(() => {
+    next(getUnknownError());
+  });
 };
 
 Middleware.userId_Sess = (req, res, next) => {
@@ -82,8 +88,7 @@ Middleware.admin_Sess = (req, res, next) => {
     const isAdmin = req.session.get(Enums.SESS_USER_IS_ADMIN);
 
     if (!isAdmin) {
-      const error = new Error('Only for administrator');
-      next(error);
+      next(new Error('Only for administrator'));
       return;
     }
 
@@ -97,12 +102,13 @@ Middleware.csrf_Sess = (req, res, next) => {
     const csrfSecret = req.session.get(csrf.secretKey);
 
     if (!csrf.compare(csrfSecret, csrfToken)) {
-      const csrfError = new Error('CSRF token is incorrect');
-      next(csrfError);
+      next(new Error('csrf token is incorrect'));
       return;
     }
 
     next();
+  }).catch(() => {
+    next(getUnknownError());
   });
 };
 
@@ -112,15 +118,13 @@ Middleware.user_Sess = (req, res, next) => {
       req.user = user;
 
       if (!user) {
-        const notFoundUserError = new Error('User not found');
-        next(notFoundUserError);
+        next(new Error('User not found'));
         return;
       }
 
       next();
     }).catch(() => {
-      const unknownError = new Error('Unknown error');
-      next(unknownError);
+      next(getUnknownError());
     });
   });
 };

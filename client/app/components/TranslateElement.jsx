@@ -10,10 +10,10 @@ const trnsltrInputrCN = 'tt-inpt';
 const trnsltrIdLength = trnsltrId.length;
 let TRANSLATION_DATA = {};
 
-const getTextForKey = (key: string): string => TRANSLATION_DATA[key] || key;
+const getText = (key: string): string => TRANSLATION_DATA[key] || key;
 
 const spanWithKeyAndClass = (key: string, className: string): React$Node => {
-  const text = getTextForKey(key);
+  const text = getText(key);
 
   return (
     <span
@@ -38,7 +38,7 @@ const reactElWithKeyAndClass = (props: InputElementProps, className: string, typ
 
     objCopy['data-tt'] = trnsltrId + key;
     objCopy.className = rCN;
-    objCopy.placeholder = getTextForKey(key);
+    objCopy.placeholder = getText(key);
   }
 
   return React.createElement(type, objCopy, objCopy.children);
@@ -49,20 +49,24 @@ const apply = (newData: any) => {
 
   // single elements
   const trnsltEls = document.getElementsByClassName(trnsltrCN);
+  const trnsltElsLength = trnsltEls.length;
+  let i = 0;
 
-  for (let i = 0; i < trnsltEls.length; i += 1) {
+  for (; i < trnsltElsLength; i += 1) {
     const el = trnsltEls[i];
     const key = el.id.slice(trnsltrIdLength);
-    el.innerText = getTextForKey(key);
+    el.innerText = getText(key);
   }
 
   // elements with placeholder
   const trnsltPlchldrEls = document.getElementsByClassName(trnsltrInputrCN);
+  const trnsltPlchldrElsLength = trnsltPlchldrEls.length;
+  i = 0;
 
-  for (let i = 0; i < trnsltPlchldrEls.length; i += 1) {
+  for (; i < trnsltPlchldrElsLength; i += 1) {
     const el: { [string]: any } = trnsltPlchldrEls[i];
     const key = el.dataset.tt.slice(trnsltrIdLength);
-    el.placeholder = getTextForKey(key);
+    el.placeholder = getText(key);
   }
 };
 
@@ -72,6 +76,7 @@ const TTTextarea = (props: InputElementProps) => reactElWithKeyAndClass(props, t
 
 export {
   apply,
+  getText,
   tt,
   TTInput,
   TTTextarea,

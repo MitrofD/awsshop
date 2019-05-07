@@ -31,11 +31,11 @@ a.active {
   margin-bottom: 1rem;
 }
 
-.admn-only {
+.admin-only {
   display: none;
 }
 
-.admn .admn-only {
+.admn .admin-only {
   display: block;
 }
 
@@ -218,6 +218,14 @@ footer {
   @include box-shadow(0.625rem 0 2.5rem rgba(222,225,254,.35));
   border-radius: $border-radius;
   background-color: $white;
+
+  &.padding {
+    padding: 2.5rem 6.25rem;
+
+    @include media-breakpoint-down(md) {
+      padding: 1rem;
+    }
+  }
 }
 
 .dropdown-wrapper .FixedOverlay {
@@ -270,9 +278,9 @@ footer {
 }
 
 .navbar {
+  @include box-shadow(0px 1px 1px 0px rgba(0, 0, 0, 0.05));
   text-transform: uppercase;
   font-family: 'Futura PT Demi';
-  box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.15);
 
   .Badge {
     margin-left: 8px;
@@ -309,7 +317,7 @@ footer {
     }
 
     &.active {
-      box-shadow: 0px -3px 0px 0px $primary inset;
+      @include box-shadow(0px -3px 0px 0px $primary inset);
     }
 
     &.brdrd {
@@ -374,8 +382,8 @@ footer {
 }
 
 .mce-panel {
+  @include box-shadow(0px -3px 0px 0px $primary inset);
   border: none !important;
-  box-shadow: none !important;
 }
 
 .mce-notification-warning {
@@ -394,24 +402,84 @@ footer {
 }
 
 .cntnt.as-full {
+  .top-box {
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: right;
+    background-color: #4055ee;
+
+    .p-ttl {
+      color: $white;
+      padding-top: 100px;
+      text-align: left;
+      font-size: 2.125rem;
+    }
+  }
+
+  table {
+    tr {
+      th,
+      td {
+        color: #303030;
+        font-family: 'Futura PT Bold';
+        padding-left: 3.125rem;
+        padding-right: 3.125rem;
+      }
+
+      td {
+        padding-top: 1.25rem;
+        padding-bottom: 1.25rem;
+      }
+
+      th:last-child,
+      td:last-child {
+        text-align: right;
+      }
+    }
+  }
+
+  .ttop {
+    margin-top: -158px;
+  }
+
   main {
     width: 100%;
     max-width: none;
     padding-top: 64px;
+    padding-left: 0;
+    padding-right: 0;
 
     .innr {
       @include box-shadow(none);
     }
   }
+}
 
-  footer {
+.TLNumericInput {
+  @extend .form-control;
+}
+
+.modal-content {
+  button[type="submit"] {
     margin-top: 0;
+  }
+
+  .XHRSpin {
+    height: 200px;
+  }
+
+  .lst {
+    height: 300px;
+    overflow-y: auto;
+
+    .table {
+      margin-bottom: 0;
+    }
   }
 }
 
-.NumberInput {
-  @extend .form-control;
-  text-align: center;
+.table-clicked {
+  cursor: pointer;
 }
 
 .nav-tabs {
@@ -420,6 +488,10 @@ footer {
     padding-bottom: 0.5rem;
     text-transform: capitalize;
   }
+}
+
+.tns-controls:focus {
+  outline: none;
 }
 
 .tab-content {
@@ -531,6 +603,10 @@ footer {
   }
 }
 
+.tox-statusbar__branding {
+  display: none !important;
+}
+
 .ProductsSlider {
   padding: 3.125rem;
 
@@ -569,6 +645,14 @@ footer {
     float: right;
     letter-spacing: 1.0050px;
   }
+}
+
+.pre-ttl {
+  color: #303030;
+  font-size: .9375rem;
+  font-family: 'Futura PT Bold';
+  text-align: center;
+  margin-bottom: 5px;
 }
 
 .p-ttl {
@@ -612,10 +696,10 @@ footer {
     width: 100%;
 
     .innr {
+      @include box-shadow(0px 1px 1px 0px rgba(0, 0, 0, 0.05));
       background-color: #fff;
       padding: 38px 48px;
       border-radius: $border-radius;
-      box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.05);
     }
   }
 
@@ -660,9 +744,6 @@ footer {
       margin: 10% 0;
     }
 
-    .NumberInput {
-      text-align: left;
-    }
   }
 
   @include media-breakpoint-down(sm) {
@@ -820,9 +901,7 @@ $var-left-side-width: 23% !default;
   .ProductsSlider {
     padding: 1rem;
   }
-}
 
-@include media-breakpoint-down(xs) {
   .lft,
   .rght {
     padding: 1rem !important;

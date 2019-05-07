@@ -1,17 +1,17 @@
 // @flow
 import React from 'react';
+import NumberInput from 'tl-react-numeric-input';
 import tinymce from 'tinymce/tinymce';
-// import 'tinymce/themes/modern';
+import 'tinymce/themes/silver';
 import 'tinymce/plugins/colorpicker';
 import 'tinymce/plugins/textcolor';
 import 'tinymce/plugins/hr';
 import 'tinymce/plugins/image';
 import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
-// import 'tinymce/skins/lightgray/skin.min.css';
+import 'tinymce/skins/ui/oxide/skin.min.css';
 import CategorySelect from './CategorySelect';
 import XHRSpin from '../../../includes/XHRSpin';
-import NumberInput from '../../../../components/NumberInput';
 import { InvalidLabel } from '../../../../components/Label';
 import { tt } from '../../../../components/TranslateElement';
 import serverSettings from '../../../../api/server-settings';
@@ -57,6 +57,24 @@ class EditProduct extends React.Component<Props, State> {
   };
 
   uniqueIDs: { [string]: string } = {};
+
+  btnTitle: string;
+
+  category: ?string;
+
+  description: string;
+
+  isRaw: boolean;
+
+  title: string;
+
+  price: number;
+
+  profitPrice: string;
+
+  priceInputRef: NumberInput;
+
+  shipping: string;
 
   unmounted = true;
 
@@ -329,24 +347,6 @@ class EditProduct extends React.Component<Props, State> {
 
     this.inputChangeTimer = null;
   }
-
-  btnTitle: string;
-
-  category: ?string;
-
-  description: string;
-
-  isRaw: boolean;
-
-  title: string;
-
-  price: number;
-
-  profitPrice: string;
-
-  priceInputRef: NumberInput;
-
-  shipping: string;
 
   render() {
     const {

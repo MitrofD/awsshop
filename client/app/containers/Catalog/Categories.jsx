@@ -33,6 +33,8 @@ class Categories extends React.Component<Props, State> {
 
   scrollFunc: ?Function = null;
 
+  rootNode: HTMLElement;
+
   unmounted = true;
 
   constructor(props: Props, context: null) {
@@ -125,8 +127,6 @@ class Categories extends React.Component<Props, State> {
     });
   }
 
-  rootNode: HTMLElement;
-
   render() {
     const {
       showLoadMore,
@@ -166,7 +166,7 @@ class Categories extends React.Component<Props, State> {
             <li>
               <Link
                 className={allItemCN}
-                to="/"
+                to="/catalog"
               >
                 {tt('All')}
               </Link>
@@ -178,9 +178,7 @@ class Categories extends React.Component<Props, State> {
                   to={Config.categoryPath + item.encodedName}
                 >
                   {tt(item.name)}
-&nbsp;(
-                  {item.productsCount}
-)
+                  {` (${item.productsCount})`}
                 </Link>
               </li>
             ))}

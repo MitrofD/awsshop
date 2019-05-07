@@ -36,6 +36,8 @@ class Categories extends React.Component<Props, State> {
 
   scrollFunc: ?Function = null;
 
+  rootNode: HTMLElement;
+
   unmounted = true;
 
   constructor(props: Props, context: null) {
@@ -228,8 +230,6 @@ class Categories extends React.Component<Props, State> {
       xhrRequest: true,
     });
   }
-
-  rootNode: HTMLElement;
 
   render() {
     const {

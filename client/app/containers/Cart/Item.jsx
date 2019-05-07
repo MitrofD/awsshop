@@ -1,17 +1,14 @@
 // @flow
 import React from 'react';
 import { Link } from 'react-router-dom';
-import NumberInput from '../../components/NumberInput';
+import NumberInput from 'tl-react-numeric-input';
 import { tt } from '../../components/TranslateElement';
-import orders from '../../api/orders';
+import carts from '../../api/carts';
 
-type Props = Object & {
-  onChangeTotalDiff: (string, number) => void,
-  onDelete: (Object) => void,
-};
+type Props = Object;
 
 type State = {
-  count: number,
+  quantity: number,
 };
 
 class Item extends React.PureComponent<Props, State> {
@@ -22,15 +19,12 @@ class Item extends React.PureComponent<Props, State> {
   constructor(props: Props, context: null) {
     super(props, context);
 
-    const pureCount = parseInt(props.count) || 0;
-    this.prevCount = pureCount;
-
     this.state = {
-      count: pureCount,
+      quantity: props.quantity,
     };
 
     const self: any = this;
-    self.onChangeCountInput = this.onChangeCountInput.bind(this);
+    self.onSetQuantityInput = this.onSetQuantityInput.bind(this);
     self.onClickDeleteButton = this.onClickDeleteButton.bind(this);
   }
 
@@ -43,14 +37,11 @@ class Item extends React.PureComponent<Props, State> {
     this.unmounted = true;
   }
 
-  onChangeCountInput(event: SyntheticEvent<HTMLInputElement>, value: ?number) {
+  onSetQuantityInput(value: any) {
     const pureValue = parseInt(value) || 0;
-    const diff = pureValue - this.prevCount;
-    this.prevCount = pureValue;
-    this.props.onChangeTotalDiff(this.props._id, diff * this.props.price);
 
     this.setStateAfterInputChange({
-      count: pureValue,
+      quantity: pureValue,
     });
   }
 
@@ -61,14 +52,7 @@ class Item extends React.PureComponent<Props, State> {
       button.disabled = true;
       const productId = this.props._id;
 
-      orders.remove(productId).then(() => {
-        button.disabled = false;
-        const productData = Object.assign({}, this.props, this.state);
-        delete productData.onChangeTotalDiff;
-        delete productData.onDelete;
-
-        this.props.onDelete(productData);
-      }).catch((error) => {
+      carts.delete(productId).catch((error) => {
         button.disabled = false;
         NotificationBox.danger(error.message);
       });
@@ -91,8 +75,6 @@ class Item extends React.PureComponent<Props, State> {
     this.inputChangeTimer = null;
   }
 
-  prevCount: number;
-
   render() {
     const {
       image,
@@ -102,7 +84,7 @@ class Item extends React.PureComponent<Props, State> {
     } = this.props;
 
     const {
-      count,
+      quantity,
     } = this.state;
 
     const toPath = `/product/${productId}`;
@@ -126,23 +108,22 @@ class Item extends React.PureComponent<Props, State> {
               <div className="form-group">
                 <label>
                   {tt('Quantity')}
-:
+                  :
                 </label>
                 <NumberInput
-                  disableDecimal
-                  defaultValue={count}
-                  min={0}
-                  onChange={this.onChangeCountInput}
+                  className="form-control"
+                  disabledDecimal
+                  defaultValue={quantity}
+                  min="1"
+                  onSet={this.onSetQuantityInput}
                 />
               </div>
             </div>
             <div className="col-sm-8">
               <div className="prc">{NumberFormat(price)}</div>
-              {count > 0 && (
-                <div className="prc">
-                  {`Total: ${NumberFormat(count * price)}`}
-                </div>
-              )}
+              <div className="prc">
+                {`Total: ${NumberFormat(quantity * price)}`}
+              </div>
             </div>
           </div>
           <button

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import tinymce from 'tinymce/tinymce';
-// import 'tinymce/themes/modern';
+import 'tinymce/themes/silver';
 import 'tinymce/plugins/colorpicker';
 import 'tinymce/plugins/textcolor';
 import 'tinymce/plugins/hr';
@@ -9,9 +9,9 @@ import 'tinymce/plugins/image';
 import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
 import 'tinymce/plugins/table';
-// import 'tinymce/skins/lightgray/skin.min.css';
+import 'tinymce/skins/ui/oxide/skin.min.css';
+import NumberInput from 'tl-react-numeric-input';
 import XHRSpin from '../../includes/XHRSpin';
-import NumberInput from '../../../components/NumberInput';
 import { InvalidLabel } from '../../../components/Label';
 import { tt } from '../../../components/TranslateElement';
 import serverSettings from '../../../api/server-settings';
@@ -43,6 +43,16 @@ const EMPTY_STR = '';
 
 class SubmitForm extends React.Component<Props, State> {
   inputChangeTimer: ?TimeoutID = null;
+
+  btnTitle: string;
+
+  content: string;
+
+  title: string;
+
+  path: string;
+
+  contentId: string;
 
   unmounted = true;
 
@@ -87,6 +97,7 @@ class SubmitForm extends React.Component<Props, State> {
     };
 
     tinymce.init({
+      // theme_url: '../../tinymce/themes/silver',
       height: 500,
       menu: [],
       plugins: 'textcolor table colorpicker image link lists hr',
@@ -194,16 +205,6 @@ class SubmitForm extends React.Component<Props, State> {
 
     this.inputChangeTimer = null;
   }
-
-  btnTitle: string;
-
-  content: string;
-
-  title: string;
-
-  path: string;
-
-  contentId: string;
 
   render() {
     const {

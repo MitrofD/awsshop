@@ -34,6 +34,8 @@ class List extends React.Component<Props, State> {
 
   refPurchasePrice = 0;
 
+  rootNode: HTMLElement;
+
   scrollFunc: ?Function = null;
 
   unmounted = true;
@@ -176,8 +178,6 @@ class List extends React.Component<Props, State> {
     }
   }
 
-  rootNode: HTMLElement;
-
   render() {
     const {
       showLoadMore,
@@ -214,9 +214,7 @@ class List extends React.Component<Props, State> {
                 <td>{item.list}</td>
                 <td>
                   {item.quantity}
-                  {' '}
-/
-                  {' '}
+                  {' / '}
                   <strong className="text-danger">{item.earningsText}</strong>
                 </td>
               </tr>

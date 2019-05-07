@@ -16,6 +16,10 @@ class Time extends React.PureComponent<Props> {
 
   time = new Date();
 
+  tickIntervalID: ?IntervalID;
+
+  synchIntervalID: ?IntervalID;
+
   componentDidMount() {
     this.restartTimer();
   }
@@ -91,10 +95,6 @@ class Time extends React.PureComponent<Props> {
 
     this.startTickInterval();
   }
-
-  tickIntervalID: ?IntervalID;
-
-  synchIntervalID: ?IntervalID;
 
   render() {
     const timeParts = this.getTimeParts();

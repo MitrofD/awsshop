@@ -31,6 +31,8 @@ class FAQ extends React.PureComponent<Props, State> {
 
   scrollFunc: ?Function = null;
 
+  rootNode: HTMLElement;
+
   unmounted = true;
 
   constructor(props: Props, context: null) {
@@ -121,8 +123,6 @@ class FAQ extends React.PureComponent<Props, State> {
       this.setStateAfterRequest({});
     });
   }
-
-  rootNode: HTMLElement;
 
   render() {
     const {

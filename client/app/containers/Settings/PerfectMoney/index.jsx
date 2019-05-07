@@ -18,6 +18,8 @@ class PerfectMoney extends React.Component<Props, State> {
 
   inputChangeTimer: ?TimeoutID = null;
 
+  currPWWallet: string;
+
   unmounted = true;
 
   constructor(props: Props, context: null) {
@@ -121,8 +123,6 @@ class PerfectMoney extends React.Component<Props, State> {
 
     this.inputChangeTimer = null;
   }
-
-  currPWWallet: string;
 
   render() {
     const {

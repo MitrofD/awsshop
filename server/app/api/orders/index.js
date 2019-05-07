@@ -1,4 +1,5 @@
 // @flow
+/*
 const collection = require('./collections/orders');
 const tools = require('../tools');
 
@@ -116,3 +117,4 @@ const orders = {
 };
 
 module.exports = orders;
+*/

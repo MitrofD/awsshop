@@ -704,26 +704,34 @@ const users = {
     return user;
   },
 
-  async soldProductInQuantities(productId: MongoID, quantity?: any): Promise<User> {
-    const product = await products.withId(productId);
+  async saleProduct(pId: MongoID, mbOptions: any): Promise<Object> {
+    const options = typeof mbOptions === 'object' && mbOptions !== null ? mbOptions : {};
+    const product = await products.withId(pId);
 
     if (!product.isApproved) {
       throw new Error('Product is not approved');
     }
 
-    const nowTime = new Date();
+    let nowTime: Date;
+
+    try {
+      nowTime = new Date(options.time);
+    } catch (dError) {
+      nowTime = new Date();
+    }
+
     const nowTimeMS = nowTime.getTime();
     const user = await this.getById(product.userId);
     const userId = user._id.toString();
-    const pQuantity = parseInt(quantity) || 1;
+    const pQuantity = parseInt(options.quantity) || 1;
     const currEarnings = pQuantity * product.earnings;
 
     const currPaymentsArr = getPayments.call(user);
-    currPaymentsArr.push({
+    currPaymentsArr[currPaymentsArr.length] = {
       t: nowTimeMS,
       e: currEarnings,
       q: pQuantity,
-    });
+    };
 
     const setObj = {
       [LAST_ACTION_TIME]: nowTime,
@@ -731,6 +739,7 @@ const users = {
     };
 
     const promisesArr = [];
+    let promisesArrLength = promisesArr.length;
 
     if (typeof user.fromUser === 'string') {
       let refUser = null;
@@ -767,7 +776,109 @@ const users = {
           },
         });
 
-        promisesArr.push(refUpdatePromise);
+        promisesArr[promisesArrLength] = refUpdatePromise;
+        promisesArrLength += 1;
+      }
+    }
+
+    const insertData = Object.assign({}, options);
+    delete insertData.quantity;
+    delete insertData.time;
+    insertData.userId = userId;
+    insertData.createdAt = nowTime;
+    insertData.earnings = currEarnings;
+    insertData.image = product.image;
+    insertData.productId = product._id.toString();
+    insertData.price = product.price;
+    insertData.title = product.title;
+    insertData.quantity = pQuantity;
+
+    const addToOrdersPromise = ordersCollection.insertOne(insertData);
+    promisesArr[promisesArrLength] = addToOrdersPromise;
+    promisesArrLength += 1;
+
+    const genPromise = collection.updateOne({
+      _id: user._id,
+    }, {
+      $set: setObj,
+    }, {
+      returnOriginal: false,
+    });
+
+    promisesArr[promisesArrLength] = genPromise;
+    promisesArrLength += 1;
+
+    await Promise.all(promisesArr);
+    return insertData;
+  },
+
+  /*
+  async soldProductInQuantities(productId: MongoID, quantity?: any): Promise<User> {
+    const product = await products.withId(productId);
+
+    if (!product.isApproved) {
+      throw new Error('Product is not approved');
+    }
+
+    const nowTime = new Date();
+    const nowTimeMS = nowTime.getTime();
+    const user = await this.getById(product.userId);
+    const userId = user._id.toString();
+    const pQuantity = parseInt(quantity) || 1;
+    const currEarnings = pQuantity * product.earnings;
+
+    const currPaymentsArr = getPayments.call(user);
+    currPaymentsArr[currPaymentsArr.length] = {
+      t: nowTimeMS,
+      e: currEarnings,
+      q: pQuantity,
+    };
+
+    const setObj = {
+      [LAST_ACTION_TIME]: nowTime,
+      [WAITING_PAYMENTS_ATTR]: currPaymentsArr,
+    };
+
+    const promisesArr = [];
+    let promisesArrLength = promisesArr.length;
+
+    if (typeof user.fromUser === 'string') {
+      let refUser = null;
+
+      try {
+        refUser = await this.getById(user.fromUser);
+        // eslint-disable-next-line no-empty
+      } catch (getRefError) {}
+
+      if (refUser) {
+        const refCurrPayments = getRefPayments.call(refUser);
+        const exVal = refCurrPayments[userId];
+        let refQuntity = pQuantity;
+
+        if (typeof exVal === 'object' && exVal !== null) {
+          refQuntity += exVal.q;
+        }
+
+        refCurrPayments[userId] = {
+          uF: `${user.firstName} ${user.lastName}`,
+          q: refQuntity,
+        };
+
+        const refUpdatePromise = collection.updateOne({
+          _id: refUser._id,
+        }, {
+          $set: {
+            [LAST_REF_ACTION_TIME]: nowTime,
+            [REF_WAITING_PAYMENTS_ATTR]: refCurrPayments,
+          },
+
+          $inc: {
+            [REF_SOLD_QUANTITY]: pQuantity,
+          },
+        });
+
+        promisesArr[promisesArrLength] = refUpdatePromise;
+        promisesArrLength += 1;
       }
     }
 
@@ -782,7 +893,8 @@ const users = {
       quantity: pQuantity,
     });
 
-    promisesArr.push(addToOrdersPromise);
+    promisesArr[promisesArrLength] = addToOrdersPromise;
+    promisesArrLength += 1;
 
     const genPromise = collection.updateOne({
       _id: user._id,
@@ -792,20 +904,21 @@ const users = {
       returnOriginal: false,
     });
 
-    promisesArr.push(genPromise);
+    promisesArr[promisesArrLength] = genPromise;
+    promisesArrLength += 1;
 
     await Promise.all(promisesArr);
     Object.assign(user, setObj);
 
     return user;
   },
+  */
 
   async getSoldProducts(userId: string, query: any): Promise<Object> {
     const rQuery = tools.anyAsObj(query);
     const pureQuery = {};
     const pureSkip = getPureSkip(rQuery.skip);
     const pureLimit = getPureLimit(rQuery.limit);
-
     pureQuery.userId = userId;
 
     const createdAtObj = {};

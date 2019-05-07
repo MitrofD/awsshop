@@ -41,6 +41,8 @@ class Grid extends React.Component<Props, State> {
 
   titlePattern: ?string = null;
 
+  rootNode: HTMLElement;
+
   unmounted = true;
 
   constructor(props: Props, context: null) {
@@ -158,8 +160,6 @@ class Grid extends React.Component<Props, State> {
       this.scrollFunc = null;
     }
   }
-
-  rootNode: HTMLElement;
 
   render() {
     const {

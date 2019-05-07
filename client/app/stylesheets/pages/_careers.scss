@@ -1,0 +1,43 @@
+.Careers {
+  .top-box {
+    background-image: url("#{$var-images-path}/careers.jpg");
+    height: 410px;
+  }
+
+  table {
+    tr {
+      .info {
+        background-image: url("#{$var-images-path}/car-pos.png");
+        padding-left: 3.75rem;
+        background-repeat: no-repeat;
+        background-position: 0;
+
+        span {
+          font-size: 0.6875rem;
+        }
+      }
+
+      td:nth-child(3) {
+        font-family: 'Futura PT';
+      }
+
+      .btn {
+        color: #303030;
+        font-size: .6875rem;
+        border: .125rem solid #303030;
+        min-width: 4.375rem;
+        margin-right: 5px;
+
+        &:last-child {
+          margin-right: 0;
+        }
+
+        &.btn-apply {
+          background-color: $primary;
+          border-color: $primary;
+          color: $white;
+        }
+      }
+    }
+  }
+}

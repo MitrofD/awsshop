@@ -42,6 +42,12 @@ const Footer = (props: Props) => {
               <Link to="/">{tt('Home')}</Link>
             </li>
             <li>
+              <Link to="/careers">{tt('Careers')}</Link>
+            </li>
+            <li>
+              <Link to="/competition">{tt('Competition')}</Link>
+            </li>
+            <li>
               <Link to="/support">{tt('Support')}</Link>
             </li>
           </ul>

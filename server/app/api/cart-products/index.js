@@ -1,4 +1,5 @@
 // @flow
+/*
 const crypto = require('crypto');
 const collection = require('./collections/cart-products');
 const tools = require('../tools');
@@ -88,10 +89,12 @@ const cartProducts = {
 
     userCartProducts.forEach((product) => {
       /* eslint-disable no-param-reassign */
-      product.status = orders.STATUS.NEW;
-      product.createdAt = timeNow;
-      product.userEmail = user.email;
-      /* eslint-enable no-param-reassign */
+// product.status = orders.STATUS.NEW;
+// product.createdAt = timeNow;
+// product.userEmail = user.email;
+/* eslint-enable no-param-reassign */
+/*
+
     });
 
     await orders.collection.insertMany(userCartProducts);
@@ -224,3 +227,4 @@ const cartProducts = {
 };
 
 module.exports = cartProducts;
+*/

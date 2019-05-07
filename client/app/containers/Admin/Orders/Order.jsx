@@ -1,4 +1,5 @@
 // @flow
+/*
 import React, { Fragment } from 'react';
 import { tt } from '../../../components/TranslateElement';
 import orders from '../../../api/orders';
@@ -191,3 +192,4 @@ ETH
 }
 
 export default Order;
+*/

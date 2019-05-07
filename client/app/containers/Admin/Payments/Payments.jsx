@@ -39,6 +39,14 @@ class Payments extends React.PureComponent<Props, State> {
 
   searchText: ?string = null;
 
+  rootNode: HTMLElement;
+
+  breakFunc: (Object, Object) => boolean;
+
+  paymentFunc: Function;
+
+  title: string;
+
   unmounted = true;
 
   constructor(props: Props, context: null) {
@@ -258,14 +266,6 @@ class Payments extends React.PureComponent<Props, State> {
       this.scrollFunc = null;
     }
   }
-
-  rootNode: HTMLElement;
-
-  breakFunc: (Object, Object) => boolean;
-
-  paymentFunc: Function;
-
-  title: string;
 
   render() {
     const {

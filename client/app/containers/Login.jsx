@@ -24,6 +24,8 @@ class Login extends React.Component<Props, State> {
 
   password: ?string = null;
 
+  emailInput: ?HTMLInputElement;
+
   unmounted = true;
 
   constructor(props: Props, context: void) {
@@ -139,8 +141,6 @@ class Login extends React.Component<Props, State> {
 
     this.inputChangeTimer = null;
   }
-
-  emailInput: ?HTMLInputElement;
 
   render() {
     const {

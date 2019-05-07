@@ -11,8 +11,8 @@ const ImportedProductsPage = Loadable('ImportedProducts');
 const PaymentHistoryPage = Loadable('PaymentHistory');
 const SoldProductsPage = Loadable('SoldProducts');
 const ProductsPage = Loadable('Products');
-const CustomerOrdersPage = Loadable('CustomerOrders');
-const MyOrdersPage = Loadable('MyOrders');
+// const CustomerOrdersPage = Loadable('CustomerOrders');
+// const MyOrdersPage = Loadable('MyOrders');
 
 const importedProductsLink = `${Config.dashboardPath}/imported-products`;
 const invitedUsersLink = `${Config.dashboardPath}/invited-users`;

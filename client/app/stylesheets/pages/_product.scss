@@ -1,11 +1,13 @@
 .ProductPage {
   .ttl {
     margin-bottom: $var-page-padding-y;
+    white-space: normal;
   }
 
   .tab-content {
     .itm {
       display: none;
+      overflow-x: auto;
     }
 
     @each $self-class in desc, shppng {
@@ -27,23 +29,32 @@
   }
 
   .thmbs {
-    margin-top: 1rem;
-
     .itm {
       background-position: center;
       background-repeat: no-repeat;
-      background-size: 95%;
       display: inline-block;
-      width: 10%;
       height: 60px;
-      margin-bottom: 0.5rem;
       background-size: auto;
       cursor: pointer;
+      border: solid 1px $secondary;
+      border-radius: $border-radius;
+      width: 100%;
+
+      &.active {
+        @extend .animated,.fadeIn;
+        border-width: 3px;
+        border-color: $primary;
+      }
     }
   }
 
   .tabs {
     margin-top: 1.5rem;
+  }
+
+  .TLNumericInput {
+    width: auto;
+    text-align: center;
   }
 
   @include media-breakpoint-down(sm) {

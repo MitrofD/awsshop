@@ -57,6 +57,8 @@ class ItemsStack extends React.PureComponent<Props> {
 
   itemTimers: { [string]: TimeoutID } = {};
 
+  name: string;
+
   constructor(props: Props, context: null) {
     super(props, context);
     const pureName = typeof props.name === 'string' ? props.name.trim() : '';
@@ -159,8 +161,6 @@ class ItemsStack extends React.PureComponent<Props> {
 
     this.itemTimers = {};
   }
-
-  name: string;
 
   render() {
     const allItems: React$Node[] = (Object.values(this.items): any);

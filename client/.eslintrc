@@ -8,6 +8,7 @@
     "asHOT": true,
     "Config": true,
     "Enums": true,
+    "isMobile": true,
     "isDevMode": true,
     "NotificationBox": true,
     "NumberFormat": true,
@@ -28,14 +29,10 @@
     "browser": true
   },
   "settings": {
-    "import/resolver": {
-      "browser": {
-        "extensions": [
-          ".js",
-          ".jsx"
-        ]
-      }
-    }
+    "import/extensions": [
+      ".js",
+      ".jsx"
+    ]
   },
   "rules": {
     "max-len": 0,

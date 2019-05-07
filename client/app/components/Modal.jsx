@@ -71,6 +71,8 @@ class Modal extends React.PureComponent<Props, State> {
 
   static allItems: { [string]: Modal } = {};
 
+  name: string;
+
   constructor(props: Props, context: any) {
     super(props, context);
 
@@ -204,8 +206,6 @@ class Modal extends React.PureComponent<Props, State> {
       this.open();
     }
   }
-
-  name: string;
 
   render() {
     let content = null;

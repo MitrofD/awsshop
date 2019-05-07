@@ -1,4 +1,5 @@
 // @flow
+/*
 import React from 'react';
 import Order from './Order';
 import NoHaveLabel from '../../includes/NoHaveLabel';
@@ -236,3 +237,4 @@ class CustomerOrders extends React.PureComponent<Props, State> {
 }
 
 export default CustomerOrders;
+*/

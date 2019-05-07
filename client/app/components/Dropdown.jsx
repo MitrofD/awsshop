@@ -149,6 +149,16 @@ function applyStickySides() {
 class Dropdown extends React.Component<Props> {
   static defaultProps = defaultProps;
 
+  defaultParentClass: ?string;
+
+  name: string;
+
+  myNode: HTMLElement;
+
+  parentNode: HTMLElement;
+
+  uStikyName: string;
+
   constructor(props: Props, context: void) {
     super(props, context);
 
@@ -161,7 +171,8 @@ class Dropdown extends React.Component<Props> {
   }
 
   componentDidMount() {
-    const myNode = ReactDOM.findDOMNode(this); // eslint-disable-line react/no-find-dom-node
+    // eslint-disable-next-line react/no-find-dom-node
+    const myNode = ReactDOM.findDOMNode(this);
 
     if (myNode instanceof HTMLElement) {
       this.myNode = myNode;
@@ -206,16 +217,6 @@ class Dropdown extends React.Component<Props> {
       this.props.onLeave(event);
     }
   }
-
-  defaultParentClass: ?string;
-
-  name: string;
-
-  myNode: HTMLElement;
-
-  parentNode: HTMLElement;
-
-  uStikyName: string;
 
   render() {
     const {

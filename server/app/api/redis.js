@@ -90,8 +90,16 @@ clientPrototype.genSessionStore = function genSessionStore() {
 
       return new Promise((resolve) => {
         self.multi([
-          ['set', sKey, jsonStr],
-          ['zadd', sessLastActionList, time, sKey],
+          [
+            'set',
+            sKey,
+            jsonStr,
+          ], [
+            'zadd',
+            sessLastActionList,
+            time,
+            sKey,
+          ],
         ]).exec((err) => {
           resolve(!err);
         });
@@ -141,12 +149,23 @@ clientPrototype.genSessionStore = function genSessionStore() {
       const startTime = Date.now() - msDuration;
 
       return new Promise((resolve) => {
-        const zRangeAttr = [sessLastActionList, '-inf', startTime];
+        const zRangeAttr = [
+          sessLastActionList,
+          '-inf',
+          startTime,
+        ];
 
         self.zrangebyscore(zRangeAttr, (getErr, response) => {
-          const needRemoveKeys = Array.isArray(response) ? response : [];
           self.zremrangebyscore(zRangeAttr, () => {});
-          needRemoveKeys.forEach(self.del);
+          const needRemoveKeys = Array.isArray(response) ? response : [];
+          const needRemoveKeysLength = needRemoveKeys.length;
+          let i = 0;
+
+          for (; i < needRemoveKeysLength; i += 1) {
+            const key = needRemoveKeys[i];
+            self.del(key);
+          }
+
           resolve(!getErr);
         });
       });

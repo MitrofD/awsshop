@@ -21,6 +21,10 @@ class ForgotPassword extends React.PureComponent<Props, State> {
 
   inputChangeTimer: ?TimeoutID = null;
 
+  emailInput: ?HTMLInputElement;
+
+  unmounted: boolean;
+
   constructor(props: Props, context: void) {
     super(props, context);
     this.unmounted = true;
@@ -106,10 +110,6 @@ class ForgotPassword extends React.PureComponent<Props, State> {
 
     this.inputChangeTimer = null;
   }
-
-  emailInput: ?HTMLInputElement;
-
-  unmounted: boolean;
 
   render() {
     const {

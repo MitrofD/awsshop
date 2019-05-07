@@ -1,24 +1,30 @@
 // @flow
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import Drift from 'drift-zoom';
+import NumericInput from 'tl-react-numeric-input';
+import { tns } from 'tiny-slider/src/tiny-slider';
+import 'drift-zoom/src/css/drift-basic.css';
 import Page from './includes/Page';
 import XHRSpin from './includes/XHRSpin';
 import { tt } from '../components/TranslateElement';
 import AlertDanger from '../components/alerts/AlertDanger';
-import orders from '../api/orders';
+import carts from '../api/carts';
 import products from '../api/products';
-import user from '../api/user';
+import tools from '../api/tools';
 
 type Props = {
   id: string,
-  history: Object,
 };
 
 type State = {
   alert: ?React$Element<typeof AlertDanger>,
+  currImgIdx: number,
   currTab: string,
+  quantity: ?string,
   xhrRequest: boolean,
 };
+
+const defQuantity = '1';
 
 const tabs = {
   desc: 'description',
@@ -28,9 +34,19 @@ const tabs = {
 const firstTab = Object.keys(tabs)[0];
 
 class Product extends React.PureComponent<Props, State> {
-  currImage: ?string = null;
+  mainImgSrc: ?string = null;
+
+  mainImgClassName = 'img-thumbnail mb-3';
 
   data: ?Object = null;
+
+  driftBox: ?Object;
+
+  driftPaneContainerId: string;
+
+  mainImgRef: HTMLElement;
+
+  imagesSlider: ?Object;
 
   unmounted = true;
 
@@ -39,14 +55,21 @@ class Product extends React.PureComponent<Props, State> {
 
     this.state = {
       alert: null,
+      currImgIdx: 0,
       currTab: firstTab,
+      quantity: defQuantity,
       xhrRequest: true,
     };
+
+    this.driftPaneContainerId = `${tools.escapedString('driftPane')}_${Date.now()}`;
 
     const self: any = this;
     self.onClickTabItem = this.onClickTabItem.bind(this);
     self.onClickAddToCartButton = this.onClickAddToCartButton.bind(this);
     self.onClickToThumbImage = this.onClickToThumbImage.bind(this);
+    self.onSetQuantityInput = this.onSetQuantityInput.bind(this);
+    self.onRefMainImg = this.onRefMainImg.bind(this);
+    self.onRefImagesSlider = this.onRefImagesSlider.bind(this);
   }
 
   componentDidMount() {
@@ -66,7 +89,7 @@ class Product extends React.PureComponent<Props, State> {
 
     products.getById(this.props.id).then((data) => {
       this.data = data;
-      this.currImage = data.image;
+      this.mainImgSrc = data.image;
       finishWithState({});
     }).catch(() => {
       finishWithState({
@@ -77,6 +100,12 @@ class Product extends React.PureComponent<Props, State> {
 
   componentWillUnmount() {
     this.unmounted = true;
+    this.destroyImagesSliderIfNeeded();
+
+    if (this.driftBox) {
+      this.driftBox.destroy();
+      this.driftBox = null;
+    }
   }
 
   onClickTabItem(event: SyntheticEvent<HTMLElement>) {
@@ -93,22 +122,13 @@ class Product extends React.PureComponent<Props, State> {
   }
 
   onClickAddToCartButton(event: SyntheticEvent<HTMLButtonElement>) {
-    const {
-      history,
-      id,
-    } = this.props;
-
-    const currUser = user.get();
-
-    if (!currUser) {
-      history.push('/login');
-      return;
-    }
-
     const button = event.currentTarget;
+    const quantity = parseInt(this.state.quantity) || defQuantity;
     button.disabled = true;
 
-    orders.add(id).then(() => {
+    carts.add(this.props.id, {
+      quantity,
+    }).then(() => {
       NotificationBox.success('Added to cart successful');
       button.disabled = false;
     }).catch((error) => {
@@ -129,14 +149,72 @@ class Product extends React.PureComponent<Props, State> {
 
     let imageSrc = element.style.backgroundImage.substr(5);
     imageSrc = imageSrc.substr(0, imageSrc.length - removeFromEnd);
-    this.currImage = imageSrc;
-    this.forceUpdate();
+    this.mainImgSrc = imageSrc;
+    this.mainImgRef.className = this.mainImgClassName;
+
+    setImmediate(() => {
+      this.mainImgRef.className = `${this.mainImgClassName} animated pulse`;
+    });
+
+    const idx = parseInt(element.dataset.idx);
+
+    this.setState({
+      currImgIdx: idx,
+    });
+  }
+
+  onSetQuantityInput(value: string) {
+    const strVal = value.toString();
+    const quantity = strVal.length > 0 ? value : null;
+
+    this.setState({
+      quantity,
+    });
+  }
+
+  onRefMainImg(mbEl: ?HTMLElement) {
+    if (mbEl) {
+      this.mainImgRef = mbEl;
+
+      this.driftBox = new Drift(this.mainImgRef, {
+        paneContainer: document.getElementById(this.driftPaneContainerId),
+        inlinePane: false,
+      });
+    }
+  }
+
+  onRefImagesSlider(mbEl: ?HTMLElement) {
+    this.destroyImagesSliderIfNeeded();
+
+    if (mbEl) {
+      this.imagesSlider = tns({
+        container: mbEl,
+        loop: false,
+        items: 5,
+        controlsText: ['', ''],
+        controls: true,
+        nav: false,
+        controlsPosition: 'bottom',
+        slideBy: 'page',
+        gutter: 14,
+        autoplay: false,
+      });
+    }
+  }
+
+  destroyImagesSliderIfNeeded() {
+    if (this.imagesSlider) {
+      this.imagesSlider.destroy();
+      this.imagesSlider = null;
+    }
   }
 
   render() {
     const {
       alert,
+      currImgIdx,
       currTab,
+      quantity,
       xhrRequest,
     } = this.state;
 
@@ -153,40 +231,62 @@ class Product extends React.PureComponent<Props, State> {
           <div className="col-sm-4">
             <img
               alt="main_img"
-              className="img-thumbnail"
-              src={this.currImage}
+              className={this.mainImgClassName}
+              data-zoom={this.mainImgSrc}
+              ref={this.onRefMainImg}
+              src={this.mainImgSrc}
             />
-          </div>
-          <div className="col-md-8">
-            <div className="ttl">{pData.title}</div>
-            <div className="row">
-              <div className="prc col-sm-9">{NumberFormat(pData.price)}</div>
-              <div className="col-sm-3">
-                <button
-                  className="btn btn-primary btn-block animated pulse"
-                  type="button"
-                  onClick={this.onClickAddToCartButton}
-                >
-                  {tt('Add to cart')}
-                </button>
-              </div>
-            </div>
-            <div className="thmbs">
+            <div
+              className="thmbs"
+              ref={this.onRefImagesSlider}
+            >
               {pData.images.map((image, idx) => {
                 const key = `img_${idx}`;
+                let className = 'itm';
+
+                if (idx === currImgIdx) {
+                  className += ' active';
+                }
 
                 return (
-                  <a
-                    href="#"
-                    className="itm"
-                    key={key}
-                    onClick={this.onClickToThumbImage}
-                    role="button"
-                    style={{ backgroundImage: `url(${image})` }}
-                  />
+                  <div key={key}>
+                    <a
+                      href="#"
+                      key={key}
+                      className={className}
+                      data-idx={idx}
+                      onClick={this.onClickToThumbImage}
+                      role="button"
+                      style={{ backgroundImage: `url(${image})` }}
+                    />
+                  </div>
                 );
               })}
             </div>
+          </div>
+          <div
+            className="col-md-8"
+            id={this.driftPaneContainerId}
+          >
+            <div className="ttl">{pData.title}</div>
+            <div className="prc">
+              {tt('Price')}
+              {`: ${NumberFormat(pData.price)}`}
+            </div>
+            <div className="form-group">
+              <NumericInput
+                defaultValue={defQuantity}
+                onSet={this.onSetQuantityInput}
+              />
+            </div>
+            <button
+              className="btn btn-primary animated pulse"
+              disabled={!quantity}
+              type="button"
+              onClick={this.onClickAddToCartButton}
+            >
+              {tt('Add to cart')}
+            </button>
           </div>
           <div className="tabs col-sm-12">
             <ul className="nav nav-tabs">
@@ -239,4 +339,4 @@ class Product extends React.PureComponent<Props, State> {
   }
 }
 
-export default asHOT(module)(withRouter(Product));
+export default Product;

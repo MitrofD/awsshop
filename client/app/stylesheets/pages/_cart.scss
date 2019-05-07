@@ -1,0 +1,20 @@
+.CartDropdown {
+  width: 600px !important;
+
+  .DropdownItem {
+    &:hover {
+      color: inherit;
+      background-color: inherit;
+    }
+  }
+}
+
+.CartItem {
+  
+}
+
+.nav-link.Cart {
+  .Badge {
+    font-size: 0.9rem;
+  }
+}

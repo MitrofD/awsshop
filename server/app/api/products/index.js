@@ -118,11 +118,22 @@ const pureProductOrThrowError = (data: Object, asRaw: boolean = false): Object =
     }
   });
 
-  let imageAttrName = 'mainImage';
+  const imageAttrName = asRaw ? 'mainImage' : 'image';
+  const pureMainImage = typeof data[imageAttrName] === 'string' ? data[imageAttrName].trim() : EMPTY_STR;
+
+  if (pureMainImage.length === 0) {
+    throw new Error('Image url is required');
+  }
+
+  insertData.image = pureMainImage;
+
+  if (!Array.isArray(insertData.images) || insertData.images.length === 0) {
+    insertData.images = [
+      pureMainImage,
+    ];
+  }
 
   if (!asRaw) {
-    imageAttrName = 'image';
-
     if (insertData.origPrice === 0) {
       throw new Error('Price is required');
     }
@@ -149,13 +160,6 @@ const pureProductOrThrowError = (data: Object, asRaw: boolean = false): Object =
     });
   }
 
-  const pureMainImage = typeof data[imageAttrName] === 'string' ? data[imageAttrName].trim() : EMPTY_STR;
-
-  if (pureMainImage.length === 0) {
-    throw new Error('Image url is required');
-  }
-
-  insertData.image = pureMainImage;
   return insertData;
 };
 

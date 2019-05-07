@@ -9,23 +9,23 @@ import { tt } from '../../components/TranslateElement';
 const Home = () => {
   useEffect(() => {
     const fullCN = 'Home as-full';
-    window.RootNode.addClass(fullCN);
+    RootNode.addClass(fullCN);
 
     return () => {
-      window.RootNode.removeClass(fullCN);
+      RootNode.removeClass(fullCN);
     };
   });
 
   return (
     <Page>
-      <div className="top">
+      <div className="top-box">
         <div className="container">
           <div className="row info">
             <div className="col-md-6">
               <h6>
-Your dream
+                Your dream
                 <br />
-at a good price
+                at a good price
               </h6>
               <p>Do you have questions? The Modern Pack has answers</p>
               <p>Read below and find out the answers</p>

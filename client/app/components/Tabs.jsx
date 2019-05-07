@@ -54,6 +54,8 @@ const didChange = function ddChng() {
 class Tabs extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
+  oldIndex: number;
+
   constructor(props: Props, context: void) {
     super(props, context);
     const activeIndex = parseInt(props.activeIndex);
@@ -127,8 +129,6 @@ class Tabs extends React.PureComponent<Props, State> {
   isLastTab(): boolean {
     return this.getIndex() === this.getMaxIndex();
   }
-
-  oldIndex: number;
 
   render() {
     const listChildren = [];

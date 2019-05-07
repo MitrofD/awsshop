@@ -28,14 +28,15 @@ if (rBody) {
   const modalBox = document.createElement('div');
   rBody.appendChild(modalBox);
 
+  window.isMobile = /iPhone|iPad|iPod|Android/.test(window.navigator.userAgent);
   window.RootNode = (function genRootNode() {
     let importantCN = 'cntnt';
 
-    if (/iPhone|iPad|iPod|Android/.test(window.navigator.userAgent)) {
+    if (isMobile) {
       importantCN += ' mbl';
     }
 
-    const classesObj: { [string]: string } = {};
+    const classesObj = {};
 
     const didChangedClassesObj = () => {
       const allClasses: string[] = (Object.values(classesObj): any);
@@ -70,7 +71,6 @@ if (rBody) {
   }());
 
   window.NotificationBox = (function configNotificationBox() {
-    type itemsStackRefType = React$Element<typeof ItemsStack>;
     let itemsStackRef: ItemsStack;
 
     const notificationBoxEl = document.createElement('div');
@@ -130,7 +130,6 @@ if (rBody) {
     unmountComponentAtNode(rootNode);
 
     if (error) {
-      console.error(error);
       NotificationBox.danger(error.message);
       return;
     }

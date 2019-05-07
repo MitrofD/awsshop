@@ -1,13 +1,11 @@
 // @flow
 import React from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { tt } from '../../components/TranslateElement';
-import orders from '../../api/orders';
-import user from '../../api/user';
+import carts from '../../api/carts';
 
 type Props = {
   _id: string,
-  history: Object,
   image: string,
   price: number,
   title: string,
@@ -23,22 +21,20 @@ const Product = (props: Props) => {
   const onClickAddButton = (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    const currUser = user.get();
-
-    if (!currUser) {
-      props.history.push('/login');
-      return;
-    }
 
     const button = event.currentTarget;
     button.disabled = true;
 
-    orders.add(props._id).then(() => {
-      NotificationBox.success('Added to Cart successful');
+    const finish = () => {
       button.disabled = false;
+    };
+
+    carts.add(props._id).then(() => {
+      NotificationBox.success('Added to Cart successful');
+      finish();
     }).catch((error) => {
       NotificationBox.danger(error.message);
-      button.disabled = false;
+      finish();
     });
   };
 
@@ -67,4 +63,4 @@ const Product = (props: Props) => {
   );
 };
 
-export default withRouter(Product);
+export default Product;

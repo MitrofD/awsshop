@@ -11,7 +11,10 @@ const {
 } = require('../components/Loadable').default(cN => import(`./${cN}`));
 
 const AdminPage = LoadableIfAdmin('Admin');
+const CartPage = Loadable('Cart');
 const CatalogPage = LoadableWithParams('Catalog');
+const CareersPage = Loadable('Careers');
+const CompetitionPage = Loadable('Competition');
 const EmailVerificationSendedPage = LoadableWithParams('EmailVerificationResent');
 const EmailVerificationPage = LoadableWithParams('EmailVerification');
 const DashboardPage = LoadableIfUserNeeded('Dashboard', true);
@@ -20,12 +23,11 @@ const FAQPage = Loadable('FAQ');
 const ForgotPasswordPage = LoadableIfUserNeeded('ForgotPassword', false);
 const FindPasswordTipPage = Loadable('FindPasswordTip');
 const LoginPage = LoadableIfUserNeeded('Login', false);
-const OrdersCompletedPage = LoadableWithParams('OrdersCompleted');
+// const OrdersCompletedPage = LoadableWithParams('OrdersCompleted');
 const RegistrationPage = LoadableIfUserNeeded('Registration', false);
 const ResetPasswordPage = LoadableWithParams('ResetPassword');
 const ProductPage = LoadableWithParams('Product');
 const SettingsPage = LoadableIfUserNeeded('Settings', true);
-const ShoppingCartPage = LoadableIfUserNeeded('ShoppingCart', true);
 const SupportPage = Loadable('Support');
 
 const Routes = () => (
@@ -42,6 +44,14 @@ const Routes = () => (
     <Route
       component={CatalogPage}
       path={`${Config.categoryPath}:category`}
+    />
+    <Route
+      component={CareersPage}
+      path="/careers"
+    />
+    <Route
+      component={CompetitionPage}
+      path="/competition"
     />
     <Route
       component={DashboardPage}
@@ -92,8 +102,8 @@ const Routes = () => (
       path="/product/:id"
     />
     <Route
-      component={ShoppingCartPage}
-      path="/shopping-cart"
+      component={CartPage}
+      path="/cart"
     />
     <Route
       component={SupportPage}
@@ -107,10 +117,6 @@ const Routes = () => (
           path={match.params.path}
         />
       )}
-    />
-    <Route
-      component={OrdersCompletedPage}
-      path="/orders-completed/:code"
     />
   </Switch>
 );

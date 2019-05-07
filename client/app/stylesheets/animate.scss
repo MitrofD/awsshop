@@ -9,7 +9,7 @@
  */
 
 .animated {
-  animation-duration: 0.3s;
+  animation-duration: 1s;
   animation-fill-mode: both;
 }
 
@@ -26,6 +26,15 @@
 .animated.bounceIn,
 .animated.bounceOut {
   animation-duration: .75s;
+}
+
+.animated.fadeIn,
+.animated.fadeOut {
+  animation-duration: .3s;
+}
+
+.animated.fadeInUp {
+  animation-duration: .2s;
 }
 
 @keyframes bounce {

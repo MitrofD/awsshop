@@ -10,11 +10,9 @@ const PaymentsList = (props: Props) => (
     {props.items.map(item => (
       <div key={item.userId}>
         <strong>{item.user}</strong>
-        {' '}
--
+        {' - '}
         {item.quantity}
-        {' '}
-/
+        {' / '}
         <span className="text-danger">{NumberFormat(item.earnings)}</span>
       </div>
     ))}

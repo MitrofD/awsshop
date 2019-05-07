@@ -1,0 +1,130 @@
+.Competition {
+  .top-box {
+    background-image: url("#{$var-images-path}/competition.jpg");
+    height: 410px;
+  }
+
+  .countdown {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    color: #303030;
+
+    @include media-breakpoint-down(md) {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .left,
+    .right {
+      font-family: 'Futura PT Bold';
+    }
+
+    .left {
+      font-size: 1.0625rem;
+      text-transform: uppercase;
+    }
+
+    .right {
+      font-size: 0.75rem;
+
+      .btn {
+        min-width: 6.25rem;
+        margin: 0 0 0 .625rem;
+        padding: 1.3125rem .75rem;
+        font-size: .75rem;
+        border-width: .125rem;
+      }
+    }
+  }
+
+  table {
+    thead tr th {
+      border-top: none;
+      font-size: .8125rem;
+      text-transform: uppercase;
+    }
+
+    tr {
+      td {
+        font-family: 'Futura PT Medium' !important;
+
+        &:first-child {
+          span {
+            position: relative;
+            padding: 0 0 0 1.25rem;
+
+            &::after {
+              position: absolute;
+              content: '';
+              width: 1rem;
+              height: .875rem;
+              left: 0;
+              top: 49%;
+              margin: -.4375rem 0 0;
+            }
+
+            &.active::after {
+              background-image: url("#{$var-images-path}/star.png");
+            }
+          }
+        }
+
+        &:last-child {
+          color: $primary;
+        }
+      }
+    }
+  }
+
+  .prize-places {
+    border-top: 1px solid #ebebeb;
+    margin-top: 4.375rem;
+    padding-top: 3.9375rem;
+
+    .ttl {
+      font-size: 1.0625rem;
+      font-family: 'Futura PT Bold';
+      margin-bottom: 2.1875rem;
+    }
+
+    .item {
+      position: relative;
+      height: 13.75rem;
+      padding: 1.875rem 2.1875rem;
+      color: $white;
+      overflow: hidden;
+      background-color: $primary;
+      background-position: 100% 0;
+      background-repeat: no-repeat;
+
+      .info {
+        position: absolute;
+        bottom: 1.875rem;
+        font-size: .8125rem;
+        font-family: 'Futura PT Bold';
+
+        h6 {
+          margin: 0;
+          font-size: 1.5625rem;
+          text-transform: uppercase;
+        }
+      }
+
+      &.first {
+        background-image: url("#{$var-images-path}/1st.png");
+      }
+
+      &.second {
+        background-image: url("#{$var-images-path}/2nd.png");
+      }
+
+      &.third {
+        background-image: url("#{$var-images-path}/3rd.png");
+      }
+
+      &.fourth {
+        background-image: url("#{$var-images-path}/4th.png");
+      }
+    }
+  }
+}

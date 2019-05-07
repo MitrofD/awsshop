@@ -35,6 +35,8 @@ class SoldProducts extends React.Component<Props, State> {
 
   scrollFunc: ?Function = null;
 
+  rootNode: HTMLElement;
+
   unmounted = true;
 
   constructor(props: Props, context: null) {
@@ -192,8 +194,6 @@ class SoldProducts extends React.Component<Props, State> {
     }
   }
 
-  rootNode: HTMLElement;
-
   render() {
     const {
       showLoadMore,
@@ -239,15 +239,14 @@ class SoldProducts extends React.Component<Props, State> {
                   </td>
                   <td>
                     <strong className="text-primary mb-3">
-#
-                      {item.productId}
+                      {`#${item.productId}`}
                     </strong>
                     <div>{item.title}</div>
                   </td>
                   <td>
                     <div className="text-secondary">{NumberFormat(item.price)}</div>
                     <div className="text-danger">
-Earnings:
+                      Earnings:
                       {NumberFormat(item.earnings)}
                     </div>
                   </td>

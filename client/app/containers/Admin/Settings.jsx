@@ -1,10 +1,10 @@
 // @flow
 import React, { Fragment } from 'react';
-import XHRSpin from '../../includes/XHRSpin';
-import { InvalidLabel } from '../../../components/Label';
-import NumberInput from '../../../components/NumberInput';
-import { tt } from '../../../components/TranslateElement';
-import serverSettings from '../../../api/server-settings';
+import NumberInput from 'tl-react-numeric-input';
+import XHRSpin from '../includes/XHRSpin';
+import { InvalidLabel } from '../../components/Label';
+import { tt } from '../../components/TranslateElement';
+import serverSettings from '../../api/server-settings';
 
 type Props = {};
 
@@ -17,11 +17,11 @@ type State = {
 class Settings extends React.Component<Props, State> {
   formChangedData: { [string]: boolean } = {};
 
-  formCurrData: { [string]: any } = {};
+  formCurrData = {};
 
-  formNumData: { [string]: any } = {};
+  formNumData = {};
 
-  formStrData: { [string]: any } = {};
+  formStrData = {};
 
   inputChangeTimer: ?TimeoutID = null;
 
@@ -94,22 +94,24 @@ class Settings extends React.Component<Props, State> {
     });
   }
 
-  onChangeNumberInput(input: HTMLInputElement, value: ?number) {
+  onChangeNumberInput(event: SyntheticEvent<HTMLInputElement>) {
     if (this.unmounted) {
       return;
     }
 
-    const attrName = input.name;
-    const currValue = this.formCurrData[attrName];
-    this.formNumData[attrName] = value;
-    this.formChangedData[attrName] = currValue !== value;
+    const input = event.currentTarget;
+    const inputName = input.name;
+    const numValue = parseFloat(input.value);
+    const oldVal = this.formCurrData[inputName];
+    this.formNumData[inputName] = numValue;
+    this.formChangedData[inputName] = oldVal !== numValue;
 
     this.setState((prevState) => {
-      const oldErrors = prevState.errors;
-      oldErrors[attrName] = null;
+      const newErrors = prevState.errors;
+      newErrors[inputName] = null;
 
       return {
-        errors: oldErrors,
+        errors: newErrors,
       };
     });
   }
@@ -194,7 +196,6 @@ class Settings extends React.Component<Props, State> {
     } else {
       const formNumDataKeys = Object.keys(this.formNumData);
       const formStrDataKeys = Object.keys(this.formStrData);
-      const minNum = 0;
       let pDisabledSubmit = true;
 
       const getInputDataForKey = (key: string): Object => {
@@ -239,7 +240,7 @@ class Settings extends React.Component<Props, State> {
                     <div className="form-group">
                       <label>
                         {tt(key)}
-:
+                        :
                       </label>
                       <input
                         className={tClassName}
@@ -268,12 +269,12 @@ class Settings extends React.Component<Props, State> {
                     <div className="form-group">
                       <label>
                         {tt(key)}
-:
+                        :
                       </label>
                       <NumberInput
                         className={inputData.className}
                         defaultValue={this.formNumData[key]}
-                        min={minNum}
+                        min="0"
                         name={key}
                         onChange={this.onChangeNumberInput}
                       />
@@ -282,13 +283,15 @@ class Settings extends React.Component<Props, State> {
                   </div>
                 );
               })}
-              <button
-                className="btn btn-primary col-12"
-                disabled={pDisabledSubmit}
-                type="submit"
-              >
-                {tt('Save changes')}
-              </button>
+              <div className="col-12">
+                <button
+                  className="btn btn-primary float-right"
+                  disabled={pDisabledSubmit}
+                  type="submit"
+                >
+                  {tt('Save changes')}
+                </button>
+              </div>
             </form>
           </div>
         </Fragment>

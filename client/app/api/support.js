@@ -1,6 +1,5 @@
 // @flow
 import axios from 'axios';
-import tools from './tools';
 
 const postPromiseWithPath = (path: string, item?: Object): Promise<Object> => {
   const postPromise = new Promise((resolve, reject) => {
