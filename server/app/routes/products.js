@@ -1,12 +1,6 @@
 // @flow
-const bodyParser = require('body-parser');
-const querystring = require('querystring');
-const request = require('request');
+const aliexpress = require('../api/aliexpress');
 const products = require('../api/products');
-
-const bodyUrlencodedMiddleware = bodyParser.urlencoded({
-  extended: false,
-});
 
 const getPureArrObj = (obj: Object) => {
   const pureObj = {};
@@ -87,12 +81,10 @@ module.exports = function productsRoute() {
     }).catch(next);
   });
 
-  this.get('/products/url/:url', (req, res, next) => {
-    const pureURL = querystring.unescape(req.params.url);
+  this.get('/aliexpress-products/:id', (req, res, next) => {
+    const productUrl = aliexpress.getUrl(req.params.id);
 
-    products.withUrl(pureURL, {
-      isPaused: false,
-    }).then((product) => {
+    products.withUrl(productUrl).then((product) => {
       res.json(product);
     }).catch(next);
   });
@@ -118,30 +110,14 @@ module.exports = function productsRoute() {
     }).catch(next);
   });
 
-  this.post('/products', Middleware.userId_Sess, bodyUrlencodedMiddleware, (req, res, next) => {
-    const finishFunc = () => {
-      const pureArrsObj = getPureArrObj(req.body);
-      Object.assign(req.body, pureArrsObj);
-
-      products.add(req.userId, req.body).then((product) => {
+  this.post('/aliexpress-products/:id', Middleware.userId_Sess, (req, res, next) => {
+    aliexpress.getData(req.params.id).then((data) => {
+      // eslint-disable-next-line no-param-reassign
+      data.type = products.SHOP_TYPE.ALIEXPRESS;
+      products.add(req.userId, data).then((product) => {
         res.json(product);
       }).catch(next);
-    };
-
-    if (typeof req.body.descriptionUrl === 'string') {
-      request(req.body.descriptionUrl, (error, response, body) => {
-        if (error) {
-          next(error);
-          return;
-        }
-
-        const oldDesc = typeof req.body.description === 'string' ? req.body.description.trim() : '';
-        req.body.description = oldDesc + body;
-        finishFunc();
-      });
-    } else {
-      finishFunc();
-    }
+    }).catch(next);
   });
 
   this.put('/products/:id', Middleware.userId_Sess, Middleware.jsonBodyParser, (req, res, next) => {

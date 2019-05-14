@@ -8,6 +8,8 @@ const defOptions = {
   secure: false,
 };
 
+const delim = ';';
+
 const Cookies = {
   parse(str: string): Object {
     const returnObj = {};
@@ -16,11 +18,16 @@ const Cookies = {
       return returnObj;
     }
 
-    str.split(';').forEach((cookie) => {
-      const parts = cookie.split('=');
-      const prop = parts.shift().trim();
-      returnObj[prop] = decodeURI(parts.join('='));
-    });
+    const parts = str.split(delim);
+    const partsLength = parts.length;
+    let i = 0;
+
+    for (; i < partsLength; i += 1) {
+      const part = parts[i];
+      const cookieParts = part.split('=');
+      const prop = cookieParts[0].trim();
+      returnObj[prop] = decodeURI(cookieParts[1]);
+    }
 
     return returnObj;
   },
@@ -34,29 +41,35 @@ const Cookies = {
       'Path=' + rOptions.path,
     ];
 
+    let valPartsLength = valParts.length;
+
     if (typeof rOptions.expireDays === 'number' && !Number.isNaN(rOptions.expireDays)) {
       const secDuration = rOptions.expireDays * SECONDS_IN_DAY;
       const mscDuration = secDuration * SECOND_IN_MS;
       const timeNow = (new Date()).getTime();
       const expires = new Date(timeNow + mscDuration);
       const expiresAttr = 'Expires=' + expires.toString();
-      valParts.push(expiresAttr);
+      valParts[valPartsLength] = expiresAttr;
+      valPartsLength += 1;
     }
 
     if (typeof rOptions.domain === 'string') {
       const domainAttr = 'Domain=' + rOptions.domain;
-      valParts.push(domainAttr);
+      valParts[valPartsLength] = domainAttr;
+      valPartsLength += 1;
     }
 
     if (rOptions.httpOnly) {
-      valParts.push('HttpOnly');
+      valParts[valPartsLength] = 'HttpOnly';
+      valPartsLength += 1;
     }
 
     if (rOptions.secure) {
-      valParts.push('Secure');
+      valParts[valPartsLength] = 'Secure';
+      valPartsLength += 1;
     }
 
-    return valParts.join(';');
+    return valParts.join(delim);
   },
 };
 

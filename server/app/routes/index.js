@@ -16,6 +16,7 @@ require('./translations').call(router);
 require('./users').call(router);
 require('./settings').call(router);
 require('./support').call(router);
+require('./vacancies').call(router);
 
 const configData = Object.assign({
   csrfCookieName: csrf.cookieName.toLowerCase(),

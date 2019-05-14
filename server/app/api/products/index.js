@@ -218,6 +218,8 @@ const deleteWithCollection = async (deleteCollection: Object, userId: string, id
 };
 
 const products = {
+  SHOP_TYPE,
+
   async add(userId: string, data: any): Promise<Object> {
     const rData = typeof data === 'object' && data !== null ? data : {};
     const pureProduct = pureProductOrThrowError(rData, true);
@@ -371,11 +373,9 @@ const products = {
 
     await Promise.all([
       categories.addProduct(pureProduct.categoryId),
-      /*
       rawCollection.deleteOne({
         _id: rawProductId,
       }),
-      */
     ]);
 
     pureProduct.rawId = rawProductId;
