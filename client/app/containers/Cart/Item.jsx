@@ -37,8 +37,8 @@ class Item extends React.PureComponent<Props, State> {
     this.unmounted = true;
   }
 
-  onSetQuantityInput(value: any) {
-    const pureValue = parseInt(value) || 0;
+  onSetQuantityInput(input: NumberInput) {
+    const pureValue = parseInt(input.value) || 0;
 
     this.setStateAfterInputChange({
       quantity: pureValue,

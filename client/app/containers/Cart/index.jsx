@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { hot } from 'react-hot-loader/root';
 import CoinPayments from './CoinPayments';
 import Item from './Item';
 import Page from '../includes/Page';
@@ -105,4 +106,4 @@ class Cart extends React.PureComponent<Props, State> {
   }
 }
 
-export default asHOT(module)(Cart);
+export default hot(Cart);

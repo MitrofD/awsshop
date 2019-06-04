@@ -10,11 +10,9 @@ import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
 import 'tinymce/plugins/table';
 import 'tinymce/skins/ui/oxide/skin.min.css';
-import NumberInput from 'tl-react-numeric-input';
 import XHRSpin from '../../includes/XHRSpin';
 import { InvalidLabel } from '../../../components/Label';
 import { tt } from '../../../components/TranslateElement';
-import serverSettings from '../../../api/server-settings';
 import pages from '../../../api/pages';
 
 const getUniqueId = (function makeUniqueIdFunc() {
@@ -97,7 +95,6 @@ class SubmitForm extends React.Component<Props, State> {
     };
 
     tinymce.init({
-      // theme_url: '../../tinymce/themes/silver',
       height: 500,
       menu: [],
       plugins: 'textcolor table colorpicker image link lists hr',

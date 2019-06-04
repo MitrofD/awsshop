@@ -2,6 +2,32 @@
 const cheerio = require('cheerio');
 const request = require('request');
 
+const BASE_CURRENCY = 'USD';
+const UPDATE_RATES_DELAY = 30000;
+let RATES = {};
+
+(function updateRates(delay: number) {
+  setTimeout(() => {
+    request.get(`https://api.exchangeratesapi.io/latest?base=${BASE_CURRENCY}`, (error, response, body) => {
+      if (error) {
+        updateRates(UPDATE_RATES_DELAY);
+        return;
+      }
+
+      try {
+        const mbJSON = JSON.parse(body);
+
+        if (typeof mbJSON.rates === 'object' && mbJSON.rates !== null) {
+          RATES = mbJSON.rates;
+        }
+        // eslint-disable-next-line no-empty
+      } catch (pError) {}
+
+      updateRates(UPDATE_RATES_DELAY);
+    });
+  }, delay);
+}(0));
+
 const urlWithProductId = (productId: any) => {
   if (typeof productId === 'string' || typeof productId === 'number') {
     const strProductId = productId.toString();
@@ -53,7 +79,35 @@ const rObj = {
         const mainImage = $('#magnifier .ui-image-viewer-thumb-frame').children('img').first().attr('src');
 
         // price
-        const price = $('#j-sku-price').text();
+        let price = 0;
+        const jsonVariations = /var.skuProducts=(.*);/.exec(body);
+
+        if (jsonVariations) {
+          try {
+            const mbJSON = JSON.parse(jsonVariations[1]);
+            const item = mbJSON[0];
+
+            const {
+              currency,
+              value,
+            } = item.skuVal.skuAmount;
+
+            price = value;
+
+            if (currency !== BASE_CURRENCY) {
+              const convertPrice = RATES[currency];
+
+              if (typeof convertPrice === 'number') {
+                price /= convertPrice;
+              } else {
+                reject(new Error(`${currency} not available`));
+                return;
+              }
+            }
+
+          // eslint-disable-next-line no-empty
+          } catch (pError) {}
+        }
 
         // seller
         const sellerLink = $('#j-store-info-wrap .store-lnk').attr('href');

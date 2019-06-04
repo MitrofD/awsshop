@@ -93,7 +93,7 @@ class Product extends React.PureComponent<Props, State> {
       finishWithState({});
     }).catch(() => {
       finishWithState({
-        alert: <AlertDanger>Product has been deleted or set on pause by owners</AlertDanger>,
+        alert: <AlertDanger>Product not found or has been deleted by owners</AlertDanger>,
       });
     });
   }
@@ -140,15 +140,13 @@ class Product extends React.PureComponent<Props, State> {
   onClickToThumbImage(event: SyntheticEvent<HTMLButtonElement>) {
     event.preventDefault();
     const element = event.currentTarget;
-    let removeFromEnd = 2;
     const pData = Tools.anyAsObj(this.data);
+    const imageFullSrc = element.style.backgroundImage.substr(5);
 
-    if (pData.type === 'ALIEXPRESS') {
-      removeFromEnd += 10;
-    }
+    const [
+      imageSrc,
+    ] = imageFullSrc.split('_50x50');
 
-    let imageSrc = element.style.backgroundImage.substr(5);
-    imageSrc = imageSrc.substr(0, imageSrc.length - removeFromEnd);
     this.mainImgSrc = imageSrc;
     this.mainImgRef.className = this.mainImgClassName;
 
@@ -163,9 +161,8 @@ class Product extends React.PureComponent<Props, State> {
     });
   }
 
-  onSetQuantityInput(value: string) {
-    const strVal = value.toString();
-    const quantity = strVal.length > 0 ? value : null;
+  onSetQuantityInput(input: NumericInput) {
+    const quantity = input.value > 0 ? input.value.toString() : null;
 
     this.setState({
       quantity,
@@ -275,6 +272,7 @@ class Product extends React.PureComponent<Props, State> {
             </div>
             <div className="form-group">
               <NumericInput
+                disabledDecimal
                 defaultValue={defQuantity}
                 onSet={this.onSetQuantityInput}
               />

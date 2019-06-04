@@ -211,7 +211,6 @@ class Messages extends React.Component<Props, State> {
 
     let content = null;
     let itemsContent = null;
-    const headerContent = null;
 
     if (xhrRequest) {
       content = <XHRSpin />;

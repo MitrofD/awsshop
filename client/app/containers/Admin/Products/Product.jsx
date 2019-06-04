@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { tt } from '../../../components/TranslateElement';
 import products from '../../../api/products';
 
@@ -43,6 +44,7 @@ class Product extends React.PureComponent<Props, State> {
 
   render() {
     const {
+      _id,
       advData,
       earnings,
       title,
@@ -68,36 +70,32 @@ class Product extends React.PureComponent<Props, State> {
             <div className="my-3">
               <strong>
                 {tt('User')}
-:
-                {' '}
+                {': '}
               </strong>
               {advData.userFullName}
               <br />
               <strong>
                 {tt('User email')}
-:
-                {' '}
+                {': '}
               </strong>
               <a href={`mailto:${advData.userEmail}`}>{advData.userEmail}</a>
             </div>
             <div className="my-3">
               <strong>
                 {tt('Price')}
-:
+                :
               </strong>
               {' '}
               {price}
-              {' '}
-$
+              {'$'}
               <br />
               <strong>
                 {tt('Earnings')}
-:
+                :
               </strong>
               {' '}
               {earnings}
-              {' '}
-$
+              {'$'}
             </div>
             <div className="btns-grp float-right">
               <button
@@ -107,6 +105,12 @@ $
               >
                 {tt(approveButtonTitle)}
               </button>
+              <Link
+                className="btn btn-primary btn-sm"
+                to={`/product/${_id}`}
+              >
+                {tt('Details')}
+              </Link>
               <button
                 className="btn btn-danger btn-sm"
                 onClick={this.onClickDeleteButton}

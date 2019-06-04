@@ -2,7 +2,7 @@
 const vacancies = require('../api/vacancies');
 
 module.exports = function makeRoute() {
-  this.get('/vacancies', Middleware.admin_Sess, (req, res, next) => {
+  this.get('/vacancies', (req, res, next) => {
     vacancies.get(req.query).then((items) => {
       res.json(items);
     }).catch(next);

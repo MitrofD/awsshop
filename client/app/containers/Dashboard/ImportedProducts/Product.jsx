@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import { tt } from '../../../components/TranslateElement';
-import products from '../../../api/products';
 
 type ItemManipulation = (data: Object) => void;
 

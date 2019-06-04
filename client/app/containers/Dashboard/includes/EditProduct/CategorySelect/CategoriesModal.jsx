@@ -68,6 +68,7 @@ class CategoriesModal extends React.PureComponent<Props, State> {
     const self: any = this;
     self.onChangeSearchInput = this.onChangeSearchInput.bind(this);
     self.onKeyDownSearchInput = this.onKeyDownSearchInput.bind(this);
+    self.onClickSubmitButton = this.onClickSubmitButton.bind(this);
     self.onClickToItem = this.onClickToItem.bind(this);
     self.onCloseModal = this.onCloseModal.bind(this);
     self.onSetRootNode = this.onSetRootNode.bind(this);
@@ -84,12 +85,16 @@ class CategoriesModal extends React.PureComponent<Props, State> {
     this.stopListenWindowScroll();
   }
 
+  onClickSubmitButton(event: SyntheticEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    this.search();
+  }
+
   onKeyDownSearchInput(event: SyntheticEvent<HTMLInputElement>) {
     // eslint-disable-next-line flowtype-errors/show-errors
     if (event.keyCode === 13) {
       event.preventDefault();
-      this.reset();
-      this.filter();
+      this.search();
     }
   }
 
@@ -156,6 +161,11 @@ class CategoriesModal extends React.PureComponent<Props, State> {
     }, newState);
 
     this.setState(pureNewState);
+  }
+
+  search() {
+    this.reset();
+    this.filter();
   }
 
   filter() {
@@ -232,7 +242,8 @@ class CategoriesModal extends React.PureComponent<Props, State> {
           <div className="col-sm-4">
             <button
               className="btn btn-outline-primary btn-sm btn-block"
-              type="submit"
+              onClick={this.onClickSubmitButton}
+              type="button"
             >
               {tt('Search')}
             </button>

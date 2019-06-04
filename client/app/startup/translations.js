@@ -16,10 +16,7 @@ const translationsPromise = translations.config(userLanguage);
 
 translationsPromise.then(() => {
   applyLanguage();
-
-  translations.subscribe(() => {
-    applyLanguage();
-  });
+  translations.subscribe(applyLanguage);
 }).catch(Tools.emptyRejectExeption);
 
 export default translationsPromise;

@@ -38,9 +38,8 @@ class ReactivateAccount extends React.PureComponent<Props, State> {
 
   onSubmitForm(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = event.currentTarget;
-    console.log(this);
-    console.log(form);
+    // const form = event.currentTarget;
+    this.forceUpdate();
   }
 
   render() {

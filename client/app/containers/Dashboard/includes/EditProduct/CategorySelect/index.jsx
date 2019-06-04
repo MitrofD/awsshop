@@ -89,10 +89,14 @@ class CategorySelect extends React.PureComponent<Props, State> {
     });
   }
 
-  onClickToMe() {
+  onClickToMe(event: SyntheticEvent<HTMLElement>) {
     if (this.state.xhrRequest) {
       return;
     }
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.blur();
 
     this.setState({
       modal: (
@@ -126,7 +130,7 @@ class CategorySelect extends React.PureComponent<Props, State> {
         {modal}
         <select
           className={this.props.className}
-          onClick={this.onClickToMe}
+          onFocus={this.onClickToMe}
         >
           <option hidden>{title}</option>
         </select>

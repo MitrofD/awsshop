@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { hot } from 'react-hot-loader/root';
 import { NavLink, Switch, Route } from 'react-router-dom';
 import Page from '../includes/Page';
 import { tt } from '../../components/TranslateElement';
@@ -50,4 +51,4 @@ const Settings = () => (
   </Page>
 );
 
-export default asHOT(module)(Settings);
+export default hot(Settings);

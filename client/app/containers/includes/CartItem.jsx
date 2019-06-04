@@ -3,7 +3,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import NumberInput from 'tl-react-numeric-input';
 import { tt } from '../../components/TranslateElement';
-import carts from '../../api/carts';
 
 type Props = Object;
 
@@ -44,7 +43,6 @@ class CartItem extends React.PureComponent<Props, State> {
 
   onChangeQuantityInput(event: SyntheticEvent<HTMLInputElement>, value: ?number) {
     const pureValue = parseInt(value) || 0;
-    const diff = pureValue - this.prevQuantity;
     this.prevQuantity = pureValue;
 
     this.setStateAfterInputChange({
@@ -57,8 +55,8 @@ class CartItem extends React.PureComponent<Props, State> {
 
     showConfirmModal('Are you sure?', () => {
       button.disabled = true;
-      const productId = this.props._id;
-      console.log(productId);
+      // const productId = this.props._id;
+      this.forceUpdate();
 
       /*
       orders.remove(productId).then(() => {
@@ -104,7 +102,6 @@ class CartItem extends React.PureComponent<Props, State> {
       quantity,
     } = this.state;
 
-    console.log(quantity);
     const toPath = `/product/${productId}`;
 
     return (

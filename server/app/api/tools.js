@@ -47,7 +47,7 @@ const tools = {
   isUndefined: (maybyObj: any) => typeof maybyObj === 'undefined',
   isError: (maybyObj: any) => maybyObj instanceof Error,
   passwordRegExp: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-  urlRegExp: /^(https?:\/\/)?(?:[^@/\n]+@)?(?:www\.)?([^:/\n]+)((?::\d+)?)/iy,
+  urlRegExp: /^(https?:\/\/)?(?:[^@/\n]+@)?(?:www\.)?([^:/\n]+)((?::\d+)?)/i,
 };
 
 module.exports = tools;

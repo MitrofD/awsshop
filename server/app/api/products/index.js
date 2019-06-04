@@ -359,7 +359,14 @@ const products = {
     rawProduct.origPrice = rawProduct.price;
     const pureProduct = pureProductOrThrowError(rawProduct);
     pureProduct.userId = userId;
-    pureProduct.isApproved = user.isAdmin;
+    pureProduct.isApproved = false;
+    const promises: Object[] = [];
+
+    if (user.isAdmin) {
+      pureProduct.isApproved = true;
+      const incPromise = categories.addProduct(pureProduct.categoryId);
+      promises.push(incPromise);
+    }
 
     pureProduct.advData = {
       userEmail: user.email,
@@ -371,13 +378,11 @@ const products = {
     const insertRes = await collection.insertOne(pureProduct);
     pureProduct._id = insertRes.insertedId;
 
-    await Promise.all([
-      categories.addProduct(pureProduct.categoryId),
-      rawCollection.deleteOne({
-        _id: rawProductId,
-      }),
-    ]);
+    promises.push(rawCollection.deleteOne({
+      _id: rawProductId,
+    }));
 
+    await Promise.all(promises);
     pureProduct.rawId = rawProductId;
     return pureProduct;
   },
@@ -385,6 +390,7 @@ const products = {
   async update(userId: string, id: MongoID, updateData: any, asAdmin: boolean = false): Promise<Object> {
     const product = await this.withId(id);
     const pData = tools.anyAsObj(updateData);
+
     const setObj = {};
     const checkAsBoolProps = ['isPaused'];
     let needUpdate = false;
@@ -409,6 +415,14 @@ const products = {
 
     if (!needUpdate) {
       return product;
+    }
+
+    if (tools.has.call(setObj, 'isApproved') && product.isApproved !== setObj.isApproved) {
+      if (setObj.isApproved) {
+        await categories.addProduct(product.categoryId);
+      } else {
+        await categories.removeProduct(product.categoryId);
+      }
     }
 
     const { value } = await collection.findOneAndUpdate({

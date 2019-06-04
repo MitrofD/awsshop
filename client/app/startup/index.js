@@ -6,7 +6,6 @@ const applyClientConfig = (data: Object): Object => {
   const advancedData = {
     adminPath: '/admin',
     catalogPath: '/catalog',
-    categoryPath: '/category/',
     dashboardPath: '/dashboard',
     inputTimeout: 150,
     settingsPath: '/settings',

@@ -92,7 +92,7 @@ class EmailVerificationResent extends React.PureComponent<Props, State> {
       <div className="EmailVerificationResent frm-cntnr">
         <div className="frm">
           <div className="innr animated pulse">
-            <div className="ttl">{tt('Email sended')}</div>
+            <div className="ttl">{tt('Email sent')}</div>
             {this.state.alert}
             <p>
               {rAdvancedMessage}

@@ -228,7 +228,6 @@ const settings = Object.freeze({
       const saveOptions = Object.assign({}, CURR_OPTIONS);
       saveOptions[pOption] = pValue;
       await setOptionsToFile(saveOptions);
-
       return pValue;
     }
 

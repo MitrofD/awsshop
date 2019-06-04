@@ -1,10 +1,10 @@
 // @flow
 import React from 'react';
+import { hot } from 'react-hot-loader/root';
 import { Link, NavLink } from 'react-router-dom';
 import Cart from './Cart';
 import UserMenu from './UserMenu';
 import NavLogo from '../NavLogo';
-import NavLoginOrRegister from '../NavLoginOrRegister';
 import { tt } from '../../../components/TranslateElement';
 
 type Props = {
@@ -16,7 +16,7 @@ type State = {
 };
 
 const isActiveCatalogLink = (function makeIsActiveCatalogLink() {
-  const catergoryPathRegExp = new RegExp(`^${Config.categoryPath}.*`);
+  const catergoryPathRegExp = new RegExp(`^${Config.catalogPath}.*`);
 
   return (match: ?Object, location: Object) => {
     if (match) {
@@ -146,4 +146,4 @@ class Header extends React.PureComponent<Props, State> {
   }
 }
 
-export default asHOT(module)(Header);
+export default hot(Header);

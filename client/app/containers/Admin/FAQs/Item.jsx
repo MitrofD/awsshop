@@ -49,7 +49,7 @@ class Item extends React.PureComponent<Props, State> {
   }
 
   onClickEditButton() {
-    this.setState((prevState) => {
+    this.setState(() => {
       const newState = {
         modal: (
           <ItemSubmitModal

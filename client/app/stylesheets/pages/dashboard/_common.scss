@@ -37,6 +37,11 @@
 }
 
 .EditProduct {
+  select {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
   .thmbs {
     margin-bottom: 1rem;
   }
@@ -60,22 +65,26 @@
     height: 65px;
     background-position: center;
     background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
+    display: block;
 
     .cls {
       @extend .text-truncate;
-      @extend .animated;
-      @extend .flipInX;
+      display: none;
       color: $white;
       cursor: pointer;
-      display: none;
       line-height: 65px;
       position: absolute;
-      height: 100%;
-      width: 100%;
-      background-color: $primary;
+      height: 16px;
+      width: 16px;
       border: none;
-      font-size: 22px;
-      opacity: 0.9;
+      right: 0;
+      top: -8px;
+      background-image: url("#{$var-images-path}/remove.svg");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
 
       &:focus {
         outline: none;

@@ -73,10 +73,17 @@ module.exports = function productsRoute() {
     }).catch(next);
   });
 
-  this.get('/products/id/:id', (req, res, next) => {
-    products.withId(req.params.id, {
-      isPaused: false,
-    }).then((product) => {
+  this.get('/products/id/:id', Middleware.session, (req, res, next) => {
+    products.withId(req.params.id).then((product) => {
+      if (!product.isApproved) {
+        const isAdmin = req.session.get(Enums.SESS_USER_IS_ADMIN);
+        const userId = req.session.get(Enums.SESS_USER_ID);
+
+        if (!isAdmin || product.userId !== userId) {
+          throw new Error('Permission denied');
+        }
+      }
+
       res.json(product);
     }).catch(next);
   });

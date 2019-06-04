@@ -12,13 +12,6 @@ import './config';
 import './images/favicon.ico';
 import './main.scss';
 
-window.asHOT = () => (Comp => Comp);
-
-if (isDevMode) {
-  // eslint-disable-next-line global-require
-  window.asHOT = require('react-hot-loader').hot;
-}
-
 const rBody = document.body;
 
 if (rBody) {

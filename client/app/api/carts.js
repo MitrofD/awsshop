@@ -113,7 +113,6 @@ const rObj = Object.seal({
 
         resolve(data);
       }).catch((error) => {
-        console.log(error);
         reject(new Error(error.response.data));
       });
     });

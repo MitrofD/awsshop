@@ -13,7 +13,7 @@ const {
 const AdminPage = LoadableIfAdmin('Admin');
 const CartPage = Loadable('Cart');
 const CatalogPage = LoadableWithParams('Catalog');
-const CareersPage = Loadable('Careers');
+const VacanciesPage = Loadable('Vacancies');
 const CompetitionPage = Loadable('Competition');
 const EmailVerificationSendedPage = LoadableWithParams('EmailVerificationResent');
 const EmailVerificationPage = LoadableWithParams('EmailVerification');
@@ -23,6 +23,7 @@ const FAQPage = Loadable('FAQ');
 const ForgotPasswordPage = LoadableIfUserNeeded('ForgotPassword', false);
 const FindPasswordTipPage = Loadable('FindPasswordTip');
 const LoginPage = LoadableIfUserNeeded('Login', false);
+const NotFoundPage = Loadable('NotFound');
 // const OrdersCompletedPage = LoadableWithParams('OrdersCompleted');
 const RegistrationPage = LoadableIfUserNeeded('Registration', false);
 const ResetPasswordPage = LoadableWithParams('ResetPassword');
@@ -39,15 +40,15 @@ const Routes = () => (
     />
     <Route
       component={CatalogPage}
-      path="/catalog"
+      path={`${Config.catalogPath}/:category`}
     />
     <Route
       component={CatalogPage}
-      path={`${Config.categoryPath}:category`}
+      path={Config.catalogPath}
     />
     <Route
-      component={CareersPage}
-      path="/careers"
+      component={VacanciesPage}
+      path="/vacancies"
     />
     <Route
       component={CompetitionPage}
@@ -118,6 +119,7 @@ const Routes = () => (
         />
       )}
     />
+    <Route component={NotFoundPage} />
   </Switch>
 );
 

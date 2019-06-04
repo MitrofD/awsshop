@@ -1,10 +1,10 @@
 // @flow
 import React from 'react';
 import { Link } from 'react-router-dom';
-import AlertDanger from '../../components/alerts/AlertDanger';
+import AlertWarning from '../../components/alerts/AlertWarning';
 import user from '../../api/user';
 
-type AlertsArr = React$Element<typeof AlertDanger>[];
+type AlertsArr = React$Element<typeof AlertWarning>[];
 
 type Props = {
   user?: ?Object,
@@ -28,10 +28,10 @@ const getUserAlerts = (cUser: ?Object) => {
 
     if (!pMWallet) {
       const pMWalletAlert = (
-        <AlertDanger key="pMWallet">
+        <AlertWarning key="pMWallet">
           Для возможности получения партнерских отчислений нужно заполнить
           <Link to={`${Config.settingsPath}/perfect-money`}> платежные данные</Link>
-        </AlertDanger>
+        </AlertWarning>
       );
 
       retAlerts.push(pMWalletAlert);
@@ -88,7 +88,7 @@ class UserAlerts extends React.PureComponent<Props, State> {
       return null;
     }
 
-    return <div className="UserAlerts animated pulse">{alerts}</div>;
+    return <div className="UserAlerts text-center text-light">{alerts}</div>;
   }
 }
 

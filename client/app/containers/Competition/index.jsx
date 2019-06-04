@@ -1,17 +1,34 @@
 // @flow
 import React, { useEffect, createRef } from 'react';
+import { hot } from 'react-hot-loader/root';
 import { Link } from 'react-router-dom';
 import FlipClock from 'flipclock';
 import Page from '../includes/Page';
 import { tt } from '../../components/TranslateElement';
+import user from '../../api/user';
 
 const Competition = () => {
+  const fullCN = 'Competition as-full';
   const timerRef = createRef();
+  let createShopContent = null;
+  RootNode.addClass(fullCN);
+
+  if (!user.get()) {
+    createShopContent = (
+      <div className="col-xl-3 align-self-center text-center right text-xl-right">
+        {tt('Your Ranking?')}
+        {tt('Please')}
+        <Link
+          className="btn btn-outline-primary"
+          to="/create-shop"
+        >
+          {tt('Create shop')}
+        </Link>
+      </div>
+    );
+  }
 
   useEffect(() => {
-    const fullCN = 'Competition as-full';
-    RootNode.addClass(fullCN);
-
     const timeNow = new Date();
     timeNow.setDate(timeNow.getDate() + 2);
 
@@ -21,6 +38,7 @@ const Competition = () => {
     });
 
     return () => {
+      timer.stop();
       RootNode.removeClass(fullCN);
     };
   }, []);
@@ -34,7 +52,7 @@ const Competition = () => {
       </div>
       <div className="container">
         <div className="ttop white-box padding animated fadeInUp">
-          <div className="countdown row">
+          <div className="countdown row text-center">
             <div className="col-xl-2 mb-3 mb-xl-0 align-self-center left text-center text-xl-left">
               {tt('Time left')}
               :
@@ -43,16 +61,7 @@ const Competition = () => {
               className="col-xl-7 mb-3 mb-xl-0 align-self-center text-center"
               ref={timerRef}
             />
-            <div className="col-xl-3 align-self-center text-center right text-xl-right">
-              {tt('Your Ranking?')}
-              {tt('Please')}
-              <Link
-                className="btn btn-outline-primary"
-                to="/create-shop"
-              >
-                {tt('Create shop')}
-              </Link>
-            </div>
+            {createShopContent}
           </div>
           <div className="table-responsive">
             <table className="table table-striped">
@@ -203,4 +212,4 @@ const Competition = () => {
   );
 };
 
-export default asHOT(module)(Competition);
+export default hot(Competition);

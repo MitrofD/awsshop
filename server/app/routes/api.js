@@ -34,16 +34,6 @@ const checkToken = (token: any) => {
 module.exports = function apiRoutes() {
   const basePath = `/api/${apiVersionText}/:token`;
 
-  /*
-  this.post(`${basePath}/purchase`, Middleware.jsonBodyParser, (req, res, next) => {
-    checkToken(req.params.token);
-
-    users.soldProductInQuantities(req.body.id, req.body.quantities).then(() => {
-      res.json(Tools.okObj);
-    }).catch(next);
-  });
-  */
-
   this.get(`${basePath}/product`, (req, res, next) => {
     checkToken(req.params.token);
     const productId = getProductIdByUrl(req.query.product_link);
@@ -60,51 +50,50 @@ module.exports = function apiRoutes() {
 
   this.post(`${basePath}/sale`, Middleware.jsonBodyParser, (req, res, next) => {
     checkToken(req.params.token);
+
     const errors = {};
     const responseData = [];
     let responseDataLength = responseData.length;
-
-    const allPromises = [];
-    let allPromisesLength = 0;
     const reqArray = Array.isArray(req.body) ? req.body : [];
-    let reqArrayLength = reqArray.length;
-    let i = 0;
 
-    for (; i < reqArrayLength; i += 1) {
-      const item = reqArray[i];
+    const rPromise = new Promise((resolve, reject) => {
+      (function saleProduct() {
+        if (reqArray.length > 0) {
+          const item = reqArray.shift();
 
-      if (typeof item === 'object' && item !== null) {
-        const productId = getProductIdByUrl(item.product_link);
+          if (typeof item === 'object' && item !== null) {
+            const productId = getProductIdByUrl(item.product_link);
 
-        if (productId) {
-          const itemTime = typeof item.time === 'number' ? item.time * 1000 : null;
+            if (productId) {
+              const itemTime = typeof item.time === 'number' ? item.time * 1000 : null;
 
-          // eslint-disable-next-line no-loop-func
-          allPromises[allPromisesLength] = new Promise((resolve) => {
-            users.saleProduct(productId, {
-              time: itemTime,
-              quantity: item.qty,
-              event_id: item.event_id,
-            }).then((product) => {
-              const crmProduct = crmHelper.genProduct(product);
-              crmProduct.product_link = item.product_link;
-              responseData[responseDataLength] = crmProduct;
-              responseDataLength += 1;
-              resolve();
-            }).catch((error) => {
-              errors[productId] = error.message;
-              resolve();
-            });
-          });
-
-          allPromisesLength += 1;
-        } else {
-          errors[item.product_link] = INCORRECT_LINK;
+              users.saleProduct(productId, {
+                time: itemTime,
+                quantity: item.qty,
+                event_id: item.event_id,
+              }).then((product) => {
+                const crmProduct = crmHelper.genProduct(product);
+                crmProduct.product_link = item.product_link;
+                responseData[responseDataLength] = crmProduct;
+                responseDataLength += 1;
+                saleProduct();
+              }).catch((error) => {
+                errors[productId] = error.message;
+                saleProduct();
+              });
+            } else {
+              errors[item.product_link] = INCORRECT_LINK;
+              saleProduct();
+            }
+          }
+          return;
         }
-      }
-    }
 
-    Promise.all(allPromises).then(() => {
+        resolve();
+      }());
+    });
+
+    rPromise.then(() => {
       res.json({
         errors,
         data: responseData,

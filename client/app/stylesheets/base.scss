@@ -453,6 +453,12 @@ footer {
       @include box-shadow(none);
     }
   }
+
+  .UserAlerts .Alert {
+    margin: 0;
+    border-radius: 0;
+    border: none;
+  }
 }
 
 .TLNumericInput {
@@ -631,7 +637,6 @@ footer {
 }
 
 .ttl {
-  @extend .text-truncate;
   color: $dark;
   font-family: 'Futura PT Heavy';
   font-size: 18px;

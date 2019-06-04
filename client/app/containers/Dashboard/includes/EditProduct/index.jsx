@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import Drift from 'drift-zoom';
 import NumberInput from 'tl-react-numeric-input';
 import tinymce from 'tinymce/tinymce';
 import 'tinymce/themes/silver';
@@ -10,6 +11,7 @@ import 'tinymce/plugins/image';
 import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
 import 'tinymce/skins/ui/oxide/skin.min.css';
+import 'drift-zoom/src/css/drift-basic.css';
 import CategorySelect from './CategorySelect';
 import XHRSpin from '../../../includes/XHRSpin';
 import { InvalidLabel } from '../../../../components/Label';
@@ -34,6 +36,7 @@ type Props = Object & {
 type State = {
   categoryError: ?string,
   currTab: string,
+  currImgIdx: number,
   descriptionError: ?string,
   images: string[],
   titleError: ?string,
@@ -48,6 +51,12 @@ const EMPTY_STR = '';
 
 class EditProduct extends React.Component<Props, State> {
   earningsPrice: ?string = null;
+
+  data: ?Object = null;
+
+  driftBox: ?Object;
+
+  driftPaneContainerId: string;
 
   inputChangeTimer: ?TimeoutID = null;
 
@@ -65,6 +74,12 @@ class EditProduct extends React.Component<Props, State> {
   description: string;
 
   isRaw: boolean;
+
+  mainImgSrc: ?string = null;
+
+  mainImgClassName = 'img-thumbnail';
+
+  mainImgRef: HTMLElement;
 
   title: string;
 
@@ -100,6 +115,8 @@ class EditProduct extends React.Component<Props, State> {
       return retVal;
     };
 
+    this.data = props;
+    this.mainImgSrc = props.image;
     this.price = parseFloat(props.price) || EMPTY_NUM;
     this.category = getStrPropOrDef('categoryId');
     this.description = getStrPropOrDef('description');
@@ -112,6 +129,7 @@ class EditProduct extends React.Component<Props, State> {
       images,
       categoryError: this.getRequiredErrorWithPropStr('category'),
       currTab: this.getFirstTab(),
+      currImgIdx: 0,
       descriptionError: this.getRequiredErrorWithPropStr('description'),
       titleError: this.getRequiredErrorWithPropStr('title'),
       priceError: this.getRequiredErrorWithPropNum('price'),
@@ -120,12 +138,16 @@ class EditProduct extends React.Component<Props, State> {
       xhrRequest: true,
     };
 
+    this.driftPaneContainerId = `${Tools.escapedString('driftPane')}_${Date.now()}`;
+
     const self: any = this;
     self.onChangeTitleInput = this.onChangeTitleInput.bind(this);
     self.onChangeCategorySelect = this.onChangeCategorySelect.bind(this);
     self.onClickCancelButton = this.onClickCancelButton.bind(this);
+    self.onClickToThumbImage = this.onClickToThumbImage.bind(this);
     self.onClickTabItem = this.onClickTabItem.bind(this);
-    self.onClickThumb = this.onClickThumb.bind(this);
+    self.onClickRemoveThumbButton = this.onClickRemoveThumbButton.bind(this);
+    self.onRefMainImg = this.onRefMainImg.bind(this);
     self.onSubmitForm = this.onSubmitForm.bind(this);
   }
 
@@ -133,7 +155,7 @@ class EditProduct extends React.Component<Props, State> {
     this.unmounted = false;
 
     const settings = {
-      height: 500,
+      height: 700,
       menu: [],
       plugins: 'textcolor colorpicker image link lists hr',
       toolbar: 'bold italic underline | strikethrough alignleft aligncenter alignright alignjustify alignnone | forecolor backcolor | bullist numlist | fontsizeselect | link unlink | hr | image',
@@ -262,7 +284,9 @@ class EditProduct extends React.Component<Props, State> {
     });
   }
 
-  onClickThumb(event: SyntheticEvent<HTMLElement>) {
+  onClickRemoveThumbButton(event: SyntheticEvent<HTMLElement>) {
+    event.preventDefault();
+    event.stopPropagation();
     const { idx } = event.currentTarget.dataset;
     const pureIdx = parseInt(idx) || EMPTY_NUM;
 
@@ -273,6 +297,29 @@ class EditProduct extends React.Component<Props, State> {
       return {
         images: thumbImages,
       };
+    });
+  }
+
+  onClickToThumbImage(event: SyntheticEvent<HTMLElement>) {
+    event.preventDefault();
+    const element = event.currentTarget;
+    const pData = Tools.anyAsObj(this.data);
+    const imageFullSrc = element.style.backgroundImage.substr(5);
+
+    const [
+      imageSrc,
+    ] = imageFullSrc.split('_50x50');
+    this.mainImgSrc = imageSrc;
+    this.mainImgRef.className = this.mainImgClassName;
+
+    setImmediate(() => {
+      this.mainImgRef.className = `${this.mainImgClassName} animated pulse`;
+    });
+
+    const idx = parseInt(element.dataset.idx);
+
+    this.setState({
+      currImgIdx: idx,
     });
   }
 
@@ -293,6 +340,17 @@ class EditProduct extends React.Component<Props, State> {
     }).catch((error) => {
       NotificationBox.danger(error.message);
     });
+  }
+
+  onRefMainImg(mbEl: ?HTMLElement) {
+    if (mbEl) {
+      this.mainImgRef = mbEl;
+
+      this.driftBox = new Drift(this.mainImgRef, {
+        paneContainer: document.getElementById(this.driftPaneContainerId),
+        inlinePane: false,
+      });
+    }
   }
 
   getFirstTab() {
@@ -428,11 +486,16 @@ class EditProduct extends React.Component<Props, State> {
             <div className="col-sm-4">
               <img
                 alt="main_img"
-                className="img-thumbnail"
-                src={this.props.image}
+                className={this.mainImgClassName}
+                data-zoom={this.mainImgSrc}
+                ref={this.onRefMainImg}
+                src={this.mainImgSrc}
               />
             </div>
-            <div className="col-sm-8">
+            <div
+              className="col-sm-8"
+              id={this.driftPaneContainerId}
+            >
               {images.length > 0 && (
                 <div className="row thmbs">
                   {images.map((image, idx) => {
@@ -443,19 +506,21 @@ class EditProduct extends React.Component<Props, State> {
                         className="col-sm-3"
                         key={key}
                       >
-                        <div
+                        <a
+                          href="#"
                           className="thmb"
+                          data-idx={idx}
+                          onClick={this.onClickToThumbImage}
+                          role="button"
                           style={{ backgroundImage: `url(${image})` }}
                         >
                           <button
                             className="cls"
                             data-idx={idx}
-                            onClick={this.onClickThumb}
+                            onClick={this.onClickRemoveThumbButton}
                             type="button"
-                          >
-                            {tt('Delete')}
-                          </button>
-                        </div>
+                          />
+                        </a>
                       </div>
                     );
                   })}
@@ -491,13 +556,11 @@ class EditProduct extends React.Component<Props, State> {
               <div className="form-group">
                 <label>
                   {tt('Price')}
-                  {' '}
-(
+                  {' ('}
                   {tt('earnings')}
-:
-                  {' '}
+                  {': '}
                   {this.earningsPrice}
-)
+                  )
                 </label>
                 <input
                   disabled

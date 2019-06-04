@@ -1,3 +1,3 @@
 #!/bin/bash
 export NODE_ENV=development
-npx nodemon -q main.js
+npx webpack-dev-server --progress --info=false

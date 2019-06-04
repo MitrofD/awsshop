@@ -10,7 +10,6 @@ type Props = Object & {
 
 const Page = (props: Props) => {
   const {
-    _id,
     title,
     path,
   } = props.data;

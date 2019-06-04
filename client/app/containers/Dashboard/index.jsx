@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { hot } from 'react-hot-loader/root';
 import { NavLink, Switch, Route } from 'react-router-dom';
 import Page from '../includes/Page';
 import InvitedUsers from './InvitedUsers';
@@ -14,7 +15,6 @@ const ProductsPage = Loadable('Products');
 // const CustomerOrdersPage = Loadable('CustomerOrders');
 // const MyOrdersPage = Loadable('MyOrders');
 
-const importedProductsLink = `${Config.dashboardPath}/imported-products`;
 const invitedUsersLink = `${Config.dashboardPath}/invited-users`;
 const paymentHistoryLink = `${Config.dashboardPath}/payment-history`;
 const productsSoldLink = `${Config.dashboardPath}/products-sold`;
@@ -87,4 +87,4 @@ const Dashboard = () => (
   </Page>
 );
 
-export default asHOT(module)(Dashboard);
+export default hot(Dashboard);

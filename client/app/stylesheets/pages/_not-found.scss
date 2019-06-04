@@ -1,0 +1,36 @@
+.NotFound {
+  background-image: url("#{$var-images-path}/404.jpg");
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  text-align: center;
+  color: $white;
+
+  h1,
+  h3 {
+    padding-top: 110px;
+    font-size: 15rem;
+    line-height: 1;
+    font-family: 'Futura PT Heavy';
+  }
+
+  h3 {
+    padding-top: 0;
+    font-size: 3rem;
+  }
+
+  p {
+    padding-top: 1.5rem;
+    font-size: 1.2rem;
+  }
+
+  .btn {
+    @extend .animated, .pulse;
+    margin-top: 1rem;
+    background-color: #5DCFDB;
+    text-transform: uppercase;
+    color: $white;
+    font-weight: normal;
+    padding: 1rem 3rem;
+  }
+}

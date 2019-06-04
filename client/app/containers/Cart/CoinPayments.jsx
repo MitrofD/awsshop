@@ -61,7 +61,7 @@ class CoinPayments extends React.PureComponent<Props, State> {
   onClickButton(event: SyntheticEvent<HTMLButtonElement>) {
     const button = event.currentTarget;
     button.disabled = true;
-    console.log(this);
+    this.formRef.submit();
 
     /*
     orders.genOrderId().then((orderId) => {

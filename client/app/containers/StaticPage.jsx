@@ -1,11 +1,11 @@
 // @flow
 import React, { Fragment, useState, useEffect } from 'react';
+import { Redirect } from 'react-router-dom';
 import Page from './includes/Page';
 import XHRSpin from './includes/XHRSpin';
 import pages from '../api/pages';
 
 type Props = {
-  history: Object,
   path: string,
 };
 
@@ -16,23 +16,33 @@ const StaticPage = (props: Props) => {
   ] = useState(null);
 
   useEffect(() => {
+    setPage(null);
+
     pages.withPath(props.path).then(setPage).catch(() => {
-      props.history.push('/404');
+      setPage(true);
     });
-  }, []);
+  }, [
+    props.path,
+  ]);
 
   let content = null;
 
   if (page) {
-    content = (
-      <Fragment>
-        <div className="p-ttl">{page.title}</div>
-        <div
-          className="dt"
-          dangerouslySetInnerHTML={{ __html: page.content }}
-        />
-      </Fragment>
-    );
+    if (typeof page === 'object' && page !== null) {
+      content = (
+        <Fragment>
+          <div className="p-ttl">
+            {page.title}
+          </div>
+          <div
+            className="dt"
+            dangerouslySetInnerHTML={{ __html: page.content }}
+          />
+        </Fragment>
+      );
+    } else {
+      content = <Redirect to="/404" />;
+    }
   } else {
     content = <XHRSpin />;
   }

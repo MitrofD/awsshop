@@ -1,5 +1,6 @@
 // @flow
-import React, { Fragment } from 'react';
+import React from 'react';
+import { hot } from 'react-hot-loader/root';
 import Categories from './Categories';
 import Products from './Products';
 import Page from '../includes/Page';
@@ -22,4 +23,4 @@ const Catalog = (props: Props) => (
   </Page>
 );
 
-export default asHOT(module)(Catalog);
+export default hot(Catalog);

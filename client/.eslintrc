@@ -5,7 +5,6 @@
     "plugin:flowtype/recommended"
   ],
   "globals": {
-    "asHOT": true,
     "Config": true,
     "Enums": true,
     "isMobile": true,
@@ -21,9 +20,9 @@
     "html",
     "jsx-a11y",
     "import",
+    "react",
     "flowtype",
-    "flowtype-errors",
-    "react"
+    "flowtype-errors"
   ],
   "env": {
     "browser": true
@@ -67,6 +66,7 @@
       "labelAttributes": ["htmlFor"],
       "controlComponents": ["input"]
     }],
+    "react/no-danger": 0,
     "react/destructuring-assignment": 0,
     "react/no-find-dom-node": 0,
     "react/no-unused-prop-types": 1,

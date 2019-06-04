@@ -29,7 +29,7 @@ const ReferralCode = () => {
         // eslint-disable-next-line no-empty
       } catch (copyErr) {}
 
-      NotificationBox.success(`Referral code "${pureRefCode}" is copied`, true);
+      NotificationBox.success(`Referral code "${pureRefCode}" is copied`);
       rBody.removeChild(input);
     }
   };

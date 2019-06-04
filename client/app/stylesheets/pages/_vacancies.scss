@@ -1,4 +1,4 @@
-.Careers {
+.Vacancies {
   .top-box {
     background-image: url("#{$var-images-path}/careers.jpg");
     height: 410px;
@@ -11,10 +11,10 @@
         padding-left: 3.75rem;
         background-repeat: no-repeat;
         background-position: 0;
+      }
 
-        span {
-          font-size: 0.6875rem;
-        }
+      .quantity {
+        font-size: 0.875rem;
       }
 
       td:nth-child(3) {
@@ -39,5 +39,9 @@
         }
       }
     }
+  }
+
+  .XHRSpin {
+    height: 300px;
   }
 }

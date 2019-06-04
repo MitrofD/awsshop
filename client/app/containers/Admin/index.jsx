@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { hot } from 'react-hot-loader/root';
 import { Switch, Route, NavLink } from 'react-router-dom';
 import Page from '../includes/Page';
 import { tt } from '../../components/TranslateElement';
@@ -16,6 +17,7 @@ const ProductsPage = Loadable('Products');
 const SettingsPage = Loadable('Settings');
 const SupportPage = Loadable('Support');
 const UsersPage = Loadable('Users');
+const VacanciesPage = Loadable('Vacancies');
 
 const faqsLink = `${Config.adminPath}/faqs`;
 const loginsHistoryLink = `${Config.adminPath}/logins-history`;
@@ -26,6 +28,7 @@ const productsLink = `${Config.adminPath}/products`;
 const settingsLink = `${Config.adminPath}/settings`;
 const supportLink = `${Config.adminPath}/support`;
 const usersLink = `${Config.adminPath}/users`;
+const vacansiesLink = `${Config.adminPath}/vacansies`;
 
 const Admin = () => (
   <Page className="Admin">
@@ -86,6 +89,11 @@ const Admin = () => (
             {tt('Users')}
           </NavLink>
         </li>
+        <li>
+          <NavLink to={vacansiesLink}>
+            {tt('Vacancies')}
+          </NavLink>
+        </li>
       </ul>
     </div>
     <div className="rght">
@@ -131,9 +139,13 @@ const Admin = () => (
           component={UsersPage}
           path={usersLink}
         />
+        <Route
+          component={VacanciesPage}
+          path={vacansiesLink}
+        />
       </Switch>
     </div>
   </Page>
 );
 
-export default asHOT(module)(Admin);
+export default hot(Admin);

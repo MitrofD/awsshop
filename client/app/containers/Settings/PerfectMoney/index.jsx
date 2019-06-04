@@ -52,9 +52,7 @@ class PerfectMoney extends React.Component<Props, State> {
     const pureVal = input.value.trim();
     let error: ?string = null;
 
-    if (pureVal.length === 0) {
-      error = 'USD wallet is required';
-    } else if (!Tools.perfMoneyUSDWalletRegExp.test(pureVal)) {
+    if (pureVal.length > 0 && !Tools.perfMoneyUSDWalletRegExp.test(pureVal)) {
       error = 'USD wallet is incorrect';
     }
 
@@ -163,7 +161,7 @@ class PerfectMoney extends React.Component<Props, State> {
           >
             <div className="form-group">
               <label>
-                USD
+                {'USD '}
                 {tt('wallet')}
                 {' (Ex: U12345678)'}
               </label>

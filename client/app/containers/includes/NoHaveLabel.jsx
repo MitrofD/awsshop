@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import { tt } from '../../components/TranslateElement';
 
 type Props = {
   children: React$Node,

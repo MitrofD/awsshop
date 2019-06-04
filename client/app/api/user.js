@@ -4,7 +4,6 @@ import tools from './tools';
 
 const user = (function genUserObj() {
   const subs: SubscribesStore = {};
-  const basePath = `${proxyPath}/users`;
   let lData: ?Object;
 
   const getCopy = () => (lData ? Object.assign({}, lData) : lData);

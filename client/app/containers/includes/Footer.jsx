@@ -42,7 +42,7 @@ const Footer = (props: Props) => {
               <Link to="/">{tt('Home')}</Link>
             </li>
             <li>
-              <Link to="/careers">{tt('Careers')}</Link>
+              <Link to="/vacancies">{tt('Vacancies')}</Link>
             </li>
             <li>
               <Link to="/competition">{tt('Competition')}</Link>
@@ -60,7 +60,7 @@ const Footer = (props: Props) => {
                 <Link to={`${Config.dashboardPath}/invited-users`}>{tt('Become partner')}</Link>
               </li>
               <li>
-                <Link to="/shopping-cart">{tt('Cart')}</Link>
+                <Link to="/cart">{tt('Cart')}</Link>
               </li>
               <li>
                 <Link to={Config.dashboardPath}>{tt('My account')}</Link>

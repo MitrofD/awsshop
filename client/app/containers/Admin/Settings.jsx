@@ -1,6 +1,6 @@
 // @flow
 import React, { Fragment } from 'react';
-import NumberInput from 'tl-react-numeric-input';
+import NumericInput from 'tl-react-numeric-input';
 import XHRSpin from '../includes/XHRSpin';
 import { InvalidLabel } from '../../components/Label';
 import { tt } from '../../components/TranslateElement';
@@ -15,7 +15,7 @@ type State = {
 };
 
 class Settings extends React.Component<Props, State> {
-  formChangedData: { [string]: boolean } = {};
+  formChangedData = {};
 
   formCurrData = {};
 
@@ -37,7 +37,7 @@ class Settings extends React.Component<Props, State> {
     };
 
     const self: any = this;
-    self.onChangeNumberInput = this.onChangeNumberInput.bind(this);
+    self.onSetNumericInput = this.onSetNumericInput.bind(this);
     self.onChangeInput = this.onChangeInput.bind(this);
     self.onSubmitForm = this.onSubmitForm.bind(this);
   }
@@ -94,14 +94,9 @@ class Settings extends React.Component<Props, State> {
     });
   }
 
-  onChangeNumberInput(event: SyntheticEvent<HTMLInputElement>) {
-    if (this.unmounted) {
-      return;
-    }
-
-    const input = event.currentTarget;
-    const inputName = input.name;
-    const numValue = parseFloat(input.value);
+  onSetNumericInput(numInput: NumericInput) {
+    const numValue = numInput.value;
+    const inputName = numInput.name;
     const oldVal = this.formCurrData[inputName];
     this.formNumData[inputName] = numValue;
     this.formChangedData[inputName] = oldVal !== numValue;
@@ -271,12 +266,12 @@ class Settings extends React.Component<Props, State> {
                         {tt(key)}
                         :
                       </label>
-                      <NumberInput
+                      <NumericInput
                         className={inputData.className}
                         defaultValue={this.formNumData[key]}
                         min="0"
                         name={key}
-                        onChange={this.onChangeNumberInput}
+                        onSet={this.onSetNumericInput}
                       />
                       {inputData.errorNode}
                     </div>

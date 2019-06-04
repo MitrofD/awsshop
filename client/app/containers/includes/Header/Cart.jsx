@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import CartItem from '../CartItem';
 import { tt } from '../../../components/TranslateElement';
 import { PrimaryBadge } from '../../../components/Badge';
@@ -96,7 +96,6 @@ class Cart extends React.PureComponent<Props, State> {
   render() {
     const {
       quantity,
-      items,
       summ,
     } = this.state;
 

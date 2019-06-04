@@ -9,8 +9,10 @@ type Props = {
   asHolder?: boolean,
   children?: React$Node,
   className?: ?string,
+  /* eslint-disable react/no-unused-prop-types */
   height?: number,
   width?: number,
+  /* eslint-enable react/no-unused-prop-types */
 };
 
 const defaultProps = {

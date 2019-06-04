@@ -1,5 +1,6 @@
 // @flow
 import React, { useEffect } from 'react';
+import { hot } from 'react-hot-loader/root';
 import { Link } from 'react-router-dom';
 import Categories from './Categories';
 import Page from '../includes/Page';
@@ -7,13 +8,15 @@ import ProductsSlider from '../includes/ProductsSlider';
 import { tt } from '../../components/TranslateElement';
 
 const Home = () => {
-  useEffect(() => {
-    const fullCN = 'Home as-full';
-    RootNode.addClass(fullCN);
+  const fullCN = 'Home as-full';
+  RootNode.addClass(fullCN);
 
-    return () => {
+  useEffect(() => {
+    const retFunc = () => {
       RootNode.removeClass(fullCN);
     };
+
+    return retFunc;
   });
 
   return (
@@ -59,4 +62,4 @@ const Home = () => {
   );
 };
 
-export default asHOT(module)(Home);
+export default hot(Home);

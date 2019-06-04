@@ -64,11 +64,9 @@ class User extends React.PureComponent<Props> {
 
   render() {
     const {
-      _id,
       email,
       firstName,
       lastName,
-      isAdmin,
     } = this.props;
 
     return (

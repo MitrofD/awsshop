@@ -10,7 +10,7 @@ const inConfigText = 'in config file';
 const coinPaymentsId = typeof COIN_PAYMENTS_ID === 'string' ? COIN_PAYMENTS_ID.trim() : '';
 
 if (coinPaymentsId.length === 0) {
-  throw new Error(`Coinpaymants id option is required. (COIN_PAYMENTS_ID ${inConfigText})`);
+  throw new Error(`Coinpayments id option is required. (COIN_PAYMENTS_ID ${inConfigText})`);
 }
 
 let urlAddress = URL;

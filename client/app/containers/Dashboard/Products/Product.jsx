@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { tt } from '../../../components/TranslateElement';
 import products from '../../../api/products';
 
@@ -43,6 +44,7 @@ class Product extends React.PureComponent<Props, State> {
 
   render() {
     const {
+      _id,
       earnings,
       title,
       image,
@@ -51,7 +53,6 @@ class Product extends React.PureComponent<Props, State> {
       price,
     } = this.state;
 
-    const pauseButtonTitle = isPaused ? 'Unpause' : 'Pause';
     let approveCN = 'apprvd al';
     let approveText = 'Is approved';
 
@@ -75,21 +76,20 @@ class Product extends React.PureComponent<Props, State> {
             <div className={approveCN}>{approveText}</div>
             <p className="prc">
               {tt('Price')}
-:
+              :
               {NumberFormat(price)}
               <br />
               {tt('Earnings')}
-:
+              :
               {NumberFormat(earnings)}
             </p>
             <div className="btns-grp float-right">
-              <button
+              <Link
                 className="btn btn-primary btn-sm"
-                onClick={this.onClickPauseButton}
-                type="button"
+                to={`/product/${_id}`}
               >
-                {tt(pauseButtonTitle)}
-              </button>
+                {tt('Details')}
+              </Link>
               <button
                 className="btn btn-danger btn-sm"
                 onClick={this.onClickDeleteButton}

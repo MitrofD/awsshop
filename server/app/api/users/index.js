@@ -7,6 +7,7 @@ const monthPaymentsCollection = require('./collections/month-payments');
 const monthRefPaymentsCollection = require('./collections/month-ref-payments');
 const ordersCollection = require('./collections/orders');
 const paymentsCollection = require('./collections/payments');
+const crm = require('../crm');
 const products = require('../products');
 const tools = require('../tools');
 const { random, alphabet } = require('../random');
@@ -71,12 +72,14 @@ const getPurePasswordOrThrowError = (password: any): string => {
   throw new Error('Password has to be "string" type');
 };
 
-const getPureUSDPMWalletOrThrowError = (pMWallet: any): string => {
+const getPureUSDPMWalletOrThrowError = (pMWallet: any): ?string => {
   const purePMWallet = typeof pMWallet === 'string' ? pMWallet.trim().toUpperCase() : '';
 
   if (purePMWallet.length === 0) {
-    throw new Error('USD wallet is required');
-  } else if (!Tools.USDPMWalletRegExp.test(purePMWallet)) {
+    return null;
+  }
+
+  if (!Tools.USDPMWalletRegExp.test(purePMWallet)) {
     throw new Error('USD wallet is incorrect');
   }
 
@@ -185,6 +188,9 @@ function getRefPayments(): Object {
 function getPaymentDataBefore(date: Date): Object {
   const time = date.getTime();
   const arr = getPayments.call(this);
+  const crmDataArr: Object[] = [];
+  let crmDataArrLength = crmDataArr.length;
+
   const arrLength = arr.length;
   let earnings = 0;
   let quantity = 0;
@@ -196,6 +202,15 @@ function getPaymentDataBefore(date: Date): Object {
     if (val.t < time) {
       earnings += val.e;
       quantity += val.q;
+
+      crmDataArr[crmDataArrLength] = {
+        payout_amount: val.e,
+        product_link: `${Config.url}/product/${val.i}`,
+        request_date: val.t,
+        approve_date: time,
+      };
+
+      crmDataArrLength += 1;
     } else {
       break;
     }
@@ -204,6 +219,7 @@ function getPaymentDataBefore(date: Date): Object {
   return {
     earnings,
     quantity,
+    crmDataArr,
     remaining: arr.slice(i),
   };
 }
@@ -712,25 +728,20 @@ const users = {
       throw new Error('Product is not approved');
     }
 
-    let nowTime: Date;
-
-    try {
-      nowTime = new Date(options.time);
-    } catch (dError) {
-      nowTime = new Date();
-    }
-
-    const nowTimeMS = nowTime.getTime();
+    const nowTime = new Date();
+    const time = typeof options.time === 'number' ? new Date(options.time) : nowTime;
     const user = await this.getById(product.userId);
     const userId = user._id.toString();
     const pQuantity = parseInt(options.quantity) || 1;
     const currEarnings = pQuantity * product.earnings;
 
     const currPaymentsArr = getPayments.call(user);
+
     currPaymentsArr[currPaymentsArr.length] = {
-      t: nowTimeMS,
+      t: time.getTime(),
       e: currEarnings,
       q: pQuantity,
+      i: product._id.toString(),
     };
 
     const setObj = {
@@ -1142,7 +1153,7 @@ const users = {
 
     user[PAYOUT_TIME_ATTR] = nowTime;
     user[WAITING_PAYMENTS_ATTR] = paymentData.remaining;
-
+    crm.payout(paymentData.crmDataArr).catch(Tools.emptyRejectExeption);
     return user;
   },
 
@@ -1206,7 +1217,7 @@ const users = {
 
     user[PAYOUT_TIME_ATTR] = nowTime;
     user[WAITING_PAYMENTS_ATTR] = paymentData.remaining;
-
+    crm.payout(paymentData.crmDataArr).catch(Tools.emptyRejectExeption);
     return user;
   },
 

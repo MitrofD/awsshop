@@ -166,7 +166,7 @@ class Categories extends React.Component<Props, State> {
             <li>
               <Link
                 className={allItemCN}
-                to="/catalog"
+                to={Config.catalogPath}
               >
                 {tt('All')}
               </Link>
@@ -175,7 +175,7 @@ class Categories extends React.Component<Props, State> {
               <li key={item._id}>
                 <Link
                   className={getItemCN(item.name)}
-                  to={Config.categoryPath + item.encodedName}
+                  to={`${Config.catalogPath}/${item.encodedName}`}
                 >
                   {tt(item.name)}
                   {` (${item.productsCount})`}

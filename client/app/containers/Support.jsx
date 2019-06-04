@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { hot } from 'react-hot-loader/root';
 import Page from './includes/Page';
 import SupportSubjectsModal from './includes/SupportSubjectsModal';
 import { InvalidLabel } from '../components/Label';
@@ -63,6 +64,7 @@ class Support extends React.Component<Props, State> {
 
     if (currUser) {
       this.defEmail = currUser.email;
+      this.emailCh = currUser.email;
     }
 
     const self: any = this;
@@ -280,7 +282,7 @@ class Support extends React.Component<Props, State> {
         {this.state.modal}
         <div className="row">
           <div className="col-12 col-md-6 col-lg-4 offset-lg-1 left">
-            <div className="text-center animated pulse">
+            <div className="text-center">
               <div className="p-ttl">
                 {tt('Send us an E-mail')}
               </div>
@@ -358,4 +360,4 @@ class Support extends React.Component<Props, State> {
   }
 }
 
-export default asHOT(module)(Support);
+export default hot(Support);

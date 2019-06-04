@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import data from '../../../api/data';
 
 const {
   Loadable,
