@@ -213,7 +213,7 @@ class ByMonth extends React.PureComponent<Props, State> {
         </table>
       );
     } else {
-      content = <NoHaveLabel>No have payments</NoHaveLabel>;
+      content = <NoHaveLabel>No records found</NoHaveLabel>;
     }
 
     if (showLoadMore) {

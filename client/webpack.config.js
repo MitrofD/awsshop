@@ -155,9 +155,10 @@ const config = {
   },
   resolve: {
     alias: {
-      warning: path.resolve(__dirname, 'node_modules/warning'),
-      'hoist-non-react-statics': path.resolve(__dirname, 'node_modules/hoist-non-react-statics'),
-      'prop-types': path.resolve(__dirname, 'node_modules/prop-types')
+      '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
+      // warning: path.resolve(__dirname, 'node_modules/warning'),
+      // 'hoist-non-react-statics': path.resolve(__dirname, 'node_modules/hoist-non-react-statics'),
+      // 'prop-types': path.resolve(__dirname, 'node_modules/prop-types')
     },
     extensions: [
       '.js',

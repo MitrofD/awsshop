@@ -27,10 +27,6 @@
   .btn {
     @extend .animated, .pulse;
     margin-top: 1rem;
-    background-color: #5DCFDB;
-    text-transform: uppercase;
-    color: $white;
-    font-weight: normal;
     padding: 1rem 3rem;
   }
 }

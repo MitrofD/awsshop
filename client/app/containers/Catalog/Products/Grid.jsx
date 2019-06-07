@@ -14,6 +14,7 @@ type Props = {
   categoryId?: ?string,
   findTitle?: ?string,
   limit?: number,
+  sort: any,
 };
 
 type State = {
@@ -79,6 +80,11 @@ class Grid extends React.Component<Props, State> {
 
     if (prevProps.categoryId !== this.props.categoryId) {
       resetRequest();
+      return;
+    }
+
+    if (prevProps.sort.type !== this.props.sort.type) {
+      resetRequest();
     }
   }
 
@@ -119,10 +125,15 @@ class Grid extends React.Component<Props, State> {
   next() {
     this.stopListenWindowScroll();
 
+    const {
+      limit,
+      sort,
+    } = this.props;
+
     const query: { [string]: any } = {
-      limit: this.props.limit,
-      sortBy: 'createdAt',
-      sortDesc: -1,
+      limit,
+      sortBy: sort.by,
+      sortDesc: sort.desc,
       skip: this.items.length,
     };
 

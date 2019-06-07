@@ -26,7 +26,7 @@ const defaultProps = {
   limit: 50,
 };
 
-class Vacancies extends React.Component<Props, State> {
+class Careers extends React.Component<Props, State> {
   static defaultProps = defaultProps;
 
   findTitle: ?string = null;
@@ -335,11 +335,11 @@ class Vacancies extends React.Component<Props, State> {
           </table>
         );
       } else {
-        itemsContent = <NoHaveLabel>{tt('No have vacancies')}</NoHaveLabel>;
+        itemsContent = <NoHaveLabel>{tt('No have careers')}</NoHaveLabel>;
       }
     }
 
-    let className = 'Vacancies';
+    let className = 'Careers';
 
     if (frontContent) {
       className += ' fnt-md';
@@ -349,7 +349,7 @@ class Vacancies extends React.Component<Props, State> {
       <div className={className}>
         {frontContent}
         <div className="dt">
-          <div className="ttl">{tt('Vacancies')}</div>
+          <div className="ttl">{tt('Careers')}</div>
           <div className="dt">
             {content}
             <div
@@ -366,4 +366,4 @@ class Vacancies extends React.Component<Props, State> {
   }
 }
 
-export default Vacancies;
+export default Careers;

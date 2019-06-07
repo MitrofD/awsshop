@@ -198,7 +198,7 @@ class Support extends React.Component<Props, State> {
       phone: phoneInput.value,
     }).then((messID) => {
       form.reset();
-      NotificationBox.success(`Message has been sended #${messID}`);
+      NotificationBox.success('Message has been sent');
       finish();
     }).catch((error) => {
       NotificationBox.danger(error.response.data);

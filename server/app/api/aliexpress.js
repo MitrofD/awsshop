@@ -45,7 +45,8 @@ const getUrlDesc = (jQuery: Object, url: string): Promise<string> => {
         return;
       }
 
-      const wrapped = jQuery(`<div class="desc">${body}</div>`);
+      const pureBody = body.replace(/href="(.*?)"/g, 'href="!#"');
+      const wrapped = jQuery(`<div class="desc">${pureBody}</div>`);
       wrapped.find('kse\\:widget').remove();
       wrapped.find('script').remove();
       wrapped.find('div:has(div:has(div:has(div:has(div:has(a)))))').remove();

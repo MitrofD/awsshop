@@ -459,7 +459,10 @@ class Registration extends React.Component<Props, State> {
               </div>
               <label className="chckkbx">
                 <Checkbox onChange={this.onChangeIAgreeCheckbox} />
-                {tt('I accept the terms of the site')}
+                I accept the
+                <Link to="/s/terms-of-use"> Terms of Use </Link>
+                and
+                <Link to="/s/privacy-policy"> Privacy Policy</Link>
               </label>
               <div className="row btns">
                 <div className="col-sm-6">

@@ -105,9 +105,7 @@ class Category extends React.PureComponent<Props, State> {
     return (
       <tr>
         <td>
-          <Link
-            to={Config.categoryPath + encodeURIComponent(category.name)}
-          >
+          <Link to={`${Config.catalogPath}/${encodeURIComponent(category.name)}`}>
             {category.name}
           </Link>
           {this.state.modal}

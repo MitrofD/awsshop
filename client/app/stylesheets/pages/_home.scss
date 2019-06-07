@@ -14,15 +14,6 @@
       p {
         font-size: 1.25rem;
       }
-
-      .btn {
-        margin: 1.6875rem 0 0;
-        padding: 1rem 1.5625rem;
-        color: #fff;
-        border-color: #fff;
-        border-width: .125rem;
-        font-size: .8125rem;
-      }
     }
 
     .sub-info {
@@ -68,12 +59,6 @@
         }
 
         .btn {
-          text-transform: uppercase;
-          padding: 1rem 1.5625rem;
-          color: #fff;
-          border-color: #fff;
-          border-width: .125rem;
-
           .arr {
             margin: 0 0 0 1.25rem;
             background-image: url("#{$var-images-path}/arrow-right-solid.svg");

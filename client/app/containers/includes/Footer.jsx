@@ -22,7 +22,7 @@ const Footer = (props: Props) => {
               <Link to="/faq">{tt('FAQ')}</Link>
             </li>
             <li>
-              <Link to="/s/shipping">{tt('Shipping')}</Link>
+              <Link to="/s/commission-policy">{tt('Commission policy')}</Link>
             </li>
             <li>
               <Link to="/s/privacy-policy">{tt('Privacy policy')}</Link>
@@ -42,7 +42,7 @@ const Footer = (props: Props) => {
               <Link to="/">{tt('Home')}</Link>
             </li>
             <li>
-              <Link to="/vacancies">{tt('Vacancies')}</Link>
+              <Link to="/careers">{tt('Careers')}</Link>
             </li>
             <li>
               <Link to="/competition">{tt('Competition')}</Link>
@@ -94,7 +94,10 @@ const Footer = (props: Props) => {
           )}
         </div>
         <div className="col-lg-4">
-          <h6>{tt('Pay security with paypal')}</h6>
+          <h6>
+            {tt('Pay safely with')}
+            :
+          </h6>
           <div className="pay-box">
             <span className="img" />
             <div className="row">

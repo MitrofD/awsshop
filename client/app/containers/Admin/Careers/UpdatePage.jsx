@@ -23,7 +23,7 @@ class UpdatePage extends React.PureComponent<Props> {
   }
 
   onSave(page: Object) {
-    NotificationBox.success('Vacancy has been updated');
+    NotificationBox.success('Career has been updated');
     this.props.onUpdated(page);
   }
 

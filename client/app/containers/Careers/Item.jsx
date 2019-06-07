@@ -14,7 +14,7 @@ const Item = (props: Props) => {
     title,
   } = props;
 
-  const link = `/vacancy/${_id}`;
+  const link = `/career/${_id}`;
   const sOrEmpty = quantity > 1 ? 's' : '';
 
   return (

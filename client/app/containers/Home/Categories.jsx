@@ -11,7 +11,7 @@ export default () => (
         <div className="ttl">{tt('Computers')}</div>
         <Link
           to="/catalog/Computers"
-          className="btn"
+          className="btn btn-border"
         >
           {tt('View all')}
           <span className="arr" />
@@ -24,7 +24,7 @@ export default () => (
         <div className="ttl">{tt('Mobile phones')}</div>
         <Link
           to="/catalog/Mobile phones"
-          className="btn"
+          className="btn btn-border"
         >
           {tt('View all')}
           <span className="arr" />
@@ -37,7 +37,7 @@ export default () => (
         <div className="ttl">{tt('Clothing')}</div>
         <Link
           to="/catalog/Clothing"
-          className="btn"
+          className="btn btn-border"
         >
           {tt('View all')}
           <span className="arr" />

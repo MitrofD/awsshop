@@ -63,7 +63,7 @@ class SubmitForm extends React.Component<Props, State> {
 
   constructor(props: Props, context: null) {
     super(props, context);
-    this.btnTitle = props._id ? 'Save changes' : 'Add vacancy';
+    this.btnTitle = props._id ? 'Save changes' : 'Add career';
     this.descriptionId = `description-txtrea${getUniqueId()}`;
 
     const getStrPropOrDef = (prop: string) => {

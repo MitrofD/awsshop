@@ -17,7 +17,7 @@ const ProductsPage = Loadable('Products');
 const SettingsPage = Loadable('Settings');
 const SupportPage = Loadable('Support');
 const UsersPage = Loadable('Users');
-const VacanciesPage = Loadable('Vacancies');
+const CareersPage = Loadable('Careers');
 
 const faqsLink = `${Config.adminPath}/faqs`;
 const loginsHistoryLink = `${Config.adminPath}/logins-history`;
@@ -28,7 +28,7 @@ const productsLink = `${Config.adminPath}/products`;
 const settingsLink = `${Config.adminPath}/settings`;
 const supportLink = `${Config.adminPath}/support`;
 const usersLink = `${Config.adminPath}/users`;
-const vacansiesLink = `${Config.adminPath}/vacansies`;
+const vacansiesLink = `${Config.adminPath}/carrers`;
 
 const Admin = () => (
   <Page className="Admin">
@@ -42,6 +42,11 @@ const Admin = () => (
             to={Config.adminPath}
           >
             {tt('Categories')}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to={vacansiesLink}>
+            {tt('Careers')}
           </NavLink>
         </li>
         <li>
@@ -89,11 +94,6 @@ const Admin = () => (
             {tt('Users')}
           </NavLink>
         </li>
-        <li>
-          <NavLink to={vacansiesLink}>
-            {tt('Vacancies')}
-          </NavLink>
-        </li>
       </ul>
     </div>
     <div className="rght">
@@ -102,6 +102,10 @@ const Admin = () => (
           component={CategoriesPage}
           exact
           path={Config.adminPath}
+        />
+        <Route
+          component={CareersPage}
+          path={vacansiesLink}
         />
         <Route
           component={FAQsPage}
@@ -138,10 +142,6 @@ const Admin = () => (
         <Route
           component={UsersPage}
           path={usersLink}
-        />
-        <Route
-          component={VacanciesPage}
-          path={vacansiesLink}
         />
       </Switch>
     </div>

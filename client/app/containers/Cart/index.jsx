@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { hot } from 'react-hot-loader/root';
 import CoinPayments from './CoinPayments';
 import Item from './Item';
@@ -92,12 +93,12 @@ class Cart extends React.PureComponent<Props, State> {
             <div className="spprt">
               <div className="ttl">{tt('Continue shopping')}</div>
               <p>{tt('Please contact with us if you have any questions')}</p>
-              <a
+              <Link
                 className="btn btn-sm btn-primary float-right"
-                href={`mailto:${Config.supportEmail}`}
+                to="/support"
               >
                 {tt('Contact support')}
-              </a>
+              </Link>
             </div>
           </div>
         </div>

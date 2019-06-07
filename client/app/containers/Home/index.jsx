@@ -17,7 +17,7 @@ const Home = () => {
     };
 
     return retFunc;
-  });
+  }, []);
 
   return (
     <Page>
@@ -33,7 +33,7 @@ const Home = () => {
               <p>Do you have questions? The Modern Pack has answers</p>
               <p>Read below and find out the answers</p>
               <Link
-                className="btn animated pulse"
+                className="btn btn-border animated pulse mt-3"
                 to="/catalog"
               >
                 {tt('View catalog')}

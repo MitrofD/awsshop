@@ -72,10 +72,26 @@ a.active {
   &.btn-plugin {
     @extend .btn-danger;
   }
+
+  &.btn-gen {
+    background-color: #5DCFDB;
+    border-color: #5DCFDB;
+    border-style: solid;
+    color: $white;
+    padding: 1rem 3rem;
+    border-width: 2px;
+  }
+
+  &.btn-border {
+    color: $white;
+    border-color: $white;
+    border-width: 2px;
+    padding: 1rem 1.5625rem;
+    box-sizing: border-box;
+  }
 }
 
 .chckkbx {
-  color: $primary;
   cursor: pointer;
   font-size: 17px;
 

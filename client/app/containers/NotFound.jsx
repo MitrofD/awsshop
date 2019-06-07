@@ -12,7 +12,7 @@ const NotFound = () => (
       broken or the page has been removed
     </p>
     <Link
-      className="btn"
+      className="btn btn-gen"
       to="/"
     >
       Back home page

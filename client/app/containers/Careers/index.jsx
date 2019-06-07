@@ -11,7 +11,7 @@ import vacancies from '../../api/vacancies';
 import windowScroll from '../../api/window-scroll';
 
 const SCROLL_FAULT = 40;
-const fullCN = 'Vacancies as-full';
+const fullCN = 'Careers as-full';
 
 type Props = {
   limit?: number,
@@ -26,7 +26,7 @@ const defaultProps = {
   limit: 50,
 };
 
-class Vacancies extends React.PureComponent<Props, State> {
+class Careers extends React.PureComponent<Props, State> {
   static defaultProps = defaultProps;
 
   items: React$Element<typeof Item>[] = [];
@@ -153,14 +153,14 @@ class Vacancies extends React.PureComponent<Props, State> {
         </div>
       );
     } else {
-      content = <NoHaveLabel>{tt('No have vacancies')}</NoHaveLabel>;
+      content = <NoHaveLabel>{tt('No have careers')}</NoHaveLabel>;
     }
 
     return (
       <Page>
         <div className="top-box">
           <div className="container">
-            <div className="p-ttl">{tt('Vacancies')}</div>
+            <div className="p-ttl">{tt('Careers')}</div>
           </div>
         </div>
         <div className="container">
@@ -169,7 +169,7 @@ class Vacancies extends React.PureComponent<Props, State> {
               {tt('You’re just a few steps away from starting your dream job!')}
             </div>
             <div className="p-ttl">
-              {tt('Our current vacancies')}
+              {tt('Our current careers')}
             </div>
             {content}
             {showLoadMore && <LoadMore />}
@@ -180,4 +180,4 @@ class Vacancies extends React.PureComponent<Props, State> {
   }
 }
 
-export default hot(Vacancies);
+export default hot(Careers);

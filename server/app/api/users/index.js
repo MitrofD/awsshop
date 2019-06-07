@@ -262,6 +262,7 @@ const users = {
   NOT_EXISTS_ACCOUNT_TEXT,
   CONFIRM_TTL_SEC,
   CONFIRM_TTL_MIN,
+  IS_ADMIN_ATTR,
 
   collection,
   loginsCollection,

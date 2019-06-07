@@ -1,0 +1,152 @@
+.Careers {
+  .top-box {
+    background-image: url("#{$var-images-path}/careers.jpg");
+    height: 410px;
+  }
+
+  table {
+    tr {
+      .info {
+        background-image: url("#{$var-images-path}/car-pos.png");
+        padding-left: 3.75rem;
+        background-repeat: no-repeat;
+        background-position: 0;
+      }
+
+      .quantity {
+        font-size: 0.875rem;
+      }
+
+      td:nth-child(3) {
+        font-family: 'Futura PT';
+      }
+
+      .btn {
+        color: #303030;
+        font-size: .6875rem;
+        border: .125rem solid #303030;
+        min-width: 4.375rem;
+        margin-right: 5px;
+
+        &:last-child {
+          margin-right: 0;
+        }
+
+        &.btn-apply {
+          background-color: $primary;
+          border-color: $primary;
+          color: $white;
+        }
+      }
+    }
+  }
+
+  .XHRSpin {
+    height: 300px;
+  }
+
+  &.details {
+    .info {
+      margin-bottom: 2rem;
+
+      .title {
+        position: relative;
+        padding-left: 3.5rem;
+        color: $primary;
+        font-size: 2.125rem;
+        font-family: 'Futura PT Bold';
+        display: inline-block;
+
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 8px;
+          height: 35px;
+          width: 35px;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-image: url("#{$var-images-path}/car-pos.png");
+        }
+      }
+
+      .location {
+        float: right;
+        position: relative;
+        padding-left: 2rem;
+        color: $black;
+        font-size: 1.0625rem;
+        font-family: 'Futura PT Medium';
+        padding-top: 17px;
+
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          margin-top: -4px;
+          height: 35px;
+          width: 35px;
+          background-repeat: no-repeat;
+          background-position: 0;
+          background-image: url("#{$var-images-path}/location.png");
+        }
+      }
+    }
+
+    .data {
+      border-top: 2px solid #ededed;
+      padding-top: 2.5rem;
+    }
+
+    .sign {
+      margin-top: 4rem;
+      text-align: center;
+      color: $black;
+      line-height: 2.125rem;
+      font-size: 1.125rem;
+      font-family: 'Futura PT Bold';
+
+      .btn {
+        margin-top: 1rem;
+        border-color: $black;
+        color: $black;
+      }
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: $black;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    &.details {
+      .info {
+        text-align: center;
+
+        .title,
+        .location {
+          display: block;
+          float: none;
+          padding-left: 0;
+
+          &::before {
+            display: none;
+          }
+        }
+
+        .title {
+          margin-bottom: 1rem;
+        }
+
+        .location {
+          padding-top: 0;
+        }
+      }
+    }
+  }
+}

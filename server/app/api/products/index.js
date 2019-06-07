@@ -204,12 +204,25 @@ const getDataFromQuery = (query: Object): GetData => {
 const deleteWithCollection = async (deleteCollection: Object, userId: string, id: MongoID): Promise<Object> => {
   const mongoId = tools.getMongoID(id);
 
-  const { value } = await deleteCollection.findOneAndDelete({
-    userId,
-    _id: mongoId,
+  const user = await usersCollection.findOne({
+    _id: tools.getMongoID(userId),
   });
 
-  if (value) {
+  if (!user) {
+    throw new Error(NOT_FOUND_TEXT);
+  }
+
+  const query: { [string]: any } = {
+    _id: mongoId,
+  };
+
+  if (!user.isAdmin) {
+    query.userId = userId;
+  }
+
+  const { value } = await deleteCollection.findOneAndDelete(query);
+
+  if (typeof value === 'object' && value != null) {
     await categories.removeProduct(value.categoryId);
     return value;
   }

@@ -60,12 +60,6 @@ class Header extends React.PureComponent<Props, State> {
       collapseMenuClassName += ' show';
     }
 
-    let becomePartnerLink = `${Config.dashboardPath}/invited-users`;
-
-    if (!user) {
-      becomePartnerLink = `/login?redirect=${becomePartnerLink}`;
-    }
-
     return (
       <header>
         <nav className="navbar navbar-expand-lg navbar-light bg-white">
@@ -111,9 +105,9 @@ class Header extends React.PureComponent<Props, State> {
                 <li className="nav-item">
                   <NavLink
                     className="nav-link"
-                    to={becomePartnerLink}
+                    to="/how-it-works"
                   >
-                    {tt('Become partner')}
+                    {tt('How it works')}
                   </NavLink>
                 </li>
                 <li className="nav-item">

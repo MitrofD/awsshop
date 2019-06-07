@@ -13,12 +13,14 @@ const {
 const AdminPage = LoadableIfAdmin('Admin');
 const CartPage = Loadable('Cart');
 const CatalogPage = LoadableWithParams('Catalog');
-const VacanciesPage = Loadable('Vacancies');
+const CareerPage = LoadableWithParams('Career');
+const CareersPage = Loadable('Careers');
 const CompetitionPage = Loadable('Competition');
 const EmailVerificationSendedPage = LoadableWithParams('EmailVerificationResent');
 const EmailVerificationPage = LoadableWithParams('EmailVerification');
 const DashboardPage = LoadableIfUserNeeded('Dashboard', true);
 const HomePage = Loadable('Home');
+const HowItWorksPage = Loadable('HowItWorks');
 const FAQPage = Loadable('FAQ');
 const ForgotPasswordPage = LoadableIfUserNeeded('ForgotPassword', false);
 const FindPasswordTipPage = Loadable('FindPasswordTip');
@@ -47,16 +49,16 @@ const Routes = () => (
       path={Config.catalogPath}
     />
     <Route
-      component={VacanciesPage}
-      path="/vacancies"
-    />
-    <Route
       component={CompetitionPage}
       path="/competition"
     />
     <Route
       component={DashboardPage}
       path={Config.dashboardPath}
+    />
+    <Route
+      component={HowItWorksPage}
+      path="/how-it-works"
     />
     <Route
       component={AdminPage}
@@ -105,6 +107,14 @@ const Routes = () => (
     <Route
       component={CartPage}
       path="/cart"
+    />
+    <Route
+      component={CareersPage}
+      path="/careers"
+    />
+    <Route
+      component={CareerPage}
+      path="/career/:id"
     />
     <Route
       component={SupportPage}

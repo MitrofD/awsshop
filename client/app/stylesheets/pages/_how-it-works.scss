@@ -1,0 +1,481 @@
+.HowItWorks {
+  main.container {
+    .title {
+      text-align: center;
+      font-size: 2.1875rem;
+      font-family: 'Futura PT Medium';
+    }
+
+    .subtitle {
+      text-align: center;
+      margin-top: 2.8125rem;
+      font-size: 1.0625rem;
+      font-family: 'Futura PT Bold';
+    }
+
+    .top-box {
+      background-image: url("#{$var-images-path}/how-it-works.jpg");
+      background-position: 50%;
+      padding-top: 8rem;
+      padding-bottom: 14rem;
+
+      .info {
+        color: $white;
+
+        h6 {
+          margin: 0 0 1.75rem;
+          font-size: 3.75rem;
+          line-height: 5.3125rem;
+          font-family: 'Futura PT Bold';
+        }
+
+        p {
+          font-size: 1.25rem;
+        }
+      }
+    }
+
+    .about {
+      padding-top: 6.5625rem;
+
+      h6 {
+        color: $black;
+        font-size: 2.1875rem;
+        font-family: 'Futura PT Medium';
+        margin-bottom: 3.125rem;
+      }
+
+      .ways {
+        margin-top: 2.625rem;
+        padding-bottom: 5.3125rem;
+
+        p {
+          color: $black;
+          text-transform: uppercase;
+          margin-bottom: 2.8125rem;
+          font-family: 'Futura PT Bold';
+        }
+
+        .img {
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+
+        .old .img {
+          background-image: url("#{$var-images-path}/hiw-old-way.png");
+          height: 591px;
+        }
+
+        .vs span {
+          @include border-radius(50%);
+          $vsColor: #96d0f9;
+          $vsSize: 3.125rem;
+          display: inline-block;
+          width: $vsSize;
+          height: $vsSize;
+          line-height: $vsSize;
+          color: $vsColor;
+          border: .0625rem solid $vsColor;
+          font-family: 'Futura PT Bold';
+          text-align: center;
+        }
+
+        .new .img {
+          background-image: url("#{$var-images-path}/hiw-new-way.png");
+          height: 198px;
+          margin-top: 10.5rem;
+        }
+      }
+    }
+
+    .free {
+      background-image: url("#{$var-images-path}/hiw-free.jpg");
+      padding-top: 3.125rem;
+      padding-bottom: 2.8125rem;
+      color: $white;
+
+      .items {
+        margin-top: 3rem;
+        margin-bottom: 3rem;
+
+        > div {
+          text-align: center;
+
+          p {
+            margin-top: 1.25rem;
+          }
+
+          .img {
+            height: 75px;
+            width: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
+
+          &.payments .img {
+            background-image: url("#{$var-images-path}/hiw-f-month.png");
+          }
+
+          &.registration .img {
+            background-image: url("#{$var-images-path}/hiw-f-registration.png");
+          }
+
+          &.credit-card .img {
+            background-image: url("#{$var-images-path}/hiw-f-credit-card.png");
+          }
+        }
+      }
+
+      .pay-info {
+        font-size: 1.25rem;
+        text-align: center;
+        font-family: 'Futura PT Medium';
+      }
+    }
+
+    .automation {
+      padding-top: 5.3125rem;
+      padding-bottom: 5.3125rem;
+
+      .title {
+        color: $black;
+      }
+
+      .data {
+        margin-top: 4.6875rem;
+
+        .item {
+          @include box-shadow(0.3125rem 0 1.25rem rgba(222,226,255,.35));
+          @include border-radius(5px);
+          padding: 1.25rem 1.25rem 1.25rem 6.25rem;
+          color: #6e6e6e;
+          position: relative;
+          margin-top: 0.25rem;
+          overflow: hidden;
+
+          &::before {
+            content: "";
+            position: absolute;
+            width: 4.375rem;
+            height: 100%;
+            left: 0;
+            top: 0;
+            background-color: #03d6cf;
+            background-image: url("#{$var-images-path}/hiw-check.png");
+            background-repeat: no-repeat;
+            background-position: 50%;
+          }
+
+          &:first-child {
+            margin-top: 0;
+          }
+
+          strong {
+            color: #303030;
+            display: block;
+            font-size: .9375rem;
+            font-family: 'Futura PT Bold';
+            margin-bottom: 0.5rem;
+          }
+
+          p {
+            margin-bottom: 0;
+          }
+        }
+      }
+
+      .img {
+        background-repeat: no-repeat;
+        background-image: url("#{$var-images-path}/hiw-mac.png");
+        background-position: right;
+        background-size: contain;
+        height: 344px;
+      }
+    }
+
+    .extension {
+      padding: 5.8rem 0;
+      color: #6e6e6e;
+      font-size: 1.0625rem;
+      line-height: 2.1875rem;
+      text-align: center;
+      background-color: #f8f8f8;
+
+      .title {
+        color: $black;
+        font-family: 'Futura PT Medium';
+      }
+
+      .subtitle {
+        color: $primary;
+      }
+
+      .data {
+        margin-top: 2.8125rem;
+      }
+
+      .items {
+        > div {
+          padding: 0 4.375rem;
+          position: relative;
+
+          &::before {
+            content: "";
+            position: absolute;
+            width: 2.1875rem;
+            height: 1.9375rem;
+            top: 1.25rem;
+            right: -1.0625rem;
+            background-image: url("#{$var-images-path}/hiw-e-arrow.png");
+          }
+
+          &:last-child::before {
+            background-image: none;
+          }
+
+          p {
+            margin-top: 1.25rem;
+          }
+
+          .img {
+            height: 75px;
+            width: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
+
+          &.import .img {
+            background-image: url("#{$var-images-path}/hiw-e-import.png");
+          }
+
+          &.traffic .img {
+            background-image: url("#{$var-images-path}/hiw-e-traffic.png");
+          }
+
+          &.automate .img {
+            background-image: url("#{$var-images-path}/hiw-e-automate.png");
+          }
+        }
+      }
+    }
+
+    .steps {
+      background-color: $primary;
+      padding-top: 3.125rem;
+      padding-bottom: 2.8125rem;
+      color: $white;
+
+      .items {
+        text-align: center;
+
+        > div {
+          padding: 0 4.375rem;
+          position: relative;
+
+          &::before {
+            content: "";
+            position: absolute;
+            width: 2.1875rem;
+            height: 1.9375rem;
+            top: 1.25rem;
+            right: -1.0625rem;
+            background-image: url("#{$var-images-path}/hiw-s-arrow.png");
+          }
+
+          &:last-child::before {
+            background-image: none;
+          }
+
+          span {
+            color: #03d6cf;
+            font-size: 1.0625rem;
+            margin-bottom: 1.5625rem;
+            text-transform: uppercase;
+          }
+
+          p {
+            margin-top: 1.25rem;
+          }
+
+          .img {
+            height: 75px;
+            width: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin-bottom: 1.2rem;
+          }
+
+          &.step1 .img {
+            background-image: url("#{$var-images-path}/hiw-s-step1.png");
+          }
+
+          &.step2 .img {
+            background-image: url("#{$var-images-path}/hiw-s-step2.png");
+          }
+
+          &.step3 .img {
+            background-image: url("#{$var-images-path}/hiw-s-step3.png");
+          }
+
+          &.step4 .img {
+            background-image: url("#{$var-images-path}/hiw-s-step4.png");
+          }
+        }
+      }
+    }
+
+    .motivation {
+      padding-top: 5rem;
+      padding-bottom: 6.25rem;
+
+      .title {
+        color: $black;
+        text-align: left;
+        margin-bottom: 2.1875rem;
+      }
+
+      p {
+        color: #6e6e6e;
+        font-size: 1.0625rem;
+        line-height: 2.5rem;
+        font-weight: 500;
+        margin-bottom: 2.5rem;
+      }
+
+      .img {
+        height: 449px;
+        background-repeat: no-repeat;
+        background-image: url("#{$var-images-path}/hiw-motivation.png");
+        background-position: right;
+      }
+    }
+
+    .features {
+      background-color: #f8f8f8;
+      color: #6e6e6e;
+      padding-top: 6.25rem;
+      padding-bottom: 6.25rem;
+
+      .title {
+        color: $black;
+      }
+
+      .items {
+        margin-top: 4.4rem;
+        text-align: center;
+
+        > div {
+          span {
+            color: $black;
+            display: block;
+            font-size: 1rem;
+            font-family: 'Futura PT Bold';
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+          }
+
+          p {
+            font-size: 1.0625rem;
+            line-height: 2.1875rem;
+          }
+
+          .img {
+            height: 75px;
+            width: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin-bottom: 1.2rem;
+          }
+
+          &.one-click .img {
+            background-image: url("#{$var-images-path}/hiw-f-one-click.png");
+          }
+
+          &.automate .img {
+            background-image: url("#{$var-images-path}/hiw-f-automate.png");
+          }
+
+          &.wish-boards .img {
+            background-image: url("#{$var-images-path}/hiw-f-wish-boards.png");
+          }
+
+          &.tracking .img {
+            background-image: url("#{$var-images-path}/hiw-f-tracking.png");
+          }
+
+          &.edit .img {
+            background-image: url("#{$var-images-path}/hiw-f-edit.png");
+          }
+
+          &.manage .img {
+            background-image: url("#{$var-images-path}/hiw-f-manage.png");
+          }
+        }
+      }
+    }
+
+    .welcome {
+      background-image: url("#{$var-images-path}/hiw-welcome.jpg");
+      padding-top: 3.125rem;
+      padding-bottom: 2.8125rem;
+      color: $white;
+      text-align: center;
+
+      .subtitle {
+        font-size: 1.25rem;
+        font-family: 'Futura PT Medium';
+      }
+    }
+
+    @include media-breakpoint-down(md) {
+      .ways  {
+        .vs {
+          margin-top: 2rem;
+          margin-bottom: 2rem !important;
+        }
+
+        .new .img {
+          margin-top: 0 !important;
+        }
+      }
+
+      .items > div::before {
+        display: inline-block!important;
+        top: initial !important;
+        right: initial !important;
+        left: 50%;
+        bottom: -2.1rem;
+        margin-left: -1.0625rem;
+        transform: rotate(90deg);
+      }
+
+      section {
+        padding-top: 2.5rem !important;
+        padding-bottom: 2.5rem !important;
+      }
+    }
+
+    @include media-breakpoint-down(lg) {
+      .automation .img {
+        background-position: center;
+        margin-left: 1rem;
+        margin-right: 1rem;
+      }
+
+      .motivation {
+        .title {
+          text-align: center;
+        }
+
+        .img {
+          background-position: center;
+        }
+      }
+    }
+  }
+
+  footer {
+    margin-top: 0;
+    border-top: none;
+  }
+}
