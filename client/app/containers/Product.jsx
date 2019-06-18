@@ -129,7 +129,7 @@ class Product extends React.PureComponent<Props, State> {
     carts.add(this.props.id, {
       quantity,
     }).then(() => {
-      NotificationBox.success('Added to cart successful');
+      NotificationBox.success('Added to cart');
       button.disabled = false;
     }).catch((error) => {
       NotificationBox.danger(error.message);

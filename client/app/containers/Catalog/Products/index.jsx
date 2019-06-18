@@ -9,12 +9,12 @@ const ALL_TEXT = 'All products';
 
 const sorts = {
   fNewToOld: {
-    title: 'From new to old',
+    title: 'By New to Old date',
     by: 'createdAt',
     desc: -1,
   },
   fOldToNew: {
-    title: 'From old to new',
+    title: 'By Old to New date',
     by: 'createdAt',
     desc: 1,
   },
@@ -29,12 +29,12 @@ const sorts = {
     desc: -1,
   },
   fCheapToExpensive: {
-    title: 'From cheap to expensive',
+    title: 'By Low to High price',
     by: 'price',
     desc: 1,
   },
   fExpensiveToCheap: {
-    title: 'From expensive to cheap',
+    title: 'By High to Low price',
     by: 'price',
     desc: -1,
   },
@@ -213,6 +213,10 @@ class Products extends React.PureComponent<Props, State> {
   }
 
   render() {
+    const {
+      dropdown,
+    } = this.state;
+
     let title = ALL_TEXT;
     let goodLabel = null;
     let categoryId = null;
@@ -236,6 +240,12 @@ class Products extends React.PureComponent<Props, State> {
           {`: ${productsCount}`}
         </div>
       );
+    }
+
+    let sortClassName = 'sort';
+
+    if (dropdown) {
+      sortClassName += ' active';
     }
 
     return (
@@ -266,7 +276,7 @@ class Products extends React.PureComponent<Props, State> {
                 {tt('Sorting')}
                 :
               </label>
-              <div className="sort">
+              <div className={sortClassName}>
                 <input
                   readOnly
                   className="form-control"
@@ -274,7 +284,7 @@ class Products extends React.PureComponent<Props, State> {
                   type="text"
                   value={this.sortData.title}
                 />
-                {this.state.dropdown}
+                {dropdown}
               </div>
             </div>
             <div className="col-sm-2">

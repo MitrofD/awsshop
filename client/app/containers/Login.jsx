@@ -105,7 +105,7 @@ class Login extends React.Component<Props, State> {
 
     user.login(rEmail, rPassword).then((uData) => {
       if (!uData.isVerified) {
-        toRoute(`/resend-email/${uData.email}`);
+        toRoute(`/email-verification-sended/${uData.email}`);
         return;
       }
 

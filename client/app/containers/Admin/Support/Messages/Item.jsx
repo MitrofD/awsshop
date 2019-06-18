@@ -90,7 +90,7 @@ class Item extends React.PureComponent<Props, State> {
       );
     }
 
-    const subject = item.subject ? item.subject : tt('No have subject');
+    const subject = item.subject ? item.subject : tt('No subject');
 
     return (
       <div className="Item">

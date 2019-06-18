@@ -79,9 +79,12 @@ module.exports = function productsRoute() {
         const isAdmin = req.session.get(Enums.SESS_USER_IS_ADMIN);
         const userId = req.session.get(Enums.SESS_USER_ID);
 
-        if (!isAdmin || product.userId !== userId) {
-          throw new Error('Permission denied');
+        if (isAdmin || product.userId === userId) {
+          res.json(product);
+          return;
         }
+
+        throw new Error('Permission denied');
       }
 
       res.json(product);

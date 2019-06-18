@@ -92,7 +92,7 @@ class Cart extends React.PureComponent<Props, State> {
             </div>
             <div className="spprt">
               <div className="ttl">{tt('Continue shopping')}</div>
-              <p>{tt('Please contact with us if you have any questions')}</p>
+              <p> If you have a question, please contact us</p>
               <Link
                 className="btn btn-sm btn-primary float-right"
                 to="/support"

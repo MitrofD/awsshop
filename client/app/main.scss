@@ -6,3 +6,66 @@
 @import 'stylesheets/icons';
 @import 'stylesheets/base';
 @import 'stylesheets/pages/pages';
+
+// Serega
+.Careers table tr .btn {
+  margin: 0 5px;
+}
+.Careers table tr .btn:last-child {
+  margin: 0 5px !important;
+}
+.Support .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+textarea.form-control {
+  max-height: 300px;
+}
+.Home main.container .sub-info {
+  text-shadow: 0 0 1px #000;
+}
+.btn.btn-gen, .DatePicker .cntrl button.btn-gen {
+  padding: 1rem 15px;
+}
+.HowItWorks main.container .about .ways .old .img,.HowItWorks main.container .about .ways .new .img {
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+@media screen and (max-width: 1380px){
+  .navbar .nav-link {
+    font-size: 14px;
+  }
+}
+@media screen and (max-width: 991px){
+
+  .Home main.container .sub-info {
+    text-align: center;
+  }
+  .HowItWorks main.container .automation .img {
+    height: 250px;
+  }
+  .HowItWorks main.container .about .ways .old .img {
+    height: 400px;
+  }
+}
+@media screen and (max-width: 576px){
+  .Home main.container .info h6 {
+    font-size: 40px;
+    line-height: normal;
+  }
+  .Home .top-box {
+    height: auto;
+  }
+  .Home main.container .info {
+    padding: 70px 0;
+  }
+  .Home main.container .sub-info {
+    margin: 20px 0 0;
+  }
+}
+@media screen and (max-width: 320px){
+  .navbar .navbar-logo {
+    margin-right: 45px;
+  }
+}

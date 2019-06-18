@@ -67,10 +67,10 @@ class EmailVerification extends React.PureComponent<Props, State> {
 
     if (!xhrRequest) {
       message = errorMessage;
-      loginLink = <Link to="/login">Login</Link>;
+      loginLink = <Link to="/login">login</Link>;
 
       if (!message) {
-        message = 'Your account is activated. Please login to trade';
+        message = 'Your account is activated. Please ';
       }
     }
 

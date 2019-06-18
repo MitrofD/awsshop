@@ -30,7 +30,7 @@ const Product = (props: Props) => {
     };
 
     carts.add(props._id).then(() => {
-      NotificationBox.success('Added to Cart successful');
+      NotificationBox.success('Added to cart');
       finish();
     }).catch((error) => {
       NotificationBox.danger(error.message);

@@ -33,6 +33,10 @@
         background-position: center;
         background-image: url("#{$var-images-path}/select-arrow.png");
       }
+
+      &.active::after {
+        @include rotate(180deg);
+      }
     }
 
     .XHRSpin {

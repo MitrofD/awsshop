@@ -97,13 +97,16 @@ class EmailVerificationResent extends React.PureComponent<Props, State> {
             <p>
               {rAdvancedMessage}
               {' We sent a confirmation email to'}
-              <strong>{email}</strong>
+              <strong>
+                &nbsp;
+                {email}
+              </strong>
               .Please follow the instructions to complete your registration.
               <a
                 href="#!"
                 onClick={this.onClickToResentLink}
               >
-                {tt('Resent email')}
+                {tt('Resend email')}
               </a>
             </p>
             <FindEmailTips />

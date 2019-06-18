@@ -258,7 +258,7 @@ class SoldProducts extends React.Component<Props, State> {
         </table>
       );
     } else {
-      itemsContent = <NoHaveLabel>{tt('No have products')}</NoHaveLabel>;
+      itemsContent = <NoHaveLabel>No records found</NoHaveLabel>;
     }
 
     if (showLoadMore) {

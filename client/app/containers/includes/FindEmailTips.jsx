@@ -17,7 +17,6 @@ const FindEmailTips = () => (
           How to set?
         </a>
       </li>
-      <li>Check the mail client works normally</li>
     </ul>
   </div>
 );

@@ -30,8 +30,7 @@ const Home = () => {
                 <br />
                 at a good price
               </h6>
-              <p>Do you have questions? The Modern Pack has answers</p>
-              <p>Read below and find out the answers</p>
+              <p>Life is hard enough already.Let us make it a little easier.</p>
               <Link
                 className="btn btn-border animated pulse mt-3"
                 to="/catalog"
@@ -51,6 +50,8 @@ const Home = () => {
           </div>
         </div>
         <ProductsSlider
+          sortBy="createdAt"
+          sortDesc={-1}
           title="Latest products"
         />
         <Categories />

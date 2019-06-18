@@ -58,7 +58,7 @@ class Product extends React.PureComponent<Props, State> {
 
     if (!isApproved) {
       approveCN = `nt-${approveCN}`;
-      approveText = 'Waiting for approve';
+      approveText = 'Waiting for approval';
     }
 
     return (

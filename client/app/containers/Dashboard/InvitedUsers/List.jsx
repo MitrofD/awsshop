@@ -223,7 +223,7 @@ class List extends React.Component<Props, State> {
         </table>
       );
     } else {
-      content = <NoHaveLabel>No users found</NoHaveLabel>;
+      content = <NoHaveLabel>No records found</NoHaveLabel>;
     }
 
     if (showLoadMore) {

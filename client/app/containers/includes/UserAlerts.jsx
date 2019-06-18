@@ -29,8 +29,8 @@ const getUserAlerts = (cUser: ?Object) => {
     if (!pMWallet) {
       const pMWalletAlert = (
         <AlertWarning key="pMWallet">
-          Для возможности получения партнерских отчислений нужно заполнить
-          <Link to={`${Config.settingsPath}/perfect-money`}> платежные данные</Link>
+          In order to receive referral fees, please fill in the
+          <Link to={`${Config.settingsPath}/perfect-money`}> wallet info</Link>
         </AlertWarning>
       );
 
