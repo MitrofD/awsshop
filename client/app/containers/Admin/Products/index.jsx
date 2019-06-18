@@ -235,7 +235,7 @@ class Products extends React.Component<Props, State> {
       if (this.items.length > 0) {
         itemsContent = this.items;
       } else {
-        itemsContent = <NoHaveLabel>{tt('No have products')}</NoHaveLabel>;
+        itemsContent = <NoHaveLabel>{tt('No products found')}</NoHaveLabel>;
       }
     }
 
