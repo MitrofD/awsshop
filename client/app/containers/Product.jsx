@@ -50,6 +50,8 @@ class Product extends React.PureComponent<Props, State> {
 
   unmounted = true;
 
+  configurableData: Object = {};
+
   constructor(props: Props, context: null) {
     super(props, context);
 
@@ -67,6 +69,7 @@ class Product extends React.PureComponent<Props, State> {
     self.onClickTabItem = this.onClickTabItem.bind(this);
     self.onClickAddToCartButton = this.onClickAddToCartButton.bind(this);
     self.onClickToThumbImage = this.onClickToThumbImage.bind(this);
+    self.onClickConfigurable = this.onClickConfigurable.bind(this);
     self.onSetQuantityInput = this.onSetQuantityInput.bind(this);
     self.onRefMainImg = this.onRefMainImg.bind(this);
     self.onRefImagesSlider = this.onRefImagesSlider.bind(this);
@@ -135,6 +138,57 @@ class Product extends React.PureComponent<Props, State> {
       NotificationBox.danger(error.message);
       button.disabled = false;
     });
+  }
+
+  onClickConfigurable(event: SyntheticEvent<HTMLButtonElement>) {
+    if (!this.data) {
+      return;
+    }
+
+    const { skuProducts, configurable } = this.data;
+    const { row, column, img } = event.currentTarget.dataset;
+    this.configurableData[row] = column;
+    const skuProductsLength = skuProducts.length;
+    let i = 0;
+    // TODO it have to depend on row count. Not two
+    if (Object.keys(this.configurableData).length === Object.keys(configurable).length) {
+      const idsString = Object.entries(this.configurableData)
+        .sort((a, b) => Number(a[0]) - Number(b[0]))
+        .reduce((emptyArray, item) => {
+          emptyArray.push(item[1]);
+          return emptyArray;
+        }, []).join(',');
+      const configurableProductData = skuProducts.find(item => item.skuPropIds === idsString);
+      this.data.price = configurableProductData.skuVal.skuAmount.value.toFixed(2);// eslint-disable-line
+    } else {
+      console.log('column', column);
+      for (; i < skuProductsLength; i += 1) {
+        const skuPropIds = skuProducts[i].skuPropIds.split(',');
+        if (skuPropIds.find(item => item === column)) {
+          if (skuProducts[i].skuVal.availQuantity === 0) {
+            skuProducts[i].skuPropIds.
+            console.log(skuProducts[i], configurable);
+          }
+        }
+      }
+
+      this.data.skuProducts = skuProducts;
+    }
+
+    if (img) {
+      const [
+        imageSrc,
+      ] = img.split('_50x50');
+
+      this.mainImgSrc = imageSrc;
+      this.mainImgRef.className = this.mainImgClassName;
+
+      setImmediate(() => {
+        this.mainImgRef.className = `${this.mainImgClassName} animated pulse`;
+      });
+    }
+
+    this.forceUpdate();
   }
 
   onClickToThumbImage(event: SyntheticEvent<HTMLButtonElement>) {
@@ -270,6 +324,33 @@ class Product extends React.PureComponent<Props, State> {
               {tt('Price')}
               {`: ${NumberFormat(pData.price)}`}
             </div>
+            {Object.keys(pData.configurable).length
+              ? (
+                <div className="sku">
+                  {Object.entries(pData.configurable).map((skuData: any) => (
+                    <div key={skuData[0]}>
+                      <span>{`${skuData[0]}: `}</span>
+                      {skuData[1].map(sku => (
+                        <span
+                          key={sku.skuId}
+                          data-row={skuData[0]}
+                          data-column={sku.skuId}
+                          data-img={sku.skuImage}
+                          onClick={this.onClickConfigurable}
+                          role="presentation"
+                        >
+                          {sku.skuType === 'img'
+                            ? <img src={sku.skuImage} title={sku.skuTitle} alt={sku.skuTitle} />
+                            : sku.skuTitle
+                          }
+                        </span>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              )
+              : null
+            }
             <div className="form-group">
               <NumericInput
                 disabledDecimal
