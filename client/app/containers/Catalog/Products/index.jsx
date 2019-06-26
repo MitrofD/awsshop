@@ -18,19 +18,6 @@ const sorts = {
     by: 'createdAt',
     desc: 1,
   },
-<<<<<<< HEAD
-=======
-  fAToZ: {
-    title: 'Name: Ascending',
-    by: 'title',
-    desc: 1,
-  },
-  fZToA: {
-    title: 'Name: Descending',
-    by: 'title',
-    desc: -1,
-  },
->>>>>>> 93c271e2daef46ad8b174d25c5e09b7cd7c72917
   fCheapToExpensive: {
     title: 'Price: Lowest first',
     by: 'price',

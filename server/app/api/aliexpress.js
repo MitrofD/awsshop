@@ -79,7 +79,7 @@ const rObj = {
         method: 'GET',
         headers,
       };
-      // console.log(options);
+
       request(options, (error, response, body) => {
         let skuProducts;
         if (error) {
@@ -91,6 +91,9 @@ const rObj = {
         const sendData = {};
         let configurable;
         let clearSkuProducts;
+        let isConfigurable = false;
+        let minPrice = 0;
+        let maxPrice = 0;
 
         // title
         const title = $('.product-name').first().text();
@@ -101,49 +104,64 @@ const rObj = {
         $('script').get().forEach((item) => {
           if (item.children[0] && item.children[0].data.match(/skuProducts/)) {
             const test = item.children[0].data.match(/var (skuProducts=.*)var/mis);
+            const minPriceArray = item.children[0].data.match(/window.runParams.minPrice="([^\"]+)"/mis);// eslint-disable-line
+            const maxPriceArray = item.children[0].data.match(/window.runParams.maxPrice="([^\"]+)"/mis);// eslint-disable-line
+            minPrice = minPriceArray[1];
+            maxPrice = maxPriceArray[1];
             eval(test[1].trim());
           }
         });
 
         if (skuProducts) {
-          configurable = {};
+          isConfigurable = true;
+          configurable = [];
+          let configurableItemOrder = 1;
           $('#j-product-info-sku .p-property-item').each(function (index, elem) {
-            const configurableFieldData = $(this)
+            const configurableItemName = $(this)
               .find('.p-item-title')
               .first()
               .html()
               .trim()
               .replace(/:$/, '');
-            console.log(configurableFieldData);
-            configurable[configurableFieldData] = [];
+            const configurableItemId = $(this)
+              .find('.sku-attr-list')
+              .attr('data-sku-prop-id');
+            const configurableItem = {
+              skuPropertyName: configurableItemName,
+              order: configurableItemOrder,
+              skuPropertyId: parseInt(configurableItemId, 10),
+              skuPropertyValues: [],
+            };
+            let skuPropertyValuesOrder = 1;
+            // configurable[configurableFieldData] = [];
             $(this).find('li').each(function (index1, elem1) {
               const a = $(this).find('a');
-              let skuTitle;
-              let skuImage;
-              let skuType;
-              const skuId = a.data('sku-id');
+              let propertyValueName;
+              let skuPropertyImagePath;
+              const propertyValueId = a.data('sku-id');
               const skuChildren = $(this).find('a').children();
 
               switch (skuChildren.get(0).tagName) {
                 case 'img':
-                  skuType = 'img';
-                  skuImage = skuChildren.attr('src');
-                  skuTitle = skuChildren.attr('title');
+                  skuPropertyImagePath = skuChildren.attr('src');
+                  propertyValueName = skuChildren.attr('title');
                   break;
                 case 'span':
-                  skuType = 'span';
-                  skuTitle = skuChildren.first().html();
+                  propertyValueName = skuChildren.first().html();
                   break;
                 default:
               }
-              const skuData = {
-                skuId,
-                skuType,
-                skuTitle,
-                skuImage,
+              const skuPropertyValues = {
+                propertyValueName,
+                propertyValueId,
+                skuPropertyImagePath,
+                skuPropertyValuesOrder,
               };
-              configurable[configurableFieldData].push(skuData);
+              configurableItem.skuPropertyValues.push(skuPropertyValues);
+              skuPropertyValuesOrder += 1;
             });
+            configurable.push(configurableItem);
+            configurableItemOrder += 1;
           });
 
           clearSkuProducts = skuProducts.map(function (findItem) {
@@ -167,6 +185,9 @@ const rObj = {
 
             newItem.skuVal.skuAmount.currency = BASE_CURRENCY;
             newItem.skuVal.skuAmount.value = clearPrice;
+            if (newItem.skuAttr) {
+              newItem.skuAttr = newItem.skuAttr.replace(/#[^;]*/, '');
+            }
 
             return newItem;
           });
@@ -240,8 +261,11 @@ const rObj = {
             sendData.price = price;
             sendData.shipping = shipping;
             sendData.sellerLink = sellerLink;
+            sendData.isConfigurable = isConfigurable;
             sendData.configurable = configurable;
             sendData.skuProducts = clearSkuProducts;
+            sendData.minPrice = minPrice;
+            sendData.maxPrice = maxPrice;
             resolve(sendData);
           }).catch(reject);
         } else {

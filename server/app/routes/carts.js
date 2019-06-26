@@ -21,7 +21,8 @@ module.exports = function cartsRoute() {
   });
 
   this.post('/carts', Middleware.session, Middleware.jsonBodyParser, (req, res, next) => {
-    carts.add(req.session.id, req.body.productId, req.body.quantity).then((item) => {
+    const { productId, ...options } = req.body;
+    carts.add(req.session.id, productId, options).then((item) => {// eslint-disable-line
       res.json(item);
     }).catch(next);
   });

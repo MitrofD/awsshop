@@ -79,9 +79,9 @@ class Item extends React.PureComponent<Props, State> {
     const {
       image,
       title,
-      price,
       productId,
     } = this.props;
+    const price = this.props.options.isConfigurable ? this.props.options.price : this.props.price;
 
     const {
       quantity,

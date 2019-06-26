@@ -20,11 +20,19 @@ type State = {
   alert: ?React$Element<typeof AlertDanger>,
   currImgIdx: number,
   currTab: string,
-  quantity: ?string,
+  quantity: ?number,
   xhrRequest: boolean,
 };
 
-const defQuantity = '1';
+type ProductCardOptions = {
+  quantity: number,
+  price?: number,
+  isConfigurable: boolean,
+  configurableIds?: string,
+  configurableData: Object[],
+};
+
+const defQuantity = 1;
 
 const tabs = {
   desc: 'description',
@@ -50,7 +58,9 @@ class Product extends React.PureComponent<Props, State> {
 
   unmounted = true;
 
-  configurableData: Object = {};
+  configurableDisabled: number[] = [];
+
+  configurableActive: Object = {};
 
   constructor(props: Props, context: null) {
     super(props, context);
@@ -127,11 +137,34 @@ class Product extends React.PureComponent<Props, State> {
   onClickAddToCartButton(event: SyntheticEvent<HTMLButtonElement>) {
     const button = event.currentTarget;
     const quantity = parseInt(this.state.quantity) || defQuantity;
+    const options: ProductCardOptions = {
+      quantity,
+      isConfigurable: false,
+      configurableData: [],
+    };
     button.disabled = true;
 
-    carts.add(this.props.id, {
-      quantity,
-    }).then(() => {
+    if (this.data && this.data.isConfigurable) {
+      const { configurable, configurableIds } = this.data;
+      const configurableLength = configurable.length;
+      if (Object.keys(this.configurableActive).length !== configurable.length) {
+        NotificationBox.danger('Please provide the missing information first.');
+        button.disabled = false;
+        return;
+      }
+      options.price = parseFloat(this.data.price);
+      options.configurableIds = configurableIds;
+      options.isConfigurable = true;
+      let i = 0;
+      for (; i < configurableLength; i += 1) {
+        const skuPropertyValuesId = this.configurableActive[configurable[i].skuPropertyId];
+        const { skuPropertyValues, ...newConfigurable } = configurable[i];
+        newConfigurable.skuPropertyValue = skuPropertyValues.find(imem => imem.propertyValueId === skuPropertyValuesId);
+        options.configurableData.push(newConfigurable);
+      }
+    }
+
+    carts.add(this.props.id, options).then(() => {
       NotificationBox.success('Added to cart');
       button.disabled = false;
     }).catch((error) => {
@@ -145,35 +178,67 @@ class Product extends React.PureComponent<Props, State> {
       return;
     }
 
-    const { skuProducts, configurable } = this.data;
+    const { data } = this;
     const { row, column, img } = event.currentTarget.dataset;
-    this.configurableData[row] = column;
-    const skuProductsLength = skuProducts.length;
-    let i = 0;
-    // TODO it have to depend on row count. Not two
-    if (Object.keys(this.configurableData).length === Object.keys(configurable).length) {
-      const idsString = Object.entries(this.configurableData)
-        .sort((a, b) => Number(a[0]) - Number(b[0]))
-        .reduce((emptyArray, item) => {
-          emptyArray.push(item[1]);
-          return emptyArray;
-        }, []).join(',');
-      const configurableProductData = skuProducts.find(item => item.skuPropIds === idsString);
-      this.data.price = configurableProductData.skuVal.skuAmount.value.toFixed(2);// eslint-disable-line
+    const { skuProducts, configurable } = data;
+    const disabledSkuCountObj = {};// object of sku with zero quantity
+    const allSkuCountObj = {};// all sku object
+    if (this.configurableDisabled.indexOf(parseInt(column, 10)) !== -1) {
+      return;
+    }
+
+    if (this.configurableActive[row] === parseInt(column, 10)) {
+      delete this.configurableActive[row];
     } else {
-      console.log('column', column);
-      for (; i < skuProductsLength; i += 1) {
-        const skuPropIds = skuProducts[i].skuPropIds.split(',');
-        if (skuPropIds.find(item => item === column)) {
-          if (skuProducts[i].skuVal.availQuantity === 0) {
-            skuProducts[i].skuPropIds.
-            console.log(skuProducts[i], configurable);
+      this.configurableActive[row] = parseInt(column, 10);
+    }
+
+    if (Object.keys(this.configurableActive).length === configurable.length) {
+      let idsString = '';
+      idsString = configurable.map(item => this.configurableActive[item.skuPropertyId]).join(',');
+      const configurableProductData = skuProducts.find(item => item.skuPropIds === idsString);
+      data.price = configurableProductData.skuVal.skuAmount.value.toFixed(2);
+      data.configurableIds = idsString;
+    } else {
+      this.configurableDisabled = [];
+      const skuProductsLength = skuProducts.length;
+      let i = 0;
+      let j = 0;
+      // Count all sku and sku with zero quantity
+      Object.entries(this.configurableActive).forEach((item: any) => {
+        const skuId = item[1];
+        i = 0;
+
+        for (; i < skuProductsLength; i += 1) {
+          const skuPropIds = skuProducts[i].skuPropIds.split(',').map(Number);
+          const skuPropIdsLength = skuPropIds.length;
+
+
+          if (skuPropIds.indexOf(skuId) !== -1) {
+            j = 0;
+            for (; j < skuPropIdsLength; j += 1) {
+              if (Number(column) === skuPropIds[j]) {
+                continue;// eslint-disable-line
+              }
+              allSkuCountObj[skuPropIds[j]] = allSkuCountObj[skuPropIds[j]] || 0;
+              allSkuCountObj[skuPropIds[j]] += 1;
+              if (skuProducts[i].skuVal.availQuantity === 0) {
+                disabledSkuCountObj[skuPropIds[j]] = disabledSkuCountObj[skuPropIds[j]] || 0;
+                disabledSkuCountObj[skuPropIds[j]] += 1;
+              }
+            }
           }
         }
-      }
-
-      this.data.skuProducts = skuProducts;
+        Object.entries(disabledSkuCountObj).forEach((itemDis: any) => {
+          const [skuIdDis, skuCountDis] = itemDis;
+          if (allSkuCountObj[skuIdDis] === skuCountDis) {
+            this.configurableDisabled.push(parseInt(skuIdDis, 10));
+          }
+        });
+      });
     }
+
+    data.skuProducts = skuProducts;
 
     if (img) {
       const [
@@ -188,13 +253,14 @@ class Product extends React.PureComponent<Props, State> {
       });
     }
 
+    this.data = data;
+
     this.forceUpdate();
   }
 
   onClickToThumbImage(event: SyntheticEvent<HTMLButtonElement>) {
     event.preventDefault();
     const element = event.currentTarget;
-    const pData = Tools.anyAsObj(this.data);
     const imageFullSrc = element.style.backgroundImage.substr(5);
 
     const [
@@ -320,28 +386,44 @@ class Product extends React.PureComponent<Props, State> {
             id={this.driftPaneContainerId}
           >
             <div className="ttl">{pData.title}</div>
-            <div className="prc">
-              {tt('Price')}
-              {`: ${NumberFormat(pData.price)}`}
-            </div>
-            {Object.keys(pData.configurable).length
+            {!pData.isConfigurable || (pData.minPrice && pData.maxPrice && pData.minPrice === pData.maxPrice) || Object.keys(this.configurableActive).length === Object.keys(pData.configurable).length
               ? (
-                <div className="sku">
-                  {Object.entries(pData.configurable).map((skuData: any) => (
-                    <div key={skuData[0]}>
-                      <span>{`${skuData[0]}: `}</span>
-                      {skuData[1].map(sku => (
+                <div className="prc">
+                  {tt('Price')}
+                  {`: ${NumberFormat(pData.price)}`}
+                </div>
+              )
+              : (
+                <div className="prc">
+                  {tt('Price')}
+                  {`: ${NumberFormat(pData.minPrice)}`}
+                  {` - ${NumberFormat(pData.maxPrice)}`}
+                </div>
+              )
+            }
+            {pData.isConfigurable
+              ? (
+                <div className="sku configurable-data">
+                  {pData.configurable.map((skuData: any) => (
+                    <div className="mb-3" key={skuData.skuPropertyId}>
+                      <span>{`${skuData.skuPropertyName}: `}</span>
+                      {skuData.skuPropertyValues.map(sku => (
                         <span
-                          key={sku.skuId}
-                          data-row={skuData[0]}
-                          data-column={sku.skuId}
-                          data-img={sku.skuImage}
+                          key={sku.propertyValueId}
+                          data-row={skuData.skuPropertyId}
+                          data-column={sku.propertyValueId}
+                          data-img={sku.skuPropertyImagePath}
                           onClick={this.onClickConfigurable}
                           role="presentation"
+                          className={`
+                            ${sku.skuPropertyImagePath ? 'item-data' : 'item-size'}
+                            ${this.configurableDisabled.indexOf(sku.propertyValueId) !== -1 ? 'disabled' : ''}
+                            ${this.configurableActive[skuData.skuPropertyId] === sku.propertyValueId ? 'active' : ''}
+                          `}
                         >
-                          {sku.skuType === 'img'
-                            ? <img src={sku.skuImage} title={sku.skuTitle} alt={sku.skuTitle} />
-                            : sku.skuTitle
+                          {sku.skuPropertyImagePath
+                            ? <img src={sku.skuPropertyImagePath} title={sku.propertyValueName} alt={sku.propertyValueName} />
+                            : sku.propertyValueName
                           }
                         </span>
                       ))}

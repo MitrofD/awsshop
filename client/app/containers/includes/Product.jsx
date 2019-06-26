@@ -9,6 +9,8 @@ type Props = {
   image: string,
   price: number,
   title: string,
+  isConfigurable: boolean,
+  configurable: Object[],
 };
 
 const Product = (props: Props) => {
@@ -47,15 +49,20 @@ const Product = (props: Props) => {
         className="prvw"
         style={previewStype}
       >
-        <div className="actn">
-          <button
-            className="btn btn-light animated pulse"
-            type="button"
-            onClick={onClickAddButton}
-          >
-            {tt('Add to cart')}
-          </button>
-        </div>
+        {!props.isConfigurable || props.configurable.length < 2
+          ? (
+            <div className="actn">
+              <button
+                className="btn btn-light animated pulse"
+                type="button"
+                onClick={onClickAddButton}
+              >
+                {tt('Add to cart')}
+              </button>
+            </div>
+          )
+          : null
+        }
       </div>
       <div className="nm">{props.title}</div>
       <div className="prc">{NumberFormat(props.price)}</div>
