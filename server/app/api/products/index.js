@@ -65,6 +65,8 @@ const pureProductOrThrowError = (data: Object, asRaw: boolean = false): Object =
   }
 
   const purePrice = parseFloat(data.price) || 0;
+  const pureMinPrice = parseFloat(data.minPrice) || 0;
+  const pureMaxPrice = parseFloat(data.maxPrice) || 0;
 
   if (purePrice === 0) {
     throw new Error('Price is required');
@@ -85,6 +87,9 @@ const pureProductOrThrowError = (data: Object, asRaw: boolean = false): Object =
     url: pureUrl,
     configurable: data.configurable,
     skuProducts: data.skuProducts,
+    isConfigurable: data.isConfigurable,
+    minPrice: pureMinPrice,
+    maxPrice: pureMaxPrice,
   };
 
   const pureSellerLink = typeof data.sellerLink === 'string' ? data.sellerLink.trim() : EMPTY_STR;
@@ -142,6 +147,17 @@ const pureProductOrThrowError = (data: Object, asRaw: boolean = false): Object =
 
     insertData.earnings = getEarningsForPrice(insertData.origPrice);
     insertData.price = getProfitPrice(insertData.origPrice);
+    insertData.minPrice = getProfitPrice(insertData.minPrice);
+    insertData.maxPrice = getProfitPrice(insertData.maxPrice);
+
+    insertData.skuProducts = insertData.skuProducts.map(function (findItem) {
+      const { ...newItem } = findItem;
+      const { value } = newItem.skuVal.skuAmount;
+
+      newItem.skuVal.skuAmount.value = getProfitPrice(value);
+
+      return newItem;
+    });
 
     if (insertData.earnings === 0) {
       throw new Error('Earnings is required');

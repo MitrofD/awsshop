@@ -15,8 +15,6 @@ indexes.forEach((index) => {
   });
 });
 
-collection.createIndex(uniqIndex, {
-  unique: 1,
-});
+collection.createIndex(uniqIndex);
 
 module.exports = collection;

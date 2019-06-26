@@ -16,7 +16,8 @@ const getPureStr = (mbStr: any, field: string): string => {
 };
 
 module.exports = {
-  async add(sessId: string, productId: string, quantity: any): Promise<Object> {
+  async add(sessId: string, productId: string, options: any): Promise<Object> {
+    const { quantity, configurableIds } = options;
     const pSessId = getPureStr(sessId, 'sessId');
     const product = await products.withId(productId);
     const incVal = parseInt(quantity) || 1;
@@ -24,6 +25,9 @@ module.exports = {
     const findCrit = {};
     findCrit.productId = productId;
     findCrit.sessId = pSessId;
+    if (configurableIds) {
+      findCrit[`${'options$configurableIds'}`] = configurableIds;
+    }
 
     const { value } = await collection.findOneAndUpdate(findCrit, {
       $inc: {
@@ -57,6 +61,7 @@ module.exports = {
     findCrit.price = product.price;
     findCrit.data = product;
     findCrit.quantity = incVal;
+    findCrit.options = options;
 
     await collection.insertOne(findCrit);
     return findCrit;
