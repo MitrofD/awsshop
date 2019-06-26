@@ -1,18 +1,41 @@
 .Dashboard .SoldProducts {
-  table {
-    th:first-child,
-    td:first-child {
-      width: 15%;
+  tr:hover {
+    cursor: pointer;
+  }
+
+  th:first-child,
+  td:first-child {
+    width: 15%;
+  }
+
+  th:nth-child(2),
+  td:nth-child(2) {
+    width: 50%;
+  }
+
+  th:last-child,
+  td:last-child {
+    text-align: right;
+  }
+
+  .modal-body {
+    .lst {
+      height: 500px;
     }
 
-    th:nth-child(2),
-    td:nth-child(2) {
-      width: 50%;
-    }
+    table {
+      tr:hover {
+        cursor: auto;
+      }
 
-    th:last-child,
-    td:last-child {
-      text-align: right;
+      td:nth-child(2) {
+        width: auto;
+      }
+
+      td:last-child {
+        width: 25%;
+        text-align: right;
+      }
     }
   }
 

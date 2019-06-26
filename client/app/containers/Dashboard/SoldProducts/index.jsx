@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import ProductHistoryModal from './ProductHistoryModal';
 import NoHaveLabel from '../../includes/NoHaveLabel';
 import LoadMore from '../../includes/LoadMore';
 import XHRSpin from '../../includes/XHRSpin';
@@ -16,6 +17,7 @@ type Props = {
 };
 
 type State = {
+  modal: ?React$Element<typeof ProductHistoryModal>,
   showLoadMore: boolean,
   xhrRequest: boolean,
 };
@@ -43,6 +45,7 @@ class SoldProducts extends React.Component<Props, State> {
     super(props, context);
 
     this.state = {
+      modal: null,
       showLoadMore: false,
       xhrRequest: true,
     };
@@ -50,6 +53,8 @@ class SoldProducts extends React.Component<Props, State> {
     const self: any = this;
     self.onApplyTimeRangeControl = this.onApplyTimeRangeControl.bind(this);
     self.onChangeSearchInput = this.onChangeSearchInput.bind(this);
+    self.onClickItem = this.onClickItem.bind(this);
+    self.onCloseModal = this.onCloseModal.bind(this);
     self.onSetRootNode = this.onSetRootNode.bind(this);
     self.onSetDateRange = this.onSetDateRange.bind(this);
     self.onScrollWindow = this.onScrollWindow.bind(this);
@@ -77,6 +82,26 @@ class SoldProducts extends React.Component<Props, State> {
     const input = event.currentTarget;
     const pureValue = input.value.trim();
     this.searchText = pureValue.length > 0 ? pureValue : null;
+  }
+
+  onClickItem(event: SyntheticEvent<HTMLElement>) {
+    event.preventDefault();
+    const item = event.currentTarget;
+    const { id } = item.dataset;
+    this.setState({
+      modal: (
+        <ProductHistoryModal
+          id={id}
+          onClose={this.onCloseModal}
+        />
+      ),
+    });
+  }
+
+  onCloseModal() {
+    this.setState({
+      modal: null,
+    });
   }
 
   onSetRootNode(el: ?HTMLElement) {
@@ -196,6 +221,7 @@ class SoldProducts extends React.Component<Props, State> {
 
   render() {
     const {
+      modal,
       showLoadMore,
       xhrRequest,
     } = this.state;
@@ -216,20 +242,24 @@ class SoldProducts extends React.Component<Props, State> {
               <th>Image</th>
               <th>ID and title</th>
               <th>Price</th>
-              <th>Date</th>
+              <th>Info</th>
             </tr>
           </thead>
         </table>
       );
 
       itemsContent = (
-        <table className="table">
+        <table className="table table-hover">
           <tbody>
             {this.items.map((item) => {
               const pId = item._id.toString();
 
               return (
-                <tr key={pId}>
+                <tr
+                  key={pId}
+                  onClick={this.onClickItem}
+                  data-id={item.productId}
+                >
                   <td>
                     <img
                       src={item.image}
@@ -245,12 +275,18 @@ class SoldProducts extends React.Component<Props, State> {
                   </td>
                   <td>
                     <div className="text-secondary">{NumberFormat(item.price)}</div>
+                  </td>
+                  <td>
+                    <div className="text-primary">
+                      {`Quantity: ${item.quantity}`}
+                    </div>
+                    <div className="text-primary">
+                      {`Earnings: ${NumberFormat(item.earnings)}`}
+                    </div>
                     <div className="text-danger">
-                      Earnings:
-                      {NumberFormat(item.earnings)}
+                      {`Payout: ${NumberFormat(item.payout)}`}
                     </div>
                   </td>
-                  <td>{Tools.prettyTime(item.createdAt)}</td>
                 </tr>
               );
             })}
@@ -303,9 +339,10 @@ class SoldProducts extends React.Component<Props, State> {
           </div>
         </form>
         <div className="dt">
+          {modal}
           {content}
           <div
-            className="lst row"
+            className="lst"
             ref={this.onSetRootNode}
           >
             {itemsContent}

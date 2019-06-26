@@ -7,6 +7,7 @@ const router = express.Router();
 require('./api').call(router);
 require('./carts').call(router);
 require('./categories').call(router);
+require('./competition').call(router);
 require('./data').call(router);
 require('./faqs').call(router);
 // require('./orders').call(router);

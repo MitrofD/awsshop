@@ -1,10 +1,18 @@
 // @flow
-import React, { useEffect, createRef } from 'react';
+import React, {
+  createRef,
+  useEffect,
+  useState,
+} from 'react';
+
 import { hot } from 'react-hot-loader/root';
 import { Link } from 'react-router-dom';
 import FlipClock from 'flipclock';
 import Page from '../includes/Page';
+import NoHaveLabel from '../includes/NoHaveLabel';
+import XHRSpin from '../includes/XHRSpin';
 import { tt } from '../../components/TranslateElement';
+import competition from '../../api/competition';
 import user from '../../api/user';
 
 const Competition = () => {
@@ -28,20 +36,89 @@ const Competition = () => {
     );
   }
 
+  const [
+    members,
+    setMembers,
+  ] = useState(null);
+
+  let unmounted = false;
+
+  const setRightMembers = (newMembers: Object[]) => {
+    if (!unmounted) {
+      setMembers(newMembers);
+    }
+  };
+
   useEffect(() => {
     const timeNow = new Date();
-    timeNow.setDate(timeNow.getDate() + 2);
+    const nextMonth = timeNow.getMonth() + 1;
+    const nextMonthDate = new Date(timeNow.getFullYear(), nextMonth, 0);
 
-    const timer = new FlipClock(timerRef.current, timeNow, {
+    const timer = new FlipClock(timerRef.current, nextMonthDate, {
       countdown: true,
       face: 'DayCounter',
+    });
+
+    competition.getMembers().then(setRightMembers).catch((error) => {
+      setRightMembers([]);
+      NotificationBox.danger(error.message);
     });
 
     return () => {
       timer.stop();
       RootNode.removeClass(fullCN);
+      unmounted = true;
     };
   }, []);
+
+  let content = null;
+
+  if (Array.isArray(members)) {
+    if (members.length > 0) {
+      let activeCount = 3;
+
+      content = (
+        <div className="table-responsive">
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>{tt('Ranking')}</th>
+                <th>{tt('Seller')}</th>
+                <th>{tt('Seller id')}</th>
+                <th>{tt('Volume')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {members.map((member, idx) => {
+                let activeClassName = 'rnkng';
+
+                if (activeCount > 0) {
+                  activeClassName += ' active';
+                }
+
+                activeCount -= 1;
+
+                return (
+                  <tr key={member._id}>
+                    <td>
+                      <span className={activeClassName}>{idx + 1}</span>
+                    </td>
+                    <td>{member.name}</td>
+                    <td>{`#${member.id}`}</td>
+                    <td>{NumberFormat(member.value)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      );
+    } else {
+      content = <NoHaveLabel>{tt('No members find')}</NoHaveLabel>;
+    }
+  } else {
+    content = <XHRSpin />;
+  }
 
   return (
     <Page>
@@ -63,96 +140,7 @@ const Competition = () => {
             />
             {createShopContent}
           </div>
-          <div className="table-responsive">
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  <th>{tt('Ranking')}</th>
-                  <th>{tt('Seller id')}</th>
-                  <th>{tt('Seller volume')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <span className="active">1</span>
-                  </td>
-                  <td>
-                    9087626
-                  </td>
-                  <td>
-                    1680195.95 USD
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <span className="active">2</span>
-                  </td>
-                  <td>
-                    9087626
-                  </td>
-                  <td>
-                    1680195.95 USD
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <span className="active">3</span>
-                  </td>
-                  <td>
-                    9087626
-                  </td>
-                  <td>
-                    1680195.95 USD
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <span>4</span>
-                  </td>
-                  <td>
-                    9087626
-                  </td>
-                  <td>
-                    1680195.95 USD
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <span>5</span>
-                  </td>
-                  <td>
-                    9087626
-                  </td>
-                  <td>
-                    1680195.95 USD
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <span>6</span>
-                  </td>
-                  <td>
-                    9087626
-                  </td>
-                  <td>
-                    1680195.95 USD
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <span>7</span>
-                  </td>
-                  <td>
-                    9087626
-                  </td>
-                  <td>
-                    1680195.95 USD
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          {content}
           <div className="prize-places">
             <h5 className="ttl">{tt('Your prize in prize places')}</h5>
             <div className="row">

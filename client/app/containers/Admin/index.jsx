@@ -18,6 +18,7 @@ const SettingsPage = Loadable('Settings');
 const SupportPage = Loadable('Support');
 const UsersPage = Loadable('Users');
 const CareersPage = Loadable('Careers');
+const CompetitionPage = Loadable('Competition');
 
 const faqsLink = `${Config.adminPath}/faqs`;
 const loginsHistoryLink = `${Config.adminPath}/logins-history`;
@@ -28,7 +29,8 @@ const productsLink = `${Config.adminPath}/products`;
 const settingsLink = `${Config.adminPath}/settings`;
 const supportLink = `${Config.adminPath}/support`;
 const usersLink = `${Config.adminPath}/users`;
-const vacansiesLink = `${Config.adminPath}/carrers`;
+const carrersLink = `${Config.adminPath}/carrers`;
+const competitionLink = `${Config.adminPath}/competition`;
 
 const Admin = () => (
   <Page className="Admin">
@@ -45,8 +47,13 @@ const Admin = () => (
           </NavLink>
         </li>
         <li>
-          <NavLink to={vacansiesLink}>
+          <NavLink to={carrersLink}>
             {tt('Careers')}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to={competitionLink}>
+            {tt('Competition')}
           </NavLink>
         </li>
         <li>
@@ -105,7 +112,11 @@ const Admin = () => (
         />
         <Route
           component={CareersPage}
-          path={vacansiesLink}
+          path={carrersLink}
+        />
+        <Route
+          component={CompetitionPage}
+          path={competitionLink}
         />
         <Route
           component={FAQsPage}

@@ -39,7 +39,7 @@ const Footer = (props: Props) => {
           <h6>{tt('About')}</h6>
           <ul>
             <li>
-              <Link to="/">{tt('Home')}</Link>
+              <Link to="/about-us">{tt('About us')}</Link>
             </li>
             <li>
               <Link to="/careers">{tt('Careers')}</Link>

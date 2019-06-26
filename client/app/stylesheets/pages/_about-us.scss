@@ -1,0 +1,98 @@
+.AboutUs {
+  main.container {
+    section.first {
+      background-image: url("#{$var-images-path}/about-us-first.jpg");
+      background-position: 50%;
+      background-repeat: no-repeat;
+      background-size: cover;
+      padding-top: 12rem;
+      padding-bottom: 14rem;
+      color: $white;
+
+      .title {
+        margin: 0 0 1.75rem;
+        font-size: 3.75rem;
+        line-height: 5.3125rem;
+        font-family: 'Futura PT Bold';
+      }
+
+      p {
+        font-size: 1.25rem;
+      }
+    }
+
+    section.second {
+      padding-top: 110px;
+      padding-bottom: 150px;
+      color: #6e6e6e;
+
+      .img {
+        background-image: url("#{$var-images-path}/about-us-second.png");
+        background-size: contain;
+        height: 500px;
+        background-repeat: no-repeat;
+        background-position: left;
+      }
+
+      .title {
+        padding-bottom: 1.5rem;
+        font-size: 2.3rem;
+        line-height: 3.6rem;
+        font-weight: bold;
+      }
+
+      p {
+        font-size: 1.0625rem;
+        line-height: 2.5rem;
+      }
+    }
+
+    section.thirth {
+      padding-top: 3rem;
+      padding-bottom: 3rem;
+      background-image: url("#{$var-images-path}/about-us-thirth.jpg");
+      background-position: 100%;
+      background-repeat: no-repeat;
+      color: $white;
+      font-size: 1.0625rem;
+      line-height: 2.5rem;
+
+      .title {
+        text-transform: uppercase;
+      }
+
+      .img {
+        background-image: url("#{$var-images-path}/about-us-thirth-sublayer.png");
+        background-position: right;
+        background-repeat: no-repeat;
+        background-size: contain;
+        height: 503px;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(lg) {
+    section {
+      padding-top: 2rem !important;
+      padding-bottom: 2rem !important;
+    }
+
+    section.second {
+      text-align: center;
+
+      .img {
+        background-position: center !important;
+        margin-bottom: 2rem;
+      }
+    }
+
+    section.thirth .img-wrppr {
+      display: none;
+    }
+  }
+
+  footer {
+    margin-top: 0;
+    border-top: none;
+  }
+}

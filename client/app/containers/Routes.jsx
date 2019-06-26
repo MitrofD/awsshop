@@ -10,6 +10,7 @@ const {
   LoadableWithParams,
 } = require('../components/Loadable').default(cN => import(`./${cN}`));
 
+const AboutUsPage = Loadable('AboutUs');
 const AdminPage = LoadableIfAdmin('Admin');
 const CartPage = Loadable('Cart');
 const CatalogPage = LoadableWithParams('Catalog');
@@ -103,6 +104,10 @@ const Routes = () => (
     <Route
       component={ProductPage}
       path="/product/:id"
+    />
+    <Route
+      component={AboutUsPage}
+      path="/about-us"
     />
     <Route
       component={CartPage}

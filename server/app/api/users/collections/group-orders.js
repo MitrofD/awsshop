@@ -1,8 +1,8 @@
 // @flow
-const collection = MongoStore.collection('orders');
+const collection = MongoStore.collection('groupOrders');
 
 [
-  'createdAt',
+  'updatedAt',
   'userId',
   'productId',
   'title',

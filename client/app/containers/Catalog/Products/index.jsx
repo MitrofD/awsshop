@@ -9,33 +9,33 @@ const ALL_TEXT = 'All products';
 
 const sorts = {
   fNewToOld: {
-    title: 'By New to Old date',
+    title: 'Date: descending',
     by: 'createdAt',
     desc: -1,
   },
   fOldToNew: {
-    title: 'By Old to New date',
+    title: 'Date: ascending',
     by: 'createdAt',
     desc: 1,
   },
-  fAToZ: {
-    title: 'From A to Z',
-    by: 'title',
-    desc: 1,
-  },
-  fZToA: {
-    title: 'From Z to A',
-    by: 'title',
-    desc: -1,
-  },
   fCheapToExpensive: {
-    title: 'By Low to High price',
+    title: 'Price: Lowest first',
     by: 'price',
     desc: 1,
   },
   fExpensiveToCheap: {
-    title: 'By High to Low price',
+    title: 'Price: Highest first',
     by: 'price',
+    desc: -1,
+  },
+  fAToZ: {
+    title: 'Name: Ascending',
+    by: 'title',
+    desc: 1,
+  },
+  fZToA: {
+    title: 'Name: Descending',
+    by: 'title',
     desc: -1,
   },
 };
@@ -271,6 +271,15 @@ class Products extends React.PureComponent<Props, State> {
                 type="text"
               />
             </div>
+            <div className="col-sm-2">
+              <label>&nbsp;</label>
+              <button
+                className="btn btn-primary btn-sm btn-block"
+                type="submit"
+              >
+                {tt('Search')}
+              </button>
+            </div>
             <div className="col-sm-4 form-group">
               <label>
                 {tt('Sorting')}
@@ -286,15 +295,6 @@ class Products extends React.PureComponent<Props, State> {
                 />
                 {dropdown}
               </div>
-            </div>
-            <div className="col-sm-2">
-              <label>&nbsp;</label>
-              <button
-                className="btn btn-primary btn-sm btn-block"
-                type="submit"
-              >
-                {tt('Search')}
-              </button>
             </div>
           </div>
         </form>

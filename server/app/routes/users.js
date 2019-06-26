@@ -228,6 +228,12 @@ module.exports = function usersRoute() {
     }).catch(next);
   });
 
+  this.get('/users/sold-product-history/:id', Middleware.userId_Sess, (req, res, next) => {
+    users.getSoldProductHistory(req.userId, req.params.id, req.query).then((data) => {
+      res.json(data);
+    }).catch(next);
+  });
+
   this.get('/users/payments-by-month', Middleware.userId_Sess, (req, res, next) => {
     users.getPaymentsByMonth(req.userId, req.query).then((data) => {
       res.json(data);

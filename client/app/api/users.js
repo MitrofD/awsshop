@@ -30,6 +30,8 @@ const users = Object.freeze({
 
   getSoldProducts: (query: any) => tools.getRequestWithURL(`${basePath}/sold-products`, query),
 
+  getSoldProductHistory: (productId: string, query: any) => tools.getRequestWithURL(`${basePath}/sold-product-history/${productId}`, query),
+
   waitingForPayment: () => tools.getRequestWithURL(`${basePath}/waiting-for-payment`),
 
   refWaitingForPayment: () => tools.getRequestWithURL(`${basePath}/ref-waiting-for-payment`),

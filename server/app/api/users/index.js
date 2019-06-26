@@ -5,6 +5,7 @@ const collection = require('./collections/users');
 const loginsCollection = require('./collections/logins');
 const monthPaymentsCollection = require('./collections/month-payments');
 const monthRefPaymentsCollection = require('./collections/month-ref-payments');
+const groupOrdersCollection = require('./collections/group-orders');
 const ordersCollection = require('./collections/orders');
 const paymentsCollection = require('./collections/payments');
 const crm = require('../crm');
@@ -97,6 +98,11 @@ const getHashedPasswordFromPlainText = async (plainText: string): Promise<string
       resolve(hash);
     });
   });
+};
+
+const getPayoutFromEarnings = (earnings: number) => {
+  const payout = earnings / 2;
+  return payout;
 };
 
 const comparePassword = async (plainPassword: string, hashedPassword: string): Promise<boolean> => {
@@ -796,17 +802,42 @@ const users = {
     const insertData = Object.assign({}, options);
     delete insertData.quantity;
     delete insertData.time;
+    const productId = product._id.toString();
+    const payout = getPayoutFromEarnings(currEarnings);
     insertData.userId = userId;
     insertData.createdAt = nowTime;
     insertData.earnings = currEarnings;
     insertData.image = product.image;
-    insertData.productId = product._id.toString();
+    insertData.productId = productId;
     insertData.price = product.price;
     insertData.title = product.title;
     insertData.quantity = pQuantity;
+    insertData.payout = payout;
 
     const addToOrdersPromise = ordersCollection.insertOne(insertData);
     promisesArr[promisesArrLength] = addToOrdersPromise;
+    promisesArrLength += 1;
+
+    const addToGroupOrdersPromise = groupOrdersCollection.updateOne({
+      productId,
+    }, {
+      $set: {
+        userId,
+        image: insertData.image,
+        price: insertData.price,
+        title: insertData.title,
+        updatedAt: nowTime,
+      },
+      $inc: {
+        payout,
+        quantity: pQuantity,
+        earnings: currEarnings,
+      },
+    }, {
+      upsert: true,
+    });
+
+    promisesArr[promisesArrLength] = addToGroupOrdersPromise;
     promisesArrLength += 1;
 
     const genPromise = collection.updateOne({
@@ -926,12 +957,13 @@ const users = {
   },
   */
 
-  async getSoldProducts(userId: string, query: any): Promise<Object> {
+  async getSoldProductHistory(userId: string, productId: string, query: any): Promise<Object> {
     const rQuery = tools.anyAsObj(query);
     const pureQuery = {};
     const pureSkip = getPureSkip(rQuery.skip);
     const pureLimit = getPureLimit(rQuery.limit);
     pureQuery.userId = userId;
+    pureQuery.productId = productId;
 
     const createdAtObj = {};
     const fromDate = tools.dateFromData(rQuery.from);
@@ -960,6 +992,64 @@ const users = {
         limit: pureLimit + 1,
         skip: pureSkip,
       }).sort('createdAt', -1).toArray((error, items) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        let loadMore = false;
+
+        if (items.length > pureLimit) {
+          loadMore = true;
+          items.pop();
+        }
+
+        resolve({
+          items,
+          loadMore,
+          limit: pureLimit,
+          skip: pureSkip,
+        });
+      });
+    });
+
+    return findPromise;
+  },
+
+  async getSoldProducts(userId: string, query: any): Promise<Object> {
+    const rQuery = tools.anyAsObj(query);
+    const pureQuery = {};
+    const pureSkip = getPureSkip(rQuery.skip);
+    const pureLimit = getPureLimit(rQuery.limit);
+    pureQuery.userId = userId;
+
+    const createdAtObj = {};
+    const fromDate = tools.dateFromData(rQuery.from);
+    const toDate = tools.dateFromData(rQuery.to);
+
+    if (fromDate) {
+      createdAtObj.$gte = fromDate;
+      pureQuery.updatedAt = createdAtObj;
+    }
+
+    if (toDate) {
+      createdAtObj.$lte = toDate;
+      pureQuery.updatedAt = createdAtObj;
+    }
+
+    if (typeof rQuery.searchPattern === 'string') {
+      const needRegExp = new RegExp(rQuery.searchPattern, 'i');
+
+      pureQuery.title = {
+        $regex: needRegExp,
+      };
+    }
+
+    const findPromise = new Promise((resolve, reject) => {
+      groupOrdersCollection.find(pureQuery, {
+        limit: pureLimit + 1,
+        skip: pureSkip,
+      }).sort('updatedAt', -1).toArray((error, items) => {
         if (error) {
           reject(error);
           return;
