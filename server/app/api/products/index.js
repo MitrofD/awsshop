@@ -83,6 +83,8 @@ const pureProductOrThrowError = (data: Object, asRaw: boolean = false): Object =
     origPrice: pureOrigPrice,
     sellerLink: null,
     url: pureUrl,
+    configurable: data.configurable,
+    skuProducts: data.skuProducts,
   };
 
   const pureSellerLink = typeof data.sellerLink === 'string' ? data.sellerLink.trim() : EMPTY_STR;

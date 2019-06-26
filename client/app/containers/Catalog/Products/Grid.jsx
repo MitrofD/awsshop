@@ -197,7 +197,7 @@ class Grid extends React.Component<Props, State> {
         </Fragment>
       );
     } else {
-      let label = 'No have products';
+      let label = 'No products found';
 
       if (this.props.categoryId) {
         label += ' for this category';

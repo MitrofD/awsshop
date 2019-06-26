@@ -64,7 +64,24 @@ const rObj = {
     const productUrl = this.getUrl(productId);
 
     const promise = new Promise((resolve, reject) => {
-      request.get(productUrl, (error, response, body) => {
+      const cookie = request.cookie('intl_locale=en_US');
+
+      // Set the headers for the request
+      const headers = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
+        Cookie: 'intl_locale=en_US; aep_usuc_f=region=AU&site=glo&b_locale=en_US&c_tp=USD; xman_us_f=x_l=0&x_locale=en_US',
+        Accept: '/',
+        Connection: 'keep-alive',
+      };
+      // Configure the request
+      const options = {
+        url: productUrl,
+        method: 'GET',
+        headers,
+      };
+      // console.log(options);
+      request(options, (error, response, body) => {
+        let skuProducts;
         if (error) {
           reject(error);
           return;
@@ -72,12 +89,88 @@ const rObj = {
 
         const $ = cheerio.load(body);
         const sendData = {};
+        let configurable;
+        let clearSkuProducts;
 
         // title
         const title = $('.product-name').first().text();
 
         // image
         const mainImage = $('#magnifier .ui-image-viewer-thumb-frame').children('img').first().attr('src');
+
+        $('script').get().forEach((item) => {
+          if (item.children[0] && item.children[0].data.match(/skuProducts/)) {
+            const test = item.children[0].data.match(/var (skuProducts=.*)var/mis);
+            eval(test[1].trim());
+          }
+        });
+
+        if (skuProducts) {
+          configurable = {};
+          $('#j-product-info-sku .p-property-item').each(function (index, elem) {
+            const configurableFieldData = $(this)
+              .find('.p-item-title')
+              .first()
+              .html()
+              .trim()
+              .replace(/:$/, '');
+            console.log(configurableFieldData);
+            configurable[configurableFieldData] = [];
+            $(this).find('li').each(function (index1, elem1) {
+              const a = $(this).find('a');
+              let skuTitle;
+              let skuImage;
+              let skuType;
+              const skuId = a.data('sku-id');
+              const skuChildren = $(this).find('a').children();
+
+              switch (skuChildren.get(0).tagName) {
+                case 'img':
+                  skuType = 'img';
+                  skuImage = skuChildren.attr('src');
+                  skuTitle = skuChildren.attr('title');
+                  break;
+                case 'span':
+                  skuType = 'span';
+                  skuTitle = skuChildren.first().html();
+                  break;
+                default:
+              }
+              const skuData = {
+                skuId,
+                skuType,
+                skuTitle,
+                skuImage,
+              };
+              configurable[configurableFieldData].push(skuData);
+            });
+          });
+
+          clearSkuProducts = skuProducts.map(function (findItem) {
+            const { ...newItem } = findItem;
+            const {
+              currency,
+              value,
+            } = newItem.skuVal.skuAmount;
+
+            let clearPrice = value;
+
+            if (currency !== BASE_CURRENCY) {
+              const convertPrice = RATES[currency];
+
+              if (typeof convertPrice === 'number') {
+                clearPrice /= convertPrice;
+              } else {
+                reject(new Error(`${currency} not available`));
+              }
+            }
+
+            newItem.skuVal.skuAmount.currency = BASE_CURRENCY;
+            newItem.skuVal.skuAmount.value = clearPrice;
+
+            return newItem;
+          });
+        }
 
         // price
         let price = 0;
@@ -147,6 +240,8 @@ const rObj = {
             sendData.price = price;
             sendData.shipping = shipping;
             sendData.sellerLink = sellerLink;
+            sendData.configurable = configurable;
+            sendData.skuProducts = clearSkuProducts;
             resolve(sendData);
           }).catch(reject);
         } else {
