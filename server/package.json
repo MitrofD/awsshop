@@ -24,7 +24,7 @@
     "eslint-plugin-import": "^2.18.0",
     "flow-bin": "^0.102.0",
     "nodemon": "^1.19.1",
-    "snyk": "^1.184.0"
+    "snyk": "^1.185.2"
   },
   "dependencies": {
     "bcrypt": "^3.0.5",

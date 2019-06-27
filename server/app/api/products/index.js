@@ -422,15 +422,19 @@ const products = {
     const product = await this.withId(id);
     const pData = tools.anyAsObj(updateData);
 
-    const setObj = {};
+    // const setObj = {};
     const checkAsBoolProps = ['isPaused'];
-    let needUpdate = false;
 
     if (asAdmin) {
       checkAsBoolProps.push('isApproved');
     } else if (product.userId !== userId) {
       throw new Error(NOT_FOUND_TEXT);
     }
+
+    const oldApproved = !!product.isApproved;
+    const oldCategoryId = product.categoryId;
+    Object.assign(product, pData);
+    const pureProduct = pureProductOrThrowError(product);
 
     const checkAsBoolPropsLength = checkAsBoolProps.length;
     let pI = 0;
@@ -439,27 +443,29 @@ const products = {
       const prop = checkAsBoolProps[pI];
 
       if (tools.has.call(pData, prop)) {
-        needUpdate = true;
-        setObj[prop] = !!pData[prop];
+        pureProduct[prop] = !!pData[prop];
       }
     }
 
-    if (!needUpdate) {
-      return product;
+    if (oldCategoryId !== pureProduct.categoryId) {
+      await Promise.all([
+        categories.removeProduct(oldCategoryId),
+        categories.addProduct(pureProduct.categoryId),
+      ]);
     }
 
-    if (tools.has.call(setObj, 'isApproved') && product.isApproved !== setObj.isApproved) {
-      if (setObj.isApproved) {
-        await categories.addProduct(product.categoryId);
+    if (tools.has.call(pureProduct, 'isApproved') && oldApproved !== pureProduct.isApproved) {
+      if (pureProduct.isApproved) {
+        await categories.addProduct(pureProduct.categoryId);
       } else {
-        await categories.removeProduct(product.categoryId);
+        await categories.removeProduct(pureProduct.categoryId);
       }
     }
 
     const { value } = await collection.findOneAndUpdate({
       _id: product._id,
     }, {
-      $set: setObj,
+      $set: pureProduct,
     }, {
       returnOriginal: false,
     });

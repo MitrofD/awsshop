@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import Edit from './Edit';
 import Product from './Product';
 import NoHaveLabel from '../../includes/NoHaveLabel';
 import LoadMore from '../../includes/LoadMore';
@@ -15,6 +16,7 @@ type Props = {
 };
 
 type State = {
+  editItem: ?React$Element<typeof Edit>,
   showLoadMore: boolean,
   xhrRequest: boolean,
 };
@@ -42,13 +44,17 @@ class Products extends React.Component<Props, State> {
     super(props, context);
 
     this.state = {
+      editItem: null,
       showLoadMore: false,
       xhrRequest: true,
     };
 
     const self: any = this;
+    self.onCancelEdit = this.onCancelEdit.bind(this);
+    self.onUpdateEdit = this.onUpdateEdit.bind(this);
     self.onChangeSearchInput = this.onChangeSearchInput.bind(this);
     self.onDeleteProduct = this.onDeleteProduct.bind(this);
+    self.onEditProduct = this.onEditProduct.bind(this);
     self.onSetRootNode = this.onSetRootNode.bind(this);
     self.onScrollWindow = this.onScrollWindow.bind(this);
     self.onSubmitSearchForm = this.onSubmitSearchForm.bind(this);
@@ -70,6 +76,24 @@ class Products extends React.Component<Props, State> {
     this.findTitle = pureValue.length > 0 ? pureValue : null;
   }
 
+  onCancelEdit() {
+    this.setState({
+      editItem: null,
+    });
+  }
+
+  onEditProduct(data: Object) {
+    this.setState({
+      editItem: (
+        <Edit
+          {...data}
+          onCancel={this.onCancelEdit}
+          onUpdate={this.onUpdateEdit}
+        />
+      ),
+    });
+  }
+
   onDeleteProduct(data: Object) {
     const productID = data._id;
 
@@ -86,6 +110,24 @@ class Products extends React.Component<Props, State> {
         NotificationBox.danger(error.message);
       });
     });
+  }
+
+  onUpdateEdit(item: Object) {
+    const itemId = item._id;
+    const idx = this.itemIds.indexOf(itemId);
+
+    if (idx !== -1) {
+      this.items[idx] = (
+        <Product
+          data={item}
+          key={`${itemId}s`}
+          onDelete={this.onDeleteProduct}
+          onEdit={this.onEditProduct}
+        />
+      );
+    }
+
+    this.onCancelEdit();
   }
 
   onSetRootNode(el: ?HTMLElement) {
@@ -160,8 +202,10 @@ class Products extends React.Component<Props, State> {
             data={item}
             key={itemId}
             onDelete={this.onDeleteProduct}
+            onEdit={this.onEditProduct}
           />
         ));
+
         this.itemIds.push(itemId);
       });
 
@@ -173,8 +217,8 @@ class Products extends React.Component<Props, State> {
         this.scrollFunc = windowScroll.bind(this.onScrollWindow);
       }
     }).catch((error) => {
-      NotificationBox.danger(error.message);
       this.setStateAfterRequest({});
+      NotificationBox.danger(error.message);
     });
   }
 
@@ -196,6 +240,7 @@ class Products extends React.Component<Props, State> {
 
   render() {
     const {
+      editItem,
       showLoadMore,
       xhrRequest,
     } = this.state;
@@ -235,14 +280,19 @@ class Products extends React.Component<Props, State> {
       if (this.items.length > 0) {
         itemsContent = this.items;
       } else {
-        itemsContent = <NoHaveLabel>No records found</NoHaveLabel>;
+        itemsContent = <NoHaveLabel>Not found products</NoHaveLabel>;
       }
     }
 
-    const className = 'Products';
+    let className = 'Products';
+
+    if (editItem) {
+      className += ' fnt-md';
+    }
 
     return (
       <div className={className}>
+        {editItem}
         <div className="dt">
           <div className="ttl">{tt('My products')}</div>
           <div className="dt">

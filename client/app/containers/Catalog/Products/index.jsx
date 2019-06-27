@@ -9,12 +9,12 @@ const ALL_TEXT = 'All products';
 
 const sorts = {
   fNewToOld: {
-    title: 'Date: descending',
+    title: 'Date: Descending',
     by: 'createdAt',
     desc: -1,
   },
   fOldToNew: {
-    title: 'Date: ascending',
+    title: 'Date: Ascending',
     by: 'createdAt',
     desc: 1,
   },

@@ -113,6 +113,14 @@ class Header extends React.PureComponent<Props, State> {
                 <li className="nav-item">
                   <NavLink
                     className="nav-link"
+                    to="/about-us"
+                  >
+                    {tt('About us')}
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    className="nav-link"
                     to="/support"
                   >
                     {tt('Contact us')}

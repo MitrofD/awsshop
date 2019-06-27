@@ -4,9 +4,12 @@ import { Link } from 'react-router-dom';
 import { tt } from '../../../components/TranslateElement';
 import products from '../../../api/products';
 
+type Handler = (Object) => void;
+
 type Props = {
   data: Object,
-  onDelete: (data: Object) => void,
+  onDelete: Handler,
+  onEdit: Handler,
 };
 
 type State = Object;
@@ -18,11 +21,16 @@ class Product extends React.PureComponent<Props, State> {
 
     const self: any = this;
     self.onClickDeleteButton = this.onClickDeleteButton.bind(this);
+    self.onClickEditButton = this.onClickEditButton.bind(this);
     self.onClickPauseButton = this.onClickPauseButton.bind(this);
   }
 
   onClickDeleteButton() {
     this.props.onDelete(this.state);
+  }
+
+  onClickEditButton() {
+    this.props.onEdit(this.state);
   }
 
   onClickPauseButton(event: SyntheticEvent<HTMLButtonElement>) {
@@ -75,15 +83,18 @@ class Product extends React.PureComponent<Props, State> {
             {title}
             <div className={approveCN}>{approveText}</div>
             <p className="prc">
-              {tt('Price')}
-              :
-              {NumberFormat(price)}
+              {`Price: ${NumberFormat(price)}`}
               <br />
-              {tt('Earnings')}
-              :
-              {NumberFormat(earnings)}
+              {`Earnings: ${NumberFormat(earnings)}`}
             </p>
             <div className="btns-grp float-right">
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={this.onClickEditButton}
+                type="button"
+              >
+                {tt('Edit')}
+              </button>
               <Link
                 className="btn btn-primary btn-sm"
                 to={`/product/${_id}`}

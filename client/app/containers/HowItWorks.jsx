@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 import { hot } from 'react-hot-loader/root';
 import Page from './includes/Page';
 import { tt } from '../components/TranslateElement';
+import user from '../api/user';
 
 const HowItWorks = () => {
+  const currUser = user.get();
   const fullCN = 'HowItWorks as-full';
   RootNode.addClass(fullCN);
 
@@ -29,14 +31,16 @@ const HowItWorks = () => {
               <div className="row">
                 <div className="col-lg-10">
                   <div className="row mt-3">
-                    <div className="col-md-6 mb-3 mb-md-0">
-                      <Link
-                        className="btn btn-block btn-gen"
-                        to="/create-shop"
-                      >
-                        {tt('Register')}
-                      </Link>
-                    </div>
+                    {!currUser && (
+                      <div className="col-md-6 mb-3 mb-md-0">
+                        <Link
+                          className="btn btn-block btn-gen"
+                          to="/create-shop"
+                        >
+                          {tt('Register')}
+                        </Link>
+                      </div>
+                    )}
                     <div className="col-md-6">
                       <Link
                         className="btn btn-block btn-border"
@@ -102,12 +106,14 @@ const HowItWorks = () => {
             ...you will pay only if you have sold
           </div>
           <div className="text-center">
-            <Link
-              className="btn btn-gen mt-5"
-              to="/create-shop"
-            >
-              Get your free account now
-            </Link>
+            {!currUser && (
+              <Link
+                className="btn btn-gen mt-5"
+                to="/create-shop"
+              >
+                Get your free account now
+              </Link>
+            )}
           </div>
         </div>
       </section>
@@ -211,12 +217,14 @@ const HowItWorks = () => {
               <br />
               …and we will  handle the rest of it
             </p>
-            <Link
-              className="btn btn-gen"
-              to="/create-shop"
-            >
-              Start free shop now
-            </Link>
+            {!currUser && (
+              <Link
+                className="btn btn-gen"
+                to="/create-shop"
+              >
+                Start free shop now
+              </Link>
+            )}
           </div>
           <div className="col-xl-6 align-self-center">
             <div className="img" />
@@ -286,12 +294,14 @@ const HowItWorks = () => {
           <div className="subtitle">
             ...Scroll down to that BLUE BUTTON, get started and hand off most of the grunt work off to us!
           </div>
-          <Link
-            className="btn btn-gen mt-5"
-            to="/create-shop"
-          >
-            Lets get started - it&apos;s free
-          </Link>
+          {!currUser && (
+            <Link
+              className="btn btn-gen mt-5"
+              to="/create-shop"
+            >
+              Lets get started - it&apos;s free
+            </Link>
+          )}
         </div>
       </section>
     </Page>

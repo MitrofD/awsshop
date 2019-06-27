@@ -20,11 +20,13 @@
         @extend .text-truncate;
         padding-right: $arrow-width;
         background-color: $white;
+        cursor: pointer;
       }
 
       &::after {
         content: '';
         position: absolute;
+        pointer-events: none;
         right: 0;
         top: 0;
         width: $arrow-width;

@@ -23,8 +23,8 @@ class Edit extends React.PureComponent<Props> {
   }
 
   onSaveProduct(product: Object) {
-    NotificationBox.success('Product has been updated');
     this.props.onUpdate(product);
+    NotificationBox.success('Product has been updated');
   }
 
   render() {
