@@ -142,7 +142,7 @@ const Competition = () => {
           </div>
           {content}
           <div className="prize-places">
-            <h5 className="ttl">{tt('Your prize in prize places')}</h5>
+            <h5 className="ttl">{tt('AWARDS')}</h5>
             <div className="row">
               <div className="col-md-3 mb-3 mb-xl-0">
                 <div className="item first">

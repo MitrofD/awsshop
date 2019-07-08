@@ -64,9 +64,9 @@ const HowItWorks = () => {
             Drop-shipping Business Is Here
           </h6>
           <p>
-            You can stop wasting hours on product research and finding “Quality Vendors”?
+            You can stop wasting hours on product research and finding “Quality Vendors”?
             <br />
-            No Storing Inventory, No Packing Or Shipping Out Products You Pick The Items You Want To Sell And Market Your Store…
+            No storing inventory, No packing or shipping out products you pick the items you want to sell and market your store…
             <br />
             our automated system will do the rest for you.
           </p>
@@ -155,14 +155,14 @@ const HowItWorks = () => {
             <div className="col-lg-4 mb-5 mb-lg-0 import">
               <div className="img" />
               <p>
-                Pick Products You Want To Sell
-                And Import Them With 1 Click using
+                Pick products you want to sell
+                and import them with 1 click using
                 our browser extension
               </p>
             </div>
             <div className="col-lg-4 mb-5 mb-lg-0 traffic">
               <div className="img" />
-              <p>Drive Traffic To Your Store And Start Selling Your Products</p>
+              <p>Drive traffic to your store and start selling your products</p>
             </div>
             <div className="col-lg-4 automate">
               <div className="img" />
@@ -285,14 +285,30 @@ const HowItWorks = () => {
         </div>
       </section>
       <section className="welcome">
-        <div className="conteainer">
-          <h5 className="title">
-            You could be adding products to your e-commerce store and
-            <br />
-            fulfilling orders automatically IN MINUTES
-          </h5>
+        <div className="container">
+          <h5 className="title">Earn Money With us</h5>
           <div className="subtitle">
-            ...Scroll down to that BLUE BUTTON, get started and hand off most of the grunt work off to us!
+            <p><strong>Affiliate Program:</strong></p>
+            <p>
+              We created our site to revolutionize product sourcing in AliExpress drop shipping and let store owners get straight to selling the winning stuff.
+              <br />
+              Our affiliate program is easy and highly accurate, we do our job and you make your money.
+            </p>
+            <p><strong>How it works:</strong></p>
+            <ul>
+              <li>
+                Create your account:
+                Sign up for a free account and get a unique affiliate link that you can share.
+              </li>
+              <li>
+                Promote our site:
+                Spread the information about our site by any method available to you.
+              </li>
+              <li>
+                Get paid:
+                Earn each time your referral makes any purch
+              </li>
+            </ul>
           </div>
           {!currUser && (
             <Link

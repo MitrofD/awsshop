@@ -420,10 +420,16 @@
       padding-bottom: 2.8125rem;
       color: $white;
       text-align: center;
+      background-size: cover;
 
       .subtitle {
         font-size: 1.25rem;
         font-family: 'Futura PT Medium';
+        ul {
+          display: inline-block;
+          text-align: left;
+          list-style-type: decimal;
+        }
       }
     }
 

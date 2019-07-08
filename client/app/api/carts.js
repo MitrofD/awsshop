@@ -40,7 +40,7 @@ const itemsHasBeenChanged = () => {
   for (; i < itemsLength; i += 1) {
     const item = items[i];
     newQuantity += item.quantity;
-    const itemSumm = item.quantity * item.price;
+    const itemSumm = item.quantity * tools.getPrice(item);
     newSumm += itemSumm;
   }
 
@@ -80,14 +80,40 @@ const rObj = Object.seal({
         if (itemIdx !== -1) {
           const item = items[itemIdx];
           quantity -= item.quantity;
-          summ -= item.quantity * item.price;
+          summ -= item.quantity * tools.getPrice(item);
           items[itemIdx] = data;
         } else {
           items.splice(0, 0, data);
         }
 
         quantity += data.quantity;
-        summ += data.quantity * data.price;
+        summ += data.quantity * tools.getPrice(data);
+        sendNewData();
+        resolve(data);
+      }).catch((error) => {
+        reject(new Error(error.response.data));
+      });
+    });
+
+    return promise;
+  },
+
+  update(id: string, sdQuantity: number): Promise<Object> {
+    const sendData = {
+      id,
+      quantity: sdQuantity,
+    };
+
+    const promise = new Promise((resolve, reject) => {
+      axios.post(`${proxyPath}/carts/set-quantity`, sendData).then(({ data }) => {
+        const itemIdx = getItemIdxWithId(data._id);
+        const item = items[itemIdx];
+        quantity -= item.quantity;
+        summ -= item.quantity * tools.getPrice(item);
+        items[itemIdx] = data;
+
+        quantity += data.quantity;
+        summ += data.quantity * tools.getPrice(data);
         sendNewData();
         resolve(data);
       }).catch((error) => {
@@ -106,7 +132,7 @@ const rObj = Object.seal({
         if (itemIdx !== -1) {
           const item = items[itemIdx];
           quantity -= item.quantity;
-          summ -= item.quantity * item.price;
+          summ -= item.quantity * tools.getPrice(item);
           items.splice(itemIdx, 1);
           sendNewData();
         }

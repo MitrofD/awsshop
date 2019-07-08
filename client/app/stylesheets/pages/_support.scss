@@ -67,6 +67,7 @@
     }
 
     .message textarea {
+      text-transform: lowercase !important;
       background-position-y: 22px;
       background-image: url("#{$var-images-path}/message.png");
     }

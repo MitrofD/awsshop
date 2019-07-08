@@ -40,7 +40,7 @@ class UpdatePage extends React.PureComponent<Props> {
             >
               <i className="icn icn-lng-lft-arrw" />
               {' '}
-              {tt('Go to back')}
+              {tt('Go back')}
             </a>
           </div>
         </div>
