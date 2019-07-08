@@ -18,6 +18,7 @@ require('./users').call(router);
 require('./settings').call(router);
 require('./support').call(router);
 require('./vacancies').call(router);
+require('./solidpayments').call(router);
 
 const configData = Object.assign({
   csrfCookieName: csrf.cookieName.toLowerCase(),

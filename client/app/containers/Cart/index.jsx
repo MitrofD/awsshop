@@ -93,12 +93,27 @@ class Cart extends React.PureComponent<Props, State> {
             <div className="spprt">
               <div className="ttl">{tt('Continue shopping')}</div>
               <p> If you have a question, please contact us</p>
-              <Link
-                className="btn btn-sm btn-primary float-right"
-                to="/support"
-              >
-                {tt('Contact support')}
-              </Link>
+              <p className="text-right">
+                <Link
+                  className="btn btn-sm btn-primary"
+                  to="/support"
+                >
+                  {tt('Contact support')}
+                </Link>
+              </p>
+              {items.length !== 0
+                ? (
+                  <p>
+                    <Link
+                      className="btn btn-sm btn-success btn-block"
+                      to="/checkout"
+                    >
+                      {tt('Checkout')}
+                    </Link>
+                  </p>
+                )
+                : null
+              }
             </div>
           </div>
         </div>
