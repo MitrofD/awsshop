@@ -171,8 +171,6 @@ class Products extends React.PureComponent<Props, State> {
       sortType: type,
       dropdown: null,
     });
-
-    console.log(this.sortData);
   }
 
   onLeaveDropdown() {

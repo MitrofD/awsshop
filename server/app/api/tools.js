@@ -48,6 +48,11 @@ const tools = {
   isError: (maybyObj: any) => maybyObj instanceof Error,
   passwordRegExp: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
   urlRegExp: /^(https?:\/\/)?(?:[^@/\n]+@)?(?:www\.)?([^:/\n]+)((?::\d+)?)/i,
+  getPrice: (productInfo: Object) => {
+    const price = productInfo.options && productInfo.options.isConfigurable ? productInfo.options.price : productInfo.price;
+
+    return price;
+  },
 };
 
 module.exports = tools;

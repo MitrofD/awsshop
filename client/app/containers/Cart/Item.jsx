@@ -39,7 +39,13 @@ class Item extends React.PureComponent<Props, State> {
 
   onSetQuantityInput(input: NumberInput) {
     const pureValue = parseInt(input.value) || 0;
+    const options = {
+      quantity: pureValue,
+    };
 
+    carts.update(this.props._id, pureValue).then().catch((error) => {
+      NotificationBox.danger(error.message);
+    });
     this.setStateAfterInputChange({
       quantity: pureValue,
     });

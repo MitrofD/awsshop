@@ -1,0 +1,168 @@
+.CheckoutPage{
+  .invalid-feedback {
+    display: block;
+  }
+
+  .is-invalid {
+    border-color: #f13840 !important;
+  }
+
+  .page-title {
+    margin: 0 0 3.75rem;
+    color: #4856e9;
+    font-size: 1.875rem;
+    font-family: Futura PT Bold;
+    &.bm {
+      margin-bottom: 2.8125rem;
+    }
+  }
+
+  .box-form {
+    h6 {
+      margin: 0 0 1.5625rem;
+      color: #1f1f1f;
+      font-size: .6875rem;
+      text-transform: uppercase;
+      font-family: Futura PT Bold;
+    }
+    .form-control {
+      display: inline-block;
+      width: 100%;
+      height: 3.875rem;
+      padding: .4375rem .75rem .4375rem 4.25rem;
+      color: #999;
+      font-size: .625rem;
+      font-weight: 600;
+      line-height: 1.5;
+      background-color: #fff;
+      background-clip: padding-box;
+      border: .0625rem solid #f2f2f7;
+      border-radius: .125rem;
+      text-transform: uppercase;
+      background-repeat: no-repeat;
+      background-position: 22px;
+      box-shadow: 0.125rem 0 0.625rem rgba(218,210,253,.35);
+      -moz-box-shadow: .125rem 0 .625rem rgba(218,210,253,.35);
+      -webkit-box-shadow: 0.125rem 0 0.625rem rgba(218,210,253,.35);
+    }
+    &.addition {
+      .form-control {
+        padding-left: 1.875rem;
+        padding-right: 1.875rem;
+      }
+    }
+  }
+
+  .form-group {
+    padding-bottom: 1.5625rem;
+    position: relative;
+  }
+
+  .table-border {
+    margin: 1.875rem 0;
+    border: .0625rem solid #f3f3f3;
+    overflow: hidden;
+    border-radius: .375rem;
+    -webkit-border-radius: .375rem;
+    -moz-border-radius: .375rem;
+  }
+
+  .checkout {
+    h6 {
+      &.adt {
+        margin: 0 0 .9375rem;
+        color: #1f1f1f;
+        font-size: 1rem;
+        text-transform: uppercase;
+        font-family: Futura PT Bold;
+      }
+    }
+    .table-border {
+      margin: 1.0625rem 0 2.1875rem;
+    }
+  }
+
+  .table {
+    margin: 0;
+    color: #333;
+    font-size: .8125rem;
+    line-height: normal;
+    font-weight: 600;
+    .quantity {
+      margin: 0 .625rem;
+      input {
+        width: 2.8125rem;
+        padding: .3125rem .75rem;
+        text-align: center;
+        border: .0625rem solid #e8e8e8;
+        border-left: none;
+        border-right: none;
+      }
+    }
+    th {
+      border-color: #f3f3f3;
+      vertical-align: middle;
+      font-family: Futura PT Bold;
+      border-bottom: none;
+      text-transform: uppercase;
+      border-top: none;
+    }
+    td,th {
+      padding: .625rem 3.125rem;
+      border-color: #f3f3f3;
+      vertical-align: middle;
+      border-right: 1px solid #f3f3f3;
+    }
+    .strong-total {
+      strong {
+        font-size: 1rem;
+        font-family: Futura PT Bold;
+      }
+      .total {
+        color: #4856e9;
+        font-size: 1.125rem;
+      }
+    }
+    &.style-1 {
+      color: #6e6e6e;
+      font-size: .75rem;
+      border: none;
+      .img img {
+        max-width: 5rem;
+      }
+      strong {
+        color: #333;
+        font-family: Futura PT Bold;
+      }
+      th {
+        color: #1f1f1f;
+        font-size: .6875rem;
+        border-bottom: none;
+      }
+      td,th {
+        padding: 1.25rem .625rem;
+      }
+      td:nth-child(2) {
+        text-align: left;
+      }
+      th:first-child {
+        text-align: left;
+      }
+    }
+  }
+
+
+  .btn-group>.btn-group:not(:last-child)>.btn, .btn-group>.btn:not(:last-child):not(.dropdown-toggle), .DatePicker .cntrl .btn-group>.btn-group:not(:last-child)>button, .DatePicker .cntrl .btn-group>button:not(:last-child):not(.dropdown-toggle) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .DatePicker .cntrl .table .quantity button, .table .quantity .btn, .table .quantity .DatePicker .cntrl button {
+    padding: .3125rem .625rem;
+    border: .0625rem solid #e8e8e8;
+  }
+
+  .btn:not(:disabled):not(.disabled), .DatePicker .cntrl button:not(:disabled):not(.disabled) {
+    cursor: pointer;
+  }
+}

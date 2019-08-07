@@ -338,7 +338,7 @@ class Support extends React.Component<Props, State> {
                     rows="10"
                     className={inputCNs.message}
                     name="message"
-                    placeholder="Message text"
+                    placeholder="Message"
                     onChange={this.onChangeMessageTextarea}
                   />
                   {errorLabels.message}

@@ -33,6 +33,8 @@ const ResetPasswordPage = LoadableWithParams('ResetPassword');
 const ProductPage = LoadableWithParams('Product');
 const SettingsPage = LoadableIfUserNeeded('Settings', true);
 const SupportPage = Loadable('Support');
+const CheckoutPage = Loadable('Checkout');
+const ThankyouPage = Loadable('Thankyou');
 
 const Routes = () => (
   <Switch>
@@ -124,6 +126,14 @@ const Routes = () => (
     <Route
       component={SupportPage}
       path="/support"
+    />
+    <Route
+      component={CheckoutPage}
+      path="/checkout"
+    />
+    <Route
+      component={ThankyouPage}
+      path="/thankyouPage"
     />
     <Route
       path="/s/:path"

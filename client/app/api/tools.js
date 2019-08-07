@@ -2,6 +2,11 @@
 import axios from 'axios';
 
 const tools = Object.freeze({
+  getPrice: (productInfo: Object) => {
+    const price = productInfo.options && productInfo.options.isConfigurable ? productInfo.options.price : productInfo.price;
+
+    return price;
+  },
   capitalize: (val: string): string => val.charAt(0).toUpperCase() + val.slice(1),
   emailRegExp: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   escapedString: (str: string) => str.replace(/[$[+*|()^?.\\/]/g, '\\$&'),
