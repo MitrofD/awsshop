@@ -37,12 +37,7 @@ if (supportEmail.length === 0) {
   throw new Error(`Support email option is incorrect.Example: support@${exampleUrl} (SUPPORT_EMAIL ${inConfigText})`);
 }
 
-let [
-  fFull,
-  protocol,
-  domain,
-  port,
-] = urlMatches;
+let [, protocol, domain, port] = urlMatches;
 
 if (!protocol) {
   protocol = defProtocol;

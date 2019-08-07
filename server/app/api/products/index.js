@@ -150,12 +150,10 @@ const pureProductOrThrowError = (data: Object, asRaw: boolean = false): Object =
     insertData.minPrice = getProfitPrice(insertData.minPrice);
     insertData.maxPrice = getProfitPrice(insertData.maxPrice);
 
-    insertData.skuProducts = insertData.skuProducts.map(function (findItem) {
+    insertData.skuProducts = insertData.skuProducts.map(function skuProductsMap(findItem) {
       const { ...newItem } = findItem;
       const { value } = newItem.skuVal.skuAmount;
-
       newItem.skuVal.skuAmount.value = getProfitPrice(value);
-
       return newItem;
     });
 

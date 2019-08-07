@@ -64,7 +64,7 @@ const rObj = {
     const productUrl = this.getUrl(productId);
 
     const promise = new Promise((resolve, reject) => {
-      const cookie = request.cookie('intl_locale=en_US');
+      // const cookie = request.cookie('intl_locale=en_US');
 
       // Set the headers for the request
       const headers = {
@@ -116,7 +116,7 @@ const rObj = {
           isConfigurable = true;
           configurable = [];
           let configurableItemOrder = 1;
-          $('#j-product-info-sku .p-property-item').each(function (index, elem) {
+          $('#j-product-info-sku .p-property-item').each(function eachFuncFirst() {
             const configurableItemName = $(this)
               .find('.p-item-title')
               .first()
@@ -134,7 +134,7 @@ const rObj = {
             };
             let skuPropertyValuesOrder = 1;
             // configurable[configurableFieldData] = [];
-            $(this).find('li').each(function (index1, elem1) {
+            $(this).find('li').each(function eachFuncSecond() {
               const a = $(this).find('a');
               let propertyValueName;
               let skuPropertyImagePath;
@@ -164,7 +164,7 @@ const rObj = {
             configurableItemOrder += 1;
           });
 
-          clearSkuProducts = skuProducts.map(function (findItem) {
+          clearSkuProducts = skuProducts.map(function eachFuncThird(findItem) {
             const { ...newItem } = findItem;
             const {
               currency,

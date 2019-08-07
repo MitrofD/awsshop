@@ -26,7 +26,7 @@ const rObj = Object.freeze({
       request.post({
         url,
         form: data,
-      }, (error, response, body) => {
+      }, (error) => {
         if (error) {
           reject(error);
           return;

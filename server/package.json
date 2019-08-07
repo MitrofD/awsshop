@@ -22,7 +22,7 @@
     "eslint-plugin-flowtype": "^3.11.1",
     "eslint-plugin-flowtype-errors": "^4.1.0",
     "eslint-plugin-import": "^2.18.0",
-    "flow-bin": "^0.102.0",
+    "flow-bin": "^0.104.0",
     "nodemon": "^1.19.1",
     "snyk": "^1.185.2"
   },
@@ -32,7 +32,7 @@
     "express": "^4.17.1",
     "faker": "^4.1.0",
     "geoip-lite": "^1.3.6",
-    "mongodb": "^3.2.7",
+    "mongodb": "^3.3.0-beta2",
     "node-cron": "^2.0.3",
     "nodemailer": "^6.2.1",
     "pug": "^2.0.4",

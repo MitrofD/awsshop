@@ -56,7 +56,7 @@ module.exports = function apiRoutes() {
     let responseDataLength = responseData.length;
     const reqArray = Array.isArray(req.body) ? req.body : [];
 
-    const rPromise = new Promise((resolve, reject) => {
+    const rPromise = new Promise((resolve) => {
       (function saleProduct() {
         if (reqArray.length > 0) {
           const item = reqArray.shift();

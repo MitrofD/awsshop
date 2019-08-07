@@ -2,7 +2,6 @@
 const faker = require('faker');
 const cron = require('node-cron');
 const collection = require('./collections/members');
-const tools = require('../tools');
 const userMonthPaymentsCollection = require('../users/collections/month-payments');
 
 const DIFF_EARNINGS = 1500;
